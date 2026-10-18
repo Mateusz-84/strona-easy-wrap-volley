@@ -1,0 +1,81 @@
+# =====================================================================
+#  AUTOMATYCZNA AKTUALIZACJA STRONY (GitHub Actions)
+# ---------------------------------------------------------------------
+#  Co robi: pobiera terminarz, wyniki i tabelę ze stron związków,
+#  buduje stronę i wgrywa zmienione pliki na serwer FTP.
+#
+#  Kiedy działa:
+#   • co 2 godziny (od rana do północy),
+#   • po każdej zmianie plików w repozytorium (np. edycji content.py),
+#   • ręcznie: zakładka Actions → „Aktualizacja strony” → Run workflow.
+#
+#  Dane do FTP wpisujesz RAZ w: Settings → Secrets and variables → Actions
+#   FTP_SERWER, FTP_UZYTKOWNIK, FTP_HASLO, FTP_FOLDER (np. public_html/)
+#  Szczegóły w INSTRUKCJA.md.
+# =====================================================================
+name: Aktualizacja strony
+
+on:
+  schedule:
+    - cron: "15 4-22/2 * * *"     # czas UTC = 6:15, 8:15 … 0:15 czasu polskiego (latem)
+  push:
+    branches: [main]
+    paths-ignore: ["dane/**", "img/herby/**", "img/zapowiedz/**", "img/wyniki/**", "**.md"]
+  workflow_dispatch:
+
+permissions:
+  contents: write                  # potrzebne do zapisania kopii danych ze związków
+
+concurrency:
+  group: aktualizacja-strony
+  cancel-in-progress: false
+
+jobs:
+  buduj-i-wgraj:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TZ: Europe/Warsaw            # daty i godziny w polskim czasie
+      # Czy wpisano dane FTP? Dopóki nie – strona się buduje, ale nie jest wgrywana.
+      MA_FTP: ${{ secrets.FTP_SERWER != '' && secrets.FTP_HASLO != '' }}
+    steps:
+      - name: Pobierz pliki repozytorium
+        uses: actions/checkout@v4
+
+      - name: Przygotuj Pythona
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Zainstaluj Pillow (zmniejszanie pobieranych zdjęć i herbów)
+        run: pip install --quiet "pillow>=10,<12"
+
+      - name: Zbuduj stronę (dane ze związków + posty z FB/IG)
+        run: python build.py
+        env:
+          META_TOKEN: ${{ secrets.META_TOKEN }}   # opcjonalny – bez niego zdjęcia z postów się nie pobierają
+
+      - name: Zapisz kopię danych, nowe herby i zdjęcia z postów
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A dane img
+          if ! git diff --cached --quiet; then
+            git commit -m "Aktualizacja danych ze związków"
+            git push
+          fi
+
+      - name: Brak danych FTP – pomijam wgrywanie
+        if: env.MA_FTP != 'true'
+        run: echo "::notice::Strona zbudowana, ale nie wgrana – dodaj sekrety FTP_SERWER, FTP_UZYTKOWNIK, FTP_HASLO (patrz INSTRUKCJA.md, punkt 2.2)."
+
+      - name: Wgraj na serwer FTP (tylko zmienione pliki)
+        if: env.MA_FTP == 'true'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERWER }}
+          username: ${{ secrets.FTP_UZYTKOWNIK }}
+          password: ${{ secrets.FTP_HASLO }}
+          server-dir: ${{ secrets.FTP_FOLDER || './' }}
+          local-dir: ./strona/
+          protocol: ${{ vars.FTP_PROTOKOL || 'ftps' }}   # gdy serwer nie obsługuje FTPS: zmienna FTP_PROTOKOL = ftp

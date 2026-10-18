@@ -1,0 +1,5 @@
+# Jednakowe końce linii na Windows i na GitHubie
+* text=auto eol=lf
+*.webp binary
+*.png binary
+*.jpg binary

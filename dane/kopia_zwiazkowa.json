@@ -1,0 +1,541 @@
+{
+ "_hale": {
+  "/system/mecz/166/": {
+   "adres": "Kobyłka, ul. ks. Marcina Załuskiego 57",
+   "godzina": null,
+   "hala": "Hala Sportowa przy PSP nr 3 w Kobyłce"
+  },
+  "/system/mecz/172/": {
+   "adres": "ul. Kwiatowa 28, Mysiadło",
+   "godzina": null,
+   "hala": "hala Centrum Sportu w Gminie Lesznowola ; Hala dodatkowa: ul Krasickiego 56, 05-500 Nowa Iwiczna"
+  },
+  "/system/mecz/177/": {
+   "adres": "Kobyłka, ul. ks. Marcina Załuskiego 57",
+   "godzina": null,
+   "hala": "Hala Sportowa przy PSP nr 3 w Kobyłce"
+  },
+  "/system/mecz/185/": {
+   "adres": "ul. Warszawska 13, Łask",
+   "godzina": null,
+   "hala": "Hala MOS w Łasku"
+  }
+ },
+ "seniorki": {
+  "pobrano": "2026-10-18T02:51",
+  "pzps_lista": [
+   {
+    "data": "2026-09-26",
+    "godzina": "18:00",
+    "godzina_pewna": true,
+    "gosc": "AZS AWF Varsovia",
+    "gospodarz": "EASY WRAP Volley Kobyłka",
+    "id": "/system/mecz/133/",
+    "nr": 1
+   },
+   {
+    "data": "2026-10-03",
+    "godzina": "18:00",
+    "godzina_pewna": true,
+    "gosc": "Libero VIP Gwarant Aleksandrów Łódzki",
+    "gospodarz": "EASY WRAP Volley Kobyłka",
+    "id": "/system/mecz/144/",
+    "nr": 12
+   },
+   {
+    "data": "2026-10-07",
+    "godzina": "18:45",
+    "godzina_pewna": true,
+    "gosc": "EASY WRAP Volley Kobyłka",
+    "gospodarz": "MOS Wola AZS Warszawa",
+    "id": "/system/mecz/146/",
+    "nr": 14
+   },
+   {
+    "data": "2026-10-11",
+    "godzina": "18:30",
+    "godzina_pewna": true,
+    "gosc": "TPS Bielsk Podlaski",
+    "gospodarz": "EASY WRAP Volley Kobyłka",
+    "id": "/system/mecz/155/",
+    "nr": 23
+   },
+   {
+    "data": "2026-10-17",
+    "godzina": "14:00",
+    "godzina_pewna": true,
+    "gosc": "EASY WRAP Volley Kobyłka",
+    "gospodarz": "ŁKS AZS UMED Łódź",
+    "id": "/system/mecz/159/",
+    "nr": 27
+   },
+   {
+    "data": "2026-10-24",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "MKS Kalisz II",
+    "gospodarz": "EASY WRAP Volley Kobyłka",
+    "id": "/system/mecz/166/",
+    "nr": 34
+   },
+   {
+    "data": "2026-10-28",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "EASY WRAP Volley Kobyłka",
+    "gospodarz": "MUKS Krótka",
+    "id": "/system/mecz/172/",
+    "nr": 40
+   },
+   {
+    "data": "2026-11-07",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "MAPEI BARYCZ Janków Przygodzki",
+    "gospodarz": "EASY WRAP Volley Kobyłka",
+    "id": "/system/mecz/177/",
+    "nr": 45
+   },
+   {
+    "data": "2026-11-14",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "EASY WRAP Volley Kobyłka",
+    "gospodarz": "SMS Ostrów Łaskovia Łask",
+    "id": "/system/mecz/185/",
+    "nr": 53
+   },
+   {
+    "data": "2026-11-21",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "PGE LTS Legionovia Legionowo II",
+    "gospodarz": "EASY WRAP Volley Kobyłka",
+    "id": "/system/mecz/188/",
+    "nr": 56
+   },
+   {
+    "data": "2026-11-28",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "EASY WRAP Volley Kobyłka",
+    "gospodarz": "GKS Orlęta Raszyn",
+    "id": "/system/mecz/198/",
+    "nr": 66
+   },
+   {
+    "data": "2026-12-05",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "EASY WRAP Volley Kobyłka",
+    "gospodarz": "AZS AWF Varsovia",
+    "id": "/system/mecz/199/",
+    "nr": 67
+   },
+   {
+    "data": "2026-12-09",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "EASY WRAP Volley Kobyłka",
+    "gospodarz": "Libero VIP Gwarant Aleksandrów Łódzki",
+    "id": "/system/mecz/210/",
+    "nr": 78
+   },
+   {
+    "data": "2026-12-12",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "MOS Wola AZS Warszawa",
+    "gospodarz": "EASY WRAP Volley Kobyłka",
+    "id": "/system/mecz/212/",
+    "nr": 80
+   },
+   {
+    "data": "2026-12-19",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "EASY WRAP Volley Kobyłka",
+    "gospodarz": "TPS Bielsk Podlaski",
+    "id": "/system/mecz/221/",
+    "nr": 89
+   },
+   {
+    "data": "2027-01-09",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "ŁKS AZS UMED Łódź",
+    "gospodarz": "EASY WRAP Volley Kobyłka",
+    "id": "/system/mecz/225/",
+    "nr": 93
+   },
+   {
+    "data": "2027-01-16",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "EASY WRAP Volley Kobyłka",
+    "gospodarz": "MKS Kalisz II",
+    "id": "/system/mecz/232/",
+    "nr": 100
+   },
+   {
+    "data": "2027-01-30",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "MUKS Krótka",
+    "gospodarz": "EASY WRAP Volley Kobyłka",
+    "id": "/system/mecz/238/",
+    "nr": 106
+   },
+   {
+    "data": "2027-02-06",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "EASY WRAP Volley Kobyłka",
+    "gospodarz": "MAPEI BARYCZ Janków Przygodzki",
+    "id": "/system/mecz/243/",
+    "nr": 111
+   },
+   {
+    "data": "2027-02-13",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "SMS Ostrów Łaskovia Łask",
+    "gospodarz": "EASY WRAP Volley Kobyłka",
+    "id": "/system/mecz/251/",
+    "nr": 119
+   },
+   {
+    "data": "2027-02-27",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "EASY WRAP Volley Kobyłka",
+    "gospodarz": "PGE LTS Legionovia Legionowo II",
+    "id": "/system/mecz/254/",
+    "nr": 122
+   },
+   {
+    "data": "2027-03-06",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "GKS Orlęta Raszyn",
+    "gospodarz": "EASY WRAP Volley Kobyłka",
+    "id": "/system/mecz/264/",
+    "nr": 132
+   }
+  ],
+  "pzps_tabela": {
+   "tabela": [
+    {
+     "lp": 1,
+     "male_minus": 332,
+     "male_plus": 409,
+     "mecze": 5,
+     "nasz": false,
+     "nazwa": "GKS Orlęta Raszyn",
+     "pkt": 12,
+     "sety_minus": 4,
+     "sety_plus": 13,
+     "zwyciestwa": 4
+    },
+    {
+     "lp": 2,
+     "male_minus": 369,
+     "male_plus": 427,
+     "mecze": 5,
+     "nasz": false,
+     "nazwa": "SMS Ostrów Łaskovia Łask",
+     "pkt": 12,
+     "sety_minus": 5,
+     "sety_plus": 13,
+     "zwyciestwa": 4
+    },
+    {
+     "lp": 3,
+     "male_minus": 377,
+     "male_plus": 444,
+     "mecze": 5,
+     "nasz": true,
+     "nazwa": "EASY WRAP Volley Kobyłka",
+     "pkt": 12,
+     "sety_minus": 6,
+     "sety_plus": 14,
+     "zwyciestwa": 4
+    },
+    {
+     "lp": 4,
+     "male_minus": 491,
+     "male_plus": 490,
+     "mecze": 5,
+     "nasz": false,
+     "nazwa": "AZS AWF Varsovia",
+     "pkt": 9,
+     "sety_minus": 10,
+     "sety_plus": 13,
+     "zwyciestwa": 3
+    },
+    {
+     "lp": 5,
+     "male_minus": 423,
+     "male_plus": 405,
+     "mecze": 5,
+     "nasz": false,
+     "nazwa": "TPS Bielsk Podlaski",
+     "pkt": 9,
+     "sety_minus": 8,
+     "sety_plus": 10,
+     "zwyciestwa": 3
+    },
+    {
+     "lp": 6,
+     "male_minus": 351,
+     "male_plus": 363,
+     "mecze": 4,
+     "nasz": false,
+     "nazwa": "PGE LTS Legionovia Legionowo II",
+     "pkt": 7,
+     "sety_minus": 8,
+     "sety_plus": 8,
+     "zwyciestwa": 2
+    },
+    {
+     "lp": 7,
+     "male_minus": 430,
+     "male_plus": 444,
+     "mecze": 5,
+     "nasz": false,
+     "nazwa": "MAPEI BARYCZ Janków Przygodzki",
+     "pkt": 6,
+     "sety_minus": 11,
+     "sety_plus": 10,
+     "zwyciestwa": 2
+    },
+    {
+     "lp": 8,
+     "male_minus": 461,
+     "male_plus": 434,
+     "mecze": 5,
+     "nasz": false,
+     "nazwa": "Libero VIP Gwarant Aleksandrów Łódzki",
+     "pkt": 6,
+     "sety_minus": 12,
+     "sety_plus": 8,
+     "zwyciestwa": 2
+    },
+    {
+     "lp": 9,
+     "male_minus": 481,
+     "male_plus": 450,
+     "mecze": 5,
+     "nasz": false,
+     "nazwa": "MOS Wola AZS Warszawa",
+     "pkt": 5,
+     "sety_minus": 13,
+     "sety_plus": 9,
+     "zwyciestwa": 2
+    },
+    {
+     "lp": 10,
+     "male_minus": 447,
+     "male_plus": 403,
+     "mecze": 5,
+     "nasz": false,
+     "nazwa": "ŁKS AZS UMED Łódź",
+     "pkt": 5,
+     "sety_minus": 12,
+     "sety_plus": 8,
+     "zwyciestwa": 2
+    },
+    {
+     "lp": 11,
+     "male_minus": 322,
+     "male_plus": 304,
+     "mecze": 4,
+     "nasz": false,
+     "nazwa": "MUKS Krótka",
+     "pkt": 4,
+     "sety_minus": 9,
+     "sety_plus": 5,
+     "zwyciestwa": 1
+    },
+    {
+     "lp": 12,
+     "male_minus": 417,
+     "male_plus": 328,
+     "mecze": 5,
+     "nasz": false,
+     "nazwa": "MKS Kalisz II",
+     "pkt": 0,
+     "sety_minus": 15,
+     "sety_plus": 2,
+     "zwyciestwa": 0
+    }
+   ],
+   "wyniki": {
+    "/system/mecz/133/": {
+     "data": "2026-09-26",
+     "sety": [
+      "25:19",
+      "22:25",
+      "25:23",
+      "19:25",
+      "13:15"
+     ],
+     "wynik": "2:3"
+    },
+    "/system/mecz/144/": {
+     "data": "2026-10-03",
+     "sety": [
+      "25:12",
+      "25:16",
+      "25:21"
+     ],
+     "wynik": "3:0"
+    },
+    "/system/mecz/146/": {
+     "data": "2026-10-07",
+     "sety": [
+      "25:17",
+      "25:19",
+      "19:25",
+      "9:25",
+      "14:16"
+     ],
+     "wynik": "2:3"
+    },
+    "/system/mecz/155/": {
+     "data": "2026-10-11",
+     "sety": [
+      "25:14",
+      "25:19",
+      "25:16"
+     ],
+     "wynik": "3:0"
+    },
+    "/system/mecz/159/": {
+     "data": "2026-10-17",
+     "sety": [
+      "19:25",
+      "25:13",
+      "16:25",
+      "20:25"
+     ],
+     "wynik": "1:3"
+    }
+   }
+  },
+  "wsmwzps": [
+   {
+    "data": "2026-09-26",
+    "godzina": "18:00",
+    "godzina_pewna": true,
+    "gosc": "AZS AWF Warszawa",
+    "gospodarz": "EASY WRAP Volley Kobyłka"
+   },
+   {
+    "data": "2026-10-03",
+    "godzina": "18:00",
+    "godzina_pewna": true,
+    "gosc": "Libero VIP Biesiadowo Aleksandrów Łódzki",
+    "gospodarz": "EASY WRAP Volley Kobyłka"
+   },
+   {
+    "data": "2026-10-07",
+    "godzina": "18:45",
+    "godzina_pewna": true,
+    "gosc": "EASY WRAP Volley Kobyłka",
+    "gospodarz": "AZS Warszawa"
+   },
+   {
+    "data": "2026-10-11",
+    "godzina": "18:30",
+    "godzina_pewna": true,
+    "gosc": "Towarzystwo Piłki Siatkowej Bielsk Podlaski",
+    "gospodarz": "EASY WRAP Volley Kobyłka"
+   },
+   {
+    "data": "2026-10-24",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "Energa MKS Kalisz II",
+    "gospodarz": "EASY WRAP Volley Kobyłka"
+   },
+   {
+    "data": "2026-10-28",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "EASY WRAP Volley Kobyłka",
+    "gospodarz": "MUKS Krótka Mysiadło"
+   },
+   {
+    "data": "2026-11-07",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "GLKS Barycz Janków Przygodzki",
+    "gospodarz": "EASY WRAP Volley Kobyłka"
+   },
+   {
+    "data": "2026-11-21",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "PGE LTS Legionovia Legionowo II",
+    "gospodarz": "EASY WRAP Volley Kobyłka"
+   },
+   {
+    "data": "2026-11-28",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "EASY WRAP Volley Kobyłka",
+    "gospodarz": "UKS Orlęta Raszyn"
+   },
+   {
+    "data": "2026-12-05",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "EASY WRAP Volley Kobyłka",
+    "gospodarz": "AZS AWF Warszawa"
+   },
+   {
+    "data": "2026-12-12",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "AZS Warszawa",
+    "gospodarz": "EASY WRAP Volley Kobyłka"
+   },
+   {
+    "data": "2027-01-09",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "ŁKS AZS UMED Łódź",
+    "gospodarz": "EASY WRAP Volley Kobyłka"
+   },
+   {
+    "data": "2027-01-30",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "MUKS Krótka Mysiadło",
+    "gospodarz": "EASY WRAP Volley Kobyłka"
+   },
+   {
+    "data": "2027-02-13",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "ŁMLKS Łaskovia Łask",
+    "gospodarz": "EASY WRAP Volley Kobyłka"
+   },
+   {
+    "data": "2027-02-27",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "EASY WRAP Volley Kobyłka",
+    "gospodarz": "PGE LTS Legionovia Legionowo II"
+   },
+   {
+    "data": "2027-03-06",
+    "godzina": null,
+    "godzina_pewna": false,
+    "gosc": "UKS Orlęta Raszyn",
+    "gospodarz": "EASY WRAP Volley Kobyłka"
+   }
+  ]
+ }
+}

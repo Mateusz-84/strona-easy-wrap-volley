@@ -1,0 +1,7 @@
+# Gotowa strona powstaje przy każdym budowaniu – nie trzymamy jej w repozytorium
+strona/
+__pycache__/
+*.pyc
+# Pliki robocze (podgląd lokalny, makieta)
+.claude/
+makieta/
