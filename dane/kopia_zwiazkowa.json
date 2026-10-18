@@ -22,7 +22,7 @@
   }
  },
  "seniorki": {
-  "pobrano": "2026-10-18T03:54",
+  "pobrano": "2026-10-18T16:33",
   "pzps_lista": [
    {
     "data": "2026-09-26",
@@ -287,15 +287,15 @@
     },
     {
      "lp": 6,
-     "male_minus": 351,
-     "male_plus": 363,
-     "mecze": 4,
+     "male_minus": 455,
+     "male_plus": 475,
+     "mecze": 5,
      "nasz": false,
      "nazwa": "PGE LTS Legionovia Legionowo II",
-     "pkt": 7,
-     "sety_minus": 8,
-     "sety_plus": 8,
-     "zwyciestwa": 2
+     "pkt": 9,
+     "sety_minus": 10,
+     "sety_plus": 11,
+     "zwyciestwa": 3
     },
     {
      "lp": 7,
@@ -347,14 +347,14 @@
     },
     {
      "lp": 11,
-     "male_minus": 322,
-     "male_plus": 304,
-     "mecze": 4,
+     "male_minus": 434,
+     "male_plus": 408,
+     "mecze": 5,
      "nasz": false,
      "nazwa": "MUKS Krótka",
-     "pkt": 4,
-     "sety_minus": 9,
-     "sety_plus": 5,
+     "pkt": 5,
+     "sety_minus": 12,
+     "sety_plus": 7,
      "zwyciestwa": 1
     },
     {
