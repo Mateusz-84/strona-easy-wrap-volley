@@ -40,10 +40,10 @@ jobs:
       MA_FTP: ${{ secrets.FTP_SERWER != '' && secrets.FTP_HASLO != '' }}
     steps:
       - name: Pobierz pliki repozytorium
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Przygotuj Pythona
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
@@ -71,7 +71,7 @@ jobs:
 
       - name: Wgraj na serwer FTP (tylko zmienione pliki)
         if: env.MA_FTP == 'true'
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ secrets.FTP_SERWER }}
           username: ${{ secrets.FTP_UZYTKOWNIK }}
