@@ -161,8 +161,9 @@ class Budowa:
         self.newsy = sorted(C.NEWSY, key=lambda n: n["data"], reverse=True)
 
     # --- wspólny układ ---------------------------------------------------
-    def strona(self, plik, tytul, opis, tresc, aktywna=None):
-        p = "../" * plik.count("/")
+    def strona(self, plik, tytul, opis, tresc, aktywna=None, p=None):
+        if p is None:
+            p = "../" * plik.count("/")
         kandydaci = self.rozegrane[-1:] + self.nadchodzace[:4]
         html = S.uklad(tytul, opis, tresc(p), aktywna or plik, p, S.belka(p, kandydaci), self.wersja)
         zapisz(plik, html)
@@ -698,7 +699,10 @@ class Budowa:
             return f"""
 {S.plakat_podstrony(p, 'Aut!', 'Błąd 404 – nie ma takiej strony', '404')}
 <section class="sekcja"><div class="kontener"><a class="btn btn--zolty" href="{p}index.html">Wróć na stronę główną →</a></div></section>"""
-        self.strona("404.html", "Nie znaleziono strony", "Nie ma takiej strony.", tresc, aktywna="")
+        # Strona 404 pokazuje się pod dowolnym błędnym adresem, więc linki muszą być pełne
+        adres = (C.KLUB.get("adres_strony") or "").rstrip("/")
+        self.strona("404.html", "Nie znaleziono strony", "Nie ma takiej strony.", tresc, aktywna="",
+                    p=adres + "/" if adres else None)
 
     # --- PLIKI KALENDARZA (.ics) ------------------------------------------
     def kalendarze(self):

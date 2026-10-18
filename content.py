@@ -34,7 +34,7 @@ KLUB = {
     "facebook": "https://facebook.com/easywrapvolley",
     "instagram": "https://instagram.com/easy_wrap_volley_kobylka",
     "youtube": "https://youtube.com/@ks_Volley",
-    "adres_strony": None,                    # np. "https://volleykobylka.pl" – gdy będzie domena
+    "adres_strony": "https://mateusz-84.github.io/strona-easy-wrap-volley/",  # zmień, gdy będzie własna domena
     "opis": "Easy Wrap Volley Kobyłka – klub siatkówki kobiet z Kobyłki. 2. liga kobiet, "
             "Akademia Siatkówki Volley dla dzieci i młodzieży.",
 }

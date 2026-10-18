@@ -12,8 +12,13 @@ Na co dzień edytujesz **jeden plik: `content.py`**.
               │                                    │
               └──────────► build.py ◄──────────────┘
                               │
-                        folder strona/  ──► serwer FTP (Twoja strona w internecie)
+                        folder strona/  ──► GitHub Pages (Twoja strona w internecie)
+                                        └─► serwer FTP (opcjonalnie, gdy będzie hosting)
 ```
+
+**Adres strony:** <https://mateusz-84.github.io/strona-easy-wrap-volley/>
+**Repozytorium (pliki i ustawienia):** <https://github.com/Mateusz-84/strona-easy-wrap-volley>
+(konto GitHub: `Mateusz-84`)
 
 - **Terminarz i godziny meczów** pobierają się same z WSMWZPS
   (`obsady.wsmwzps.pl`). Wyjazdów poza Mazowsze tam nie ma, więc te mecze
@@ -22,7 +27,8 @@ Na co dzień edytujesz **jeden plik: `content.py`**.
   (`sedziowie.pzps.pl`).
 - **Hala i adres** najbliższych meczów pobierają się z PZPS.
 - Robi to **GitHub Actions** – automatycznie co 2 godziny, po każdej Twojej
-  zmianie oraz na żądanie. Zbudowana strona sama trafia na serwer FTP.
+  zmianie oraz na żądanie. Zbudowana strona sama trafia na **GitHub Pages**
+  (darmowo) i – gdy wpiszesz dane FTP – także na Twój serwer.
 - Jeśli strona związku nie działa albo zmieni wygląd, używana jest **ostatnia
   dobra kopia** danych (`dane/kopia_zwiazkowa.json`). Strona klubu nigdy nie
   zostanie pusta.
@@ -41,24 +47,35 @@ Na co dzień edytujesz **jeden plik: `content.py`**.
 | `build.py` | składa stronę | nie |
 | `zrodla.py` | pobiera dane ze związków | nie |
 | `dane/kopia_zwiazkowa.json` | ostatnia kopia danych ze związków | nie (aktualizuje się sam) |
-| `strona/` | gotowa strona – to wgrywa się na FTP | nie (powstaje sam) |
+| `strona/` | gotowa strona – to się publikuje | nie (powstaje sam) |
+| `ustaw-sekrety-ftp.ps1` | wpisanie danych FTP do GitHuba | tylko raz, gdy kupisz hosting |
+
+> Repozytorium jest **publiczne** (wymóg darmowych GitHub Pages) – każdy może
+> zobaczyć pliki strony. **Nigdy nie wpisuj haseł ani tokenów do plików** –
+> tylko do sekretów GitHuba (punkt 2.2), które są ukryte.
 
 ---
 
-## 2. Pierwsze uruchomienie (jednorazowo)
+## 2. Uruchomienie – STAN: zrobione 18.10.2026
 
-### 2.1. Repozytorium na GitHubie
-1. Załóż konto na <https://github.com> (najlepiej klubowe, na adres klubu).
-2. Kliknij **New repository** → nazwa np. `strona-klubu` → wybierz **Private** → **Create**.
-3. Na stronie repozytorium kliknij **uploading an existing file** i przeciągnij
-   **całą zawartość** folderu projektu (razem z folderami `.github`, `dane`,
-   `img`, `zasoby`). Kliknij **Commit changes**.
-   > Folder `.github` bywa ukryty w Windows. W Eksploratorze: Widok → Pokaż →
-   > Ukryte elementy. Wygodniej jest użyć programu **GitHub Desktop**.
+Repozytorium, automatyczne budowanie i publikacja na GitHub Pages już działają.
+Poniższe punkty przydadzą się, gdy kupisz hosting albo własną domenę.
 
-### 2.2. Dane do serwera FTP
-W repozytorium: **Settings → Secrets and variables → Actions → New repository secret**.
-Dodaj cztery sekrety (dane dostaniesz od firmy hostingowej):
+### 2.1. Własna domena (np. volleykobylka.pl)
+1. Kup domenę u dowolnego rejestratora.
+2. W panelu domeny dodaj rekord **CNAME** `www` → `mateusz-84.github.io`
+   (dla adresu bez „www” – cztery rekordy **A** podane w pomocy GitHuba:
+   <https://docs.github.com/pages/configuring-a-custom-domain-for-your-github-pages-site>).
+3. W repozytorium: **Settings → Pages → Custom domain** → wpisz domenę → **Save**,
+   potem zaznacz **Enforce HTTPS**.
+4. W `content.py` zmień `"adres_strony"` na nowy adres.
+
+### 2.2. Dane do serwera FTP (gdy kupisz hosting)
+Najprościej: w folderze projektu uruchom w terminalu `.\ustaw-sekrety-ftp.ps1`
+i odpowiedz na 4 pytania (wpisywany tekst jest niewidoczny – to normalne).
+
+Albo ręcznie w repozytorium: **Settings → Secrets and variables → Actions →
+New repository secret** – cztery sekrety (dane dostaniesz od firmy hostingowej):
 
 | Nazwa | Przykład |
 |---|---|
@@ -71,14 +88,14 @@ Domyślnie strona wgrywa się szyfrowanym połączeniem **FTPS**. Jeśli serwer 
 nie obsługuje (błąd połączenia w Actions), dodaj na tej samej stronie w zakładce
 **Variables** zmienną `FTP_PROTOKOL` o wartości `ftp`.
 
-### 2.3. Pierwsze wgranie
+### 2.3. Ręczne uruchomienie i sprawdzanie
 Zakładka **Actions** → **Aktualizacja strony** → **Run workflow**.
-Po ok. minucie zielony znaczek ✓ = strona jest na serwerze.
-Czerwony ✗ → kliknij w niego i przeczytaj, który krok się nie udał (zwykle złe dane FTP).
+Po ok. minucie zielony znaczek ✓ = strona jest opublikowana.
+Czerwony ✗ → kliknij w niego i przeczytaj, który krok się nie udał.
 
 > **Ważne:** GitHub wyłącza automatyczne uruchomienia, gdy w repozytorium przez
 > 60 dni nic się nie dzieje. W sezonie to nie grozi (kopia danych zapisuje się
-> po każdej zmianie u związków). Po przerwie letniej sprawdź zakładkę Actions
+> po każdej zmianie u związków – nowy termin, godzina, wynik). Po przerwie letniej sprawdź zakładkę Actions
 > i w razie potrzeby kliknij **Enable workflow**.
 
 ---
