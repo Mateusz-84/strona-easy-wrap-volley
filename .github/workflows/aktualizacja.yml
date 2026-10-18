@@ -2,15 +2,17 @@
 #  AUTOMATYCZNA AKTUALIZACJA STRONY (GitHub Actions)
 # ---------------------------------------------------------------------
 #  Co robi: pobiera terminarz, wyniki i tabelę ze stron związków,
-#  buduje stronę i wgrywa zmienione pliki na serwer FTP.
+#  buduje stronę i publikuje ją:
+#   • na GitHub Pages (zawsze) – adres w Settings → Pages,
+#   • dodatkowo na serwer FTP – tylko gdy wpiszesz dane FTP (sekrety).
 #
 #  Kiedy działa:
 #   • co 2 godziny (od rana do północy),
 #   • po każdej zmianie plików w repozytorium (np. edycji content.py),
 #   • ręcznie: zakładka Actions → „Aktualizacja strony” → Run workflow.
 #
-#  Dane do FTP wpisujesz RAZ w: Settings → Secrets and variables → Actions
-#   FTP_SERWER, FTP_UZYTKOWNIK, FTP_HASLO, FTP_FOLDER (np. public_html/)
+#  Opcjonalne sekrety (Settings → Secrets and variables → Actions):
+#   FTP_SERWER, FTP_UZYTKOWNIK, FTP_HASLO, FTP_FOLDER, META_TOKEN
 #  Szczegóły w INSTRUKCJA.md.
 # =====================================================================
 name: Aktualizacja strony
@@ -24,19 +26,21 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write                  # potrzebne do zapisania kopii danych ze związków
+  contents: write                  # zapis kopii danych ze związków
+  pages: write                     # publikacja na GitHub Pages
+  id-token: write                  # potwierdzenie tożsamości przy publikacji Pages
 
 concurrency:
   group: aktualizacja-strony
   cancel-in-progress: false
 
 jobs:
-  buduj-i-wgraj:
+  buduj:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
       TZ: Europe/Warsaw            # daty i godziny w polskim czasie
-      # Czy wpisano dane FTP? Dopóki nie – strona się buduje, ale nie jest wgrywana.
+      # Czy wpisano dane FTP? Dopóki nie – strona trafia tylko na GitHub Pages.
       MA_FTP: ${{ secrets.FTP_SERWER != '' && secrets.FTP_HASLO != '' }}
     steps:
       - name: Pobierz pliki repozytorium
@@ -60,14 +64,27 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A dane img
-          if ! git diff --cached --quiet; then
-            git commit -m "Aktualizacja danych ze związków"
-            git push
+          if git diff --cached --quiet; then
+            echo "Brak zmian do zapisania."
+            exit 0
           fi
+          # Sama nowa godzina pobrania ("pobrano") to nie powód do zapisu
+          zmiany=$(git diff --cached -U0 | grep -E '^[+-]' | grep -vE '^(\+\+\+|---)' | grep -v '"pobrano"' | wc -l)
+          if [ "$zmiany" -eq 0 ]; then
+            echo "Dane bez zmian (tylko godzina pobrania) – nie zapisuję."
+            exit 0
+          fi
+          git commit -m "Aktualizacja danych ze związków"
+          git pull --rebase --quiet
+          git push
 
-      - name: Brak danych FTP – pomijam wgrywanie
-        if: env.MA_FTP != 'true'
-        run: echo "::notice::Strona zbudowana, ale nie wgrana – dodaj sekrety FTP_SERWER, FTP_UZYTKOWNIK, FTP_HASLO (patrz INSTRUKCJA.md, punkt 2.2)."
+      - name: Przygotuj publikację na GitHub Pages
+        uses: actions/configure-pages@v6
+
+      - name: Spakuj stronę dla GitHub Pages
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: ./strona
 
       - name: Wgraj na serwer FTP (tylko zmienione pliki)
         if: env.MA_FTP == 'true'
@@ -79,3 +96,14 @@ jobs:
           server-dir: ${{ secrets.FTP_FOLDER || './' }}
           local-dir: ./strona/
           protocol: ${{ vars.FTP_PROTOKOL || 'ftps' }}   # gdy serwer nie obsługuje FTPS: zmienna FTP_PROTOKOL = ftp
+
+  publikuj:
+    needs: buduj
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.publikacja.outputs.page_url }}
+    steps:
+      - name: Opublikuj na GitHub Pages
+        id: publikacja
+        uses: actions/deploy-pages@v5
