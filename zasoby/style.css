@@ -192,13 +192,6 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
 /* =====================================================================
    11. TAŚMA Z HASŁEM
    ===================================================================== */
-.tasma{background:var(--zolty);color:var(--granat-ciemny);overflow:hidden;transform:rotate(-2deg) scale(1.04);margin:-28px 0 18px;position:relative;z-index:5;border-block:3px solid var(--granat-ciemny)}
-.tasma__tor{display:flex;width:max-content;animation:tasma 30s linear infinite}
-.tasma__tor span{font-family:var(--font-naglowki);font-size:36px;padding:8px 0;white-space:nowrap}
-.tasma__tor span::after{content:"✦";margin:0 22px;color:var(--blekit)}
-.tasma--granat{background:var(--granat);color:#fff;transform:rotate(1.5deg) scale(1.04);border-color:var(--zolty);margin:20px 0}
-.tasma--granat .tasma__tor{animation-direction:reverse}
-@keyframes tasma{to{transform:translateX(-50%)}}
 
 /* =====================================================================
    SEKCJE
@@ -531,8 +524,6 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
    STOPKA
    ===================================================================== */
 .stopka{background:var(--granat-ciemny);color:#D5E2F2;padding:56px 0 24px;font-size:17px}
-.stopka__haslo{font-family:var(--font-naglowki);font-size:72px;line-height:.85;color:#fff;margin-bottom:28px}
-.stopka__haslo span{color:var(--zolty)}
 .stopka__kolumny{display:grid;gap:24px}
 .stopka h2{font-size:26px;color:var(--blekit);margin-bottom:8px}
 .stopka ul{list-style:none;margin:0;padding:0}
@@ -697,8 +688,6 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
   .mecze--siatka{grid-template-columns:repeat(4,1fr)}
   .kadra{grid-template-columns:repeat(4,1fr)}
   .uklad-tabela{grid-template-columns:1fr 1.5fr;align-items:start}
-  .tasma__tor span{font-size:52px}
-  .stopka__haslo{font-size:140px}
   .newsy--wszystkie{grid-template-columns:repeat(3,1fr)}
   .produkty{grid-template-columns:repeat(3,1fr)}
   .produkt{grid-template-columns:1fr}

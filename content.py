@@ -266,23 +266,23 @@ MECZE = [
 # ---------------------------------------------------------------------
 KADRA = [
     # Rozgrywające
-    {"druzyna": "seniorki", "numer": 7,  "imie": "Natalia",   "nazwisko": "Bielińska",       "pozycja": "Rozgrywająca", "zdjecie": None},
+    {"druzyna": "seniorki", "numer": 7,  "imie": "Natalia",   "nazwisko": "Bielińska",       "pozycja": "Rozgrywająca", "zdjecie": "zawodniczki/natalia-bielinska.webp"},
     {"druzyna": "seniorki", "numer": 20, "imie": "Zuzanna",   "nazwisko": "Kałkowska",       "pozycja": "Rozgrywająca", "zdjecie": None},
     # Atakujące
-    {"druzyna": "seniorki", "numer": 14, "imie": "Nikola",    "nazwisko": "Gutowska",        "pozycja": "Atakująca",    "zdjecie": None},
-    {"druzyna": "seniorki", "numer": 17, "imie": "Natalia",   "nazwisko": "Dąbrowska",       "pozycja": "Atakująca",    "zdjecie": None},
+    {"druzyna": "seniorki", "numer": 14, "imie": "Nikola",    "nazwisko": "Gutowska",        "pozycja": "Atakująca",    "zdjecie": "zawodniczki/nikola-gutowska.webp"},
+    {"druzyna": "seniorki", "numer": 17, "imie": "Natalia",   "nazwisko": "Dąbrowska",       "pozycja": "Atakująca",    "zdjecie": "zawodniczki/natalia-dabrowska.webp"},
     # Przyjmujące
     {"druzyna": "seniorki", "numer": 2,  "imie": "Julia",     "nazwisko": "Grzelak",         "pozycja": "Przyjmująca",  "zdjecie": None},
-    {"druzyna": "seniorki", "numer": 6,  "imie": "Kamila",    "nazwisko": "Wrzosek",         "pozycja": "Przyjmująca",  "zdjecie": None},
-    {"druzyna": "seniorki", "numer": 10, "imie": "Kaja",      "nazwisko": "Klepacz",         "pozycja": "Przyjmująca",  "zdjecie": None},
-    {"druzyna": "seniorki", "numer": 21, "imie": "Matylda",   "nazwisko": "Woźny",           "pozycja": "Przyjmująca",  "zdjecie": None},
+    {"druzyna": "seniorki", "numer": 6,  "imie": "Kamila",    "nazwisko": "Wrzosek",         "pozycja": "Przyjmująca",  "zdjecie": "zawodniczki/kamila-wrzosek.webp"},
+    {"druzyna": "seniorki", "numer": 10, "imie": "Kaja",      "nazwisko": "Klepacz",         "pozycja": "Przyjmująca",  "zdjecie": "zawodniczki/kaja-klepacz.webp"},
+    {"druzyna": "seniorki", "numer": 21, "imie": "Matylda",   "nazwisko": "Woźny",           "pozycja": "Przyjmująca",  "zdjecie": "zawodniczki/matylda-wozny.webp"},
     # Środkowe
-    {"druzyna": "seniorki", "numer": 11, "imie": "Natalia",   "nazwisko": "Pietruszkiewicz", "pozycja": "Środkowa",     "zdjecie": None},
+    {"druzyna": "seniorki", "numer": 11, "imie": "Natalia",   "nazwisko": "Pietruszkiewicz", "pozycja": "Środkowa",     "zdjecie": "zawodniczki/natalia-pietruszkiewicz.webp"},
     {"druzyna": "seniorki", "numer": 12, "imie": "Wiktoria",  "nazwisko": "Sztylko",         "pozycja": "Środkowa",     "zdjecie": None},
-    {"druzyna": "seniorki", "numer": 22, "imie": "Adrianna",  "nazwisko": "Sitarska",        "pozycja": "Środkowa",     "zdjecie": None},
+    {"druzyna": "seniorki", "numer": 22, "imie": "Adrianna",  "nazwisko": "Sitarska",        "pozycja": "Środkowa",     "zdjecie": "zawodniczki/adrianna-sitarska.webp"},
     # Libero
-    {"druzyna": "seniorki", "numer": 8,  "imie": "Klaudia",   "nazwisko": "Kucharska",       "pozycja": "Libero",       "zdjecie": None, "kapitan": True},
-    {"druzyna": "seniorki", "numer": 23, "imie": "Małgorzata", "nazwisko": "Czajka",         "pozycja": "Libero",       "zdjecie": None},
+    {"druzyna": "seniorki", "numer": 8,  "imie": "Klaudia",   "nazwisko": "Kucharska",       "pozycja": "Libero",       "zdjecie": "zawodniczki/klaudia-kucharska.webp", "kapitan": True},
+    {"druzyna": "seniorki", "numer": 23, "imie": "Małgorzata", "nazwisko": "Czajka",         "pozycja": "Libero",       "zdjecie": "zawodniczki/malgorzata-czajka.webp"},
 ]
 
 # Kolejność pozycji na stronie Drużyny
