@@ -153,12 +153,6 @@ def prezentuje(sekcja, p):
     return ""
 
 
-def tasma(hasla, wariant=""):
-    """Przesuwana taśma z hasłem (powtórzona 2×, żeby animacja była płynna)."""
-    teksty = "".join(f"<span>{e(h)}</span>" for h in hasla) * 2
-    return f'<div class="tasma {wariant}" aria-hidden="true"><div class="tasma__tor">{teksty}</div></div>'
-
-
 def naglowek_sekcji(tytul, akcent="", link=None, link_tekst="", poziom="h2", id_=""):
     a = f" <span>{e(akcent)}</span>" if akcent else ""
     l = f'<a class="sekcja__link" href="{link}">{e(link_tekst)}</a>' if link else ""
@@ -275,7 +269,6 @@ def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja):
 </main>
 <footer class="stopka">
   <div class="kontener">
-    <p class="stopka__haslo" aria-hidden="true">Kobyłka <span>gra</span><br>razem.</p>
     <div class="stopka__kolumny">
       <div><h2>Klub</h2><p>{e(C.KLUB['nazwa_prawna'])}<br>{e(C.KLUB['adres'])}</p></div>
       <div><h2>Kontakt</h2><p><a href="mailto:{e(C.KLUB['email'])}">{e(C.KLUB['email'])}</a>{f"<br>{e(C.KLUB['telefon'])}" if C.KLUB.get('telefon') else ''}</p></div>

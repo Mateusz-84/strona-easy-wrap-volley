@@ -199,7 +199,6 @@ class Budowa:
             return f"""
 {S.okienko_zapowiedzi(p, self.zapowiedz, C.ZAPOWIEDZ, self.najblizszy)}
 {S.hero(p, self.najblizszy)}
-{S.tasma(C.TASMA_1)}
 <section class="sekcja sekcja--odbiorcy" aria-label="Dla kogo">
   <div class="kontener"><div class="odbiorcy pojaw">
     <a class="panel panel--seniorki" href="{p}druzyny.html">
@@ -221,8 +220,6 @@ class Budowa:
     <p class="przesun" aria-hidden="true">Przesuń</p>
   </div>
 </section>
-
-{S.tasma(C.TASMA_2, 'tasma--granat')}
 
 <section class="sekcja" aria-labelledby="tabela-tytul">
   <div class="kontener uklad-tabela">
@@ -492,7 +489,6 @@ class Budowa:
     <div class="plakat__foto">{S.img(p, A.get('zdjecie'), 'Trening Akademii Siatkówki Volley', 'plakat__img', lazy=False)}</div>
   </div>
 </section>
-{S.tasma(['Pierwszy trening gratis', 'Od 7 lat', 'Dziewczęta i chłopcy', 'Akademia Siatkówki Volley'])}
 <section class="sekcja" aria-labelledby="grupy-tytul">
   <div class="kontener">
     {S.naglowek_sekcji('Grupy', 'wiekowe', id_='grupy-tytul')}

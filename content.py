@@ -103,9 +103,6 @@ ZDJECIA_WYGRANYCH = {
     "dni_po_meczu": 3,                  # ile dni po meczu szukać posta
 }
 
-# Hasła na przesuwanych taśmach (między sekcjami)
-TASMA_1 = ["Jedna drużyna", "Jedno miasto", "Easy Wrap Volley", "Kobyłka gra razem"]
-TASMA_2 = ["#EasyWrapVolley", "Przyjdź na mecz", "Wstęp wolny", "Hala przy PSP nr 3"]
 
 
 # ---------------------------------------------------------------------
