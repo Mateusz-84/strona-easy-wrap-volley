@@ -21,8 +21,6 @@
   --tlo-granat:radial-gradient(70% 80% at 85% 20%,rgba(6,157,223,.38) 0,transparent 60%),linear-gradient(160deg,var(--granat-jasny) 0%,var(--granat) 45%,var(--granat-ciemny) 100%);
   --tlo-blekit:radial-gradient(70% 80% at 85% 20%,rgba(255,255,255,.32) 0,transparent 60%),linear-gradient(160deg,#36B7EC 0%,var(--blekit) 50%,var(--blekit-mocny) 100%);
   --paski:repeating-linear-gradient(115deg,rgba(255,255,255,.045) 0 14px,transparent 14px 28px);
-  --pilka-biala:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%20fill='none'%20stroke='white'%20stroke-opacity='.16'%20stroke-width='2.2'%3E%3Ccircle%20cx='50'%20cy='50'%20r='46'/%3E%3Cpath%20d='M50%2050C34%2042%2026%2024%2032%206M50%2050c18-4%2034%204%2044%2020M50%2050c-2%2018-14%2034-34%2040'/%3E%3Cpath%20d='M40%2046C26%2036%2020%2022%2022%209M58%2055c16%202%2028%2012%2032%2026M46%2060c-6%2014-18%2024-32%2026'/%3E%3C/svg%3E");
-  --pilka-granat:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%20fill='none'%20stroke='rgb%280%2C26%2C63%29'%20stroke-opacity='.16'%20stroke-width='2.2'%3E%3Ccircle%20cx='50'%20cy='50'%20r='46'/%3E%3Cpath%20d='M50%2050C34%2042%2026%2024%2032%206M50%2050c18-4%2034%204%2044%2020M50%2050c-2%2018-14%2034-34%2040'/%3E%3Cpath%20d='M40%2046C26%2036%2020%2022%2022%209M58%2055c16%202%2028%2012%2032%2026M46%2060c-6%2014-18%2024-32%2026'/%3E%3C/svg%3E");
   --zolty:#FFC72C;          /* TYMCZASOWY – podmienić na HEX z księgi znaku */
   --tlo:#F4F6FA;
   --bialy:#FFFFFF;
@@ -185,7 +183,6 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
    ===================================================================== */
 .plakat{position:relative;overflow:hidden;background:var(--tlo-granat);color:#fff;padding:28px 0 48px;isolation:isolate}
 .plakat:not(.plakat--z-foto)::after{content:"";position:absolute;inset:0;z-index:-2;background:var(--paski)}
-.plakat:not(.plakat--z-foto):not(.plakat--akademia)::before{content:"";position:absolute;right:-60px;top:-40px;width:300px;height:300px;z-index:-1;background:var(--pilka-biala) center/contain no-repeat}
 .plakat .kontener{position:relative;z-index:1}
 .plakat__nad{font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:15px;color:var(--zolty);margin:0 0 10px}
 .plakat__tytul{font-size:54px;line-height:.85;word-break:break-word}
@@ -417,8 +414,8 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
 .kafel--kontakt-pelny{grid-column:1/-1}
 /* Grafiki zastępcze – gdy brak zdjęcia. Cztery warianty w barwach klubu:
    0 granat, 1 błękit, 2 ciemny granat z żółtą „rysą”, 3 granat/błękit przecięty po skosie */
-.foto-0,.foto-a{background:var(--pilka-biala) right -40px bottom -50px/230px no-repeat,var(--paski),var(--tlo-granat)}
-.foto-1,.foto-b,.foto-d{background:var(--pilka-granat) right -40px bottom -50px/230px no-repeat,var(--paski),var(--tlo-blekit)}
+.foto-0,.foto-a{background:var(--paski),var(--tlo-granat)}
+.foto-1,.foto-b,.foto-d{background:var(--paski),var(--tlo-blekit)}
 .foto-2,.foto-c{background:linear-gradient(115deg,transparent 0 62%,var(--zolty) 62% 63.2%,transparent 63.2%),var(--paski),linear-gradient(160deg,var(--granat),var(--granat-ciemny))}
 .foto-3,.foto-e{background:var(--paski),linear-gradient(115deg,var(--granat-ciemny) 0 58%,var(--blekit) 58% 100%)}
 
@@ -691,7 +688,6 @@ a.logo-sp:hover{transform:translateY(-2px)}
   .plakat__tytul--artykul{font-size:70px}
   .plakat__tytul--mega{font-size:140px}
   .plakat{padding:40px 0 64px}
-  .plakat:not(.plakat--z-foto):not(.plakat--akademia)::before{width:440px;height:440px;right:4%;top:-90px}
   .plakat__uklad{grid-template-columns:1.2fr 1fr}
 }
 
