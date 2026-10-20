@@ -337,20 +337,21 @@ Dziękujemy za wsparcie!
 #   prezentuje: nazwa sekcji, przy której pokaże się „prezentowane przez”:
 #   "tabela", "kadra", "akademia", "terminarz" albo None
 # ---------------------------------------------------------------------
-#   logo: plik w img/sponsorzy/ (PNG/SVG/WebP), np. "sponsorzy/easy-wrap.png" – dopóki brak, widać nazwę
+#   logo: plik w img/sponsorzy/ (PNG/SVG/WebP), np. "sponsorzy/easy-wrap.webp" – dopóki brak, widać nazwę
+#   tlo: "ciemne" – dla logo w wersji białej (kafelek dostaje granatowe tło)
 SPONSORZY = {
-    "easy-wrap":  {"nazwa": "Easy Wrap", "poziom": "tytularny", "logo": None, "www": None, "prezentuje": None},
-    "miasto":     {"nazwa": "Miasto Kobyłka", "poziom": "strategiczny", "logo": None, "www": None, "prezentuje": None},
-    "pit-radwar": {"nazwa": "PIT-RADWAR", "poziom": "strategiczny", "logo": None, "www": None, "prezentuje": None},
-    "dorol":      {"nazwa": "Dorol", "poziom": "partner", "logo": None, "www": None, "prezentuje": None},
-    "fhr":        {"nazwa": "FHR", "poziom": "partner", "logo": None, "www": None, "prezentuje": None},
-    "fortisgo":   {"nazwa": "fortisGO", "poziom": "partner", "logo": None, "www": None, "prezentuje": None},
-    "impression": {"nazwa": "Impression Studio Reklamy", "poziom": "partner", "logo": None, "www": None, "prezentuje": None},
-    "kriva":      {"nazwa": "Kriva HiTech Beauty", "poziom": "partner", "logo": None, "www": None, "prezentuje": None},
-    "racbus":     {"nazwa": "Racbus", "poziom": "partner", "logo": None, "www": None, "prezentuje": None},
-    "zdrofit":    {"nazwa": "Zdrofit", "poziom": "partner", "logo": None, "www": None, "prezentuje": None},
-    "sp3":        {"nazwa": "SP nr 3 im. Karola Wojtyły w Kobyłce", "poziom": "partner", "logo": None, "www": None, "prezentuje": None},
-    "osir":       {"nazwa": "OSiR „Wicher” w Kobyłce", "poziom": "partner", "logo": None, "www": None, "prezentuje": None},
+    "easy-wrap":  {"nazwa": "Easy Wrap", "poziom": "tytularny", "logo": "sponsorzy/easy-wrap.webp", "www": "https://easywrap.pl", "prezentuje": None},
+    "miasto":     {"nazwa": "Miasto Kobyłka", "poziom": "strategiczny", "logo": "sponsorzy/miasto.webp", "www": "https://kobylka.pl", "prezentuje": None},
+    "pit-radwar": {"nazwa": "PIT-RADWAR", "poziom": "strategiczny", "logo": "sponsorzy/pit-radwar.webp", "www": "https://pitradwar.com", "prezentuje": None},
+    "dorol":      {"nazwa": "Dorol", "poziom": "partner", "logo": "sponsorzy/dorol.webp", "www": "https://dorol.pl", "prezentuje": None},
+    "fhr":        {"nazwa": "FHR", "poziom": "partner", "logo": "sponsorzy/fhr.webp", "www": "https://fhr.com.pl", "prezentuje": None},
+    "fortisgo":   {"nazwa": "fortisGO", "poziom": "partner", "logo": "sponsorzy/fortisgo.webp", "www": "https://fortisgo.com", "prezentuje": None},
+    "impression": {"nazwa": "Impression Studio Reklamy", "poziom": "partner", "logo": "sponsorzy/impression.webp", "www": "https://impression4you.pl", "prezentuje": None, "tlo": "ciemne"},
+    "kriva":      {"nazwa": "Kriva HiTech Beauty", "poziom": "partner", "logo": "sponsorzy/kriva.webp", "www": None, "prezentuje": None},
+    "racbus":     {"nazwa": "Racbus", "poziom": "partner", "logo": "sponsorzy/racbus.webp", "www": "https://racbus.pl", "prezentuje": None},
+    "zdrofit":    {"nazwa": "Zdrofit", "poziom": "partner", "logo": "sponsorzy/zdrofit.webp", "www": "https://zdrofit.pl", "prezentuje": None},
+    "sp3":        {"nazwa": "SP nr 3 im. Karola Wojtyły w Kobyłce", "poziom": "partner", "logo": "sponsorzy/sp3.webp", "www": "https://sp3kobylka.pl", "prezentuje": None},
+    "osir":       {"nazwa": "OSiR „Wicher” w Kobyłce", "poziom": "partner", "logo": "sponsorzy/osir.webp", "www": None, "prezentuje": None},
     "osp":        {"nazwa": "OSP Kobyłka", "poziom": "partner", "logo": None, "www": None, "prezentuje": None},
 }
 

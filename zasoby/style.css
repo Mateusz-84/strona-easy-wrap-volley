@@ -161,7 +161,7 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
 .hero__sponsor{display:flex;align-items:center;gap:12px;border-top:1px solid rgba(255,255,255,.2);padding-top:14px;margin-top:20px;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--jasny-na-granacie)}
 .hero--wyjazd .hero__sponsor{color:var(--granat-ciemny);border-color:rgba(0,26,63,.25)}
 .logo-sponsora{background:#fff;color:var(--granat);font-family:var(--font-naglowki);font-size:22px;letter-spacing:.04em;padding:6px 14px}
-.logo-sponsora__img{height:28px;width:auto}
+.logo-sponsora__img{height:40px;width:auto;display:block}
 .hero__tytul-sezon{font-size:120px;margin:20px 0}
 /* Wycięta zawodniczka z kadry – co mecz inna */
 .hero__postac{position:absolute;right:-28px;top:64px;width:50%;max-width:240px;height:330px;z-index:-1;pointer-events:none}
@@ -452,14 +452,15 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
 .loga{display:grid;gap:10px;grid-template-columns:repeat(2,1fr)}
 .loga--tytularny{grid-template-columns:1fr}
 .loga--partner{grid-template-columns:repeat(2,1fr)}
-.logo-sp{background:var(--blekit-jasny);display:grid;place-content:center;justify-items:center;min-height:90px;font-family:var(--font-naglowki);color:var(--granat);font-size:26px;line-height:1;text-align:center;padding:14px;text-decoration:none;transition:transform .2s}
-a.logo-sp:hover{transform:translateY(-2px)}
-.loga--partner .logo-sp{background:#fff;box-shadow:inset 0 0 0 1px var(--linia)}
-.logo-sp__img{max-height:60px;width:auto}
-.loga--tytularny .logo-sp{min-height:150px;font-size:56px;background:var(--paski),var(--tlo-granat);color:#fff}
+.logo-sp{background:#fff;box-shadow:inset 0 0 0 1px var(--linia);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:120px;font-family:var(--font-naglowki);color:var(--granat);font-size:26px;line-height:1;text-align:center;padding:16px 18px;text-decoration:none;transition:transform .2s,box-shadow .2s}
+a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blekit),0 10px 24px -14px rgba(0,47,108,.45)}
+.logo-sp__img{display:block;max-height:92px;max-width:100%;width:auto;height:auto;object-fit:contain}
+.logo-sp--ciemne{background:var(--granat);box-shadow:none;color:#fff}
+.loga--tytularny .logo-sp{min-height:170px;font-size:56px;background:var(--paski),var(--tlo-granat);box-shadow:none;color:#fff}
 .loga--tytularny .logo-sp small{display:block;font-family:var(--font-tresc);font-size:14px;letter-spacing:.2em;color:var(--zolty)}
-.loga--tytularny .logo-sp__img{max-height:90px}
-.loga--partner .logo-sp{min-height:72px;font-size:19px}
+.loga--tytularny .logo-sp__img{max-height:130px}
+.loga--partner .logo-sp{min-height:96px;font-size:19px;padding:14px}
+.loga--partner .logo-sp__img{max-height:68px;max-width:78%}
 .cta > *{max-width:720px}
 .cta p{font-size:21px}
 

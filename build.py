@@ -301,8 +301,10 @@ class Budowa:
                 wnetrze = S.img(p, s.get("logo"), s["nazwa"], "logo-sp__img") or f"<span>{e(s['nazwa'])}</span>"
                 if klucz == "tytularny":
                     wnetrze = f"<small>Sponsor tytularny</small>{wnetrze}"
-                tag = f'a href="{e(s["www"])}" rel="noopener"' if s.get("www") else "div"
-                loga += f'<{tag} class="logo-sp">{wnetrze}</{tag.split()[0]}>'
+                klasa = "logo-sp logo-sp--ciemne" if s.get("tlo") == "ciemne" else "logo-sp"
+                tag = (f'a href="{e(s["www"])}" target="_blank" rel="noopener" title="{e(s["nazwa"])}"'
+                       if s.get("www") else f'div title="{e(s["nazwa"])}"')
+                loga += f'<{tag} class="{klasa}">{wnetrze}</{tag.split()[0]}>'
             bloki += (f'<div class="poziom"><div class="poziom__nazwa">{nazwa}</div>'
                       f'<div class="loga loga--{klucz}">{loga}</div></div>')
         naglowek = "" if pelna else S.naglowek_sekcji("Sponsorzy", "", p + "sponsorzy.html", "Zostań sponsorem", id_="sp-tytul")
