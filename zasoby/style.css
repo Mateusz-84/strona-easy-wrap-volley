@@ -76,9 +76,12 @@ h1,h2,h3{font-family:var(--font-naglowki);font-weight:400;letter-spacing:.01em;l
 .belka__wynik,.belka__status{font-family:var(--font-naglowki);font-size:20px;color:var(--zolty);line-height:1;white-space:nowrap}
 .licznik{display:flex;gap:6px;font-family:var(--font-naglowki);font-size:21px;line-height:1;color:var(--zolty);white-space:nowrap}
 .licznik small{font-family:var(--font-tresc);font-size:11px;color:var(--jasny-na-granacie);margin-left:1px}
-.belka__social{display:none;gap:14px}
-.belka__social a{text-decoration:none;font-weight:600;color:var(--jasny-na-granacie)}
-.belka__social a:hover{color:#fff}
+.ikona-social{display:inline-grid;place-items:center;border-radius:50%;text-decoration:none;color:inherit;transition:background .2s,color .2s,box-shadow .2s}
+.ikona-social svg{display:block}
+.belka__social{display:none;gap:4px;align-items:center}
+.belka__social .ikona-social{width:34px;height:34px;color:var(--jasny-na-granacie)}
+.belka__social .ikona-social svg{width:18px;height:18px}
+.belka__social .ikona-social:hover{color:#fff;background:rgba(255,255,255,.1)}
 
 /* =====================================================================
    NAGŁÓWEK Z MENU
@@ -455,12 +458,11 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
 .logo-sp{background:#fff;box-shadow:inset 0 0 0 1px var(--linia);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:120px;font-family:var(--font-naglowki);color:var(--granat);font-size:26px;line-height:1;text-align:center;padding:16px 18px;text-decoration:none;transition:transform .2s,box-shadow .2s}
 a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blekit),0 10px 24px -14px rgba(0,47,108,.45)}
 .logo-sp__img{display:block;max-height:92px;max-width:100%;width:auto;height:auto;object-fit:contain}
-.logo-sp--ciemne{background:var(--granat);box-shadow:none;color:#fff}
-.loga--tytularny .logo-sp{min-height:170px;font-size:56px;background:var(--paski),var(--tlo-granat);box-shadow:none;color:#fff}
-.loga--tytularny .logo-sp small{display:block;font-family:var(--font-tresc);font-size:14px;letter-spacing:.2em;color:var(--zolty)}
+.loga--tytularny .logo-sp{min-height:180px;font-size:56px}
 .loga--tytularny .logo-sp__img{max-height:130px}
 .loga--partner .logo-sp{min-height:96px;font-size:19px;padding:14px}
-.loga--partner .logo-sp__img{max-height:68px;max-width:78%}
+.loga--partner .logo-sp__img{max-height:64px;max-width:72%}
+.loga--techniczny .logo-sp__img{max-height:56px;max-width:70%}
 .cta > *{max-width:720px}
 .cta p{font-size:21px}
 
@@ -528,13 +530,15 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
 .dane-klubu{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;background:#fff;padding:18px;margin:0}
 .dane-klubu dt{font-weight:700;color:var(--tekst-szary)}
 .dane-klubu dd{margin:0}
-.kontakt__mail{font-family:var(--font-naglowki);font-size:36px;line-height:1;word-break:break-all}
+.kontakt__mail{font-family:var(--font-naglowki);font-size:clamp(24px,7vw,36px);line-height:1;overflow-wrap:anywhere}
 .kontakt__mail a{color:var(--granat);text-decoration-color:var(--zolty)}
 .kontakt__osoby{list-style:none;padding:0;margin:0 0 24px;display:grid;gap:12px}
 .kontakt__osoby li{display:grid}
 .kontakt__osoby a{display:inline-flex;align-items:center;min-height:44px}
-.kontakt__social{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:8px 20px;font-weight:700;text-transform:uppercase}
-.kontakt__social a{display:inline-flex;align-items:center;min-height:44px}
+.kontakt__social{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:10px}
+.kontakt__social .ikona-social{width:52px;height:52px;background:var(--granat);color:#fff}
+.kontakt__social .ikona-social svg{width:24px;height:24px}
+.kontakt__social .ikona-social:hover{background:var(--blekit);color:var(--granat-ciemny)}
 .kontakt__karta{background:var(--granat);color:#fff;padding:24px}
 .kontakt__karta h2{font-size:30px;color:var(--zolty);margin-bottom:6px}
 .polityka ul{padding-left:1.2em}
@@ -545,7 +549,9 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
 .stopka{background:var(--granat-ciemny);color:#D5E2F2;padding:44px 0 24px;font-size:17px}
 .stopka__kolumny{display:grid;grid-template-columns:1fr 1fr;gap:22px 16px}
 .stopka__kolumny > div:nth-child(-n+2){grid-column:1/-1}
-.stopka__social{display:flex;flex-wrap:wrap;gap:0 16px}
+.stopka__social{display:flex;flex-wrap:wrap;gap:10px}
+.stopka .ikona-social{display:grid;width:46px;height:46px;min-height:0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.28)}
+.stopka .ikona-social:hover{background:var(--blekit);color:var(--granat-ciemny);box-shadow:none}
 .stopka h2{font-size:26px;color:var(--blekit);margin-bottom:8px}
 .stopka ul{list-style:none;margin:0;padding:0}
 .stopka a{color:#fff;text-decoration:none;display:inline-flex;align-items:center;min-height:40px}
@@ -608,7 +614,7 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
 .mecz,.zawodniczka,.kafel,.news,.produkt,.grupa,.ostatni,.tabela-ramka,
 .logo-sp,.dane-klubu,.kal__wpis,.album .galeria__el,.formularz__ramka iframe,
 .artykul__foto,.plakat__foto img,.druzyna__zdjecie img{border-radius:var(--r-m);overflow:hidden}
-.panel,.kontakt__karta,.loga--tytularny .logo-sp{border-radius:var(--r-l);overflow:hidden}
+.panel,.kontakt__karta{border-radius:var(--r-l);overflow:hidden}
 .kafel--akademia{border-radius:var(--r-l)}
 .kal__dzien{border-radius:var(--r-s)}
 /* Wpisy kalendarium: kolorowy pasek z lewej (rysowany cieniem, bo ramka nie lubi zaokrągleń) */
@@ -672,7 +678,7 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
   .newsy--wszystkie .news--duzy{grid-column:1/-1;grid-row:auto}
   .loga{grid-template-columns:repeat(4,1fr)}
   .loga--tytularny{grid-template-columns:1fr}
-  .loga--strategiczny{grid-template-columns:repeat(2,1fr)}
+  .loga--strategiczny,.loga--techniczny{grid-template-columns:repeat(2,1fr)}
   .loga--partner{grid-template-columns:repeat(4,1fr)}
   .stopka__kolumny{grid-template-columns:repeat(4,1fr)}
   .stopka__kolumny > div:nth-child(-n+2){grid-column:auto}

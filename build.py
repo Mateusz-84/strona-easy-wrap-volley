@@ -290,7 +290,8 @@ class Budowa:
         return f'<div class="filtry" role="group" aria-label="Pokaż mecze drużyny">{przyciski}</div>'
 
     def sponsorzy_html(self, p, pelna=False):
-        poziomy = [("tytularny", "Sponsor tytularny"), ("strategiczny", "Sponsorzy strategiczni"), ("partner", "Partnerzy")]
+        poziomy = [("tytularny", "Sponsor tytularny"), ("strategiczny", "Sponsorzy strategiczni"),
+                   ("techniczny", "Partner techniczny"), ("partner", "Partnerzy")]
         bloki = ""
         for klucz, nazwa in poziomy:
             lista = [s for s in C.SPONSORZY.values() if s["poziom"] == klucz]
@@ -299,12 +300,9 @@ class Budowa:
             loga = ""
             for s in lista:
                 wnetrze = S.img(p, s.get("logo"), s["nazwa"], "logo-sp__img") or f"<span>{e(s['nazwa'])}</span>"
-                if klucz == "tytularny":
-                    wnetrze = f"<small>Sponsor tytularny</small>{wnetrze}"
-                klasa = "logo-sp logo-sp--ciemne" if s.get("tlo") == "ciemne" else "logo-sp"
                 tag = (f'a href="{e(s["www"])}" target="_blank" rel="noopener" title="{e(s["nazwa"])}"'
                        if s.get("www") else f'div title="{e(s["nazwa"])}"')
-                loga += f'<{tag} class="{klasa}">{wnetrze}</{tag.split()[0]}>'
+                loga += f'<{tag} class="logo-sp">{wnetrze}</{tag.split()[0]}>'
             bloki += (f'<div class="poziom"><div class="poziom__nazwa">{nazwa}</div>'
                       f'<div class="loga loga--{klucz}">{loga}</div></div>')
         naglowek = "" if pelna else S.naglowek_sekcji("Sponsorzy", "", p + "sponsorzy.html", "Zostań sponsorem", id_="sp-tytul")
@@ -682,11 +680,7 @@ class Budowa:
     <p class="kontakt__mail"><a href="mailto:{e(C.KLUB['email'])}">{e(C.KLUB['email'])}</a></p>
     <ul class="kontakt__osoby">{osoby}</ul>
     {forma}
-    <ul class="kontakt__social">
-      <li><a href="{C.KLUB['facebook']}" rel="noopener">Facebook</a></li>
-      <li><a href="{C.KLUB['instagram']}" rel="noopener">Instagram</a></li>
-      <li><a href="{C.KLUB['youtube']}" rel="noopener">YouTube</a></li>
-    </ul>
+    <ul class="kontakt__social">{S.social_linki("kontakt", True)}</ul>
   </div>
   <div class="kontakt__karta">
     <h2>Klub</h2><p>{e(C.KLUB['nazwa_prawna'])}<br>{e(C.KLUB['adres'])}</p>

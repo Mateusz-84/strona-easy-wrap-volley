@@ -48,6 +48,30 @@ MENU = [
 ]
 
 
+# Ikony serwisów społecznościowych (proste znaki SVG w kolorze tekstu – currentColor)
+IKONY_SOCIAL = {
+    "facebook": ("Facebook", '<path fill="currentColor" d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.6 1.6-1.6h1.7V4.4c-.3 0-1.3-.1-2.5-.1-2.5 0-4.1 1.5-4.1 4.2v2.3H7.5V14h2.7v8z"/>'),
+    "instagram": ("Instagram", '<rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/>'
+                               '<circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/>'
+                               '<circle cx="17.3" cy="6.7" r="1.3" fill="currentColor"/>'),
+    "youtube": ("YouTube", '<path fill="currentColor" fill-rule="evenodd" d="M6 5h12a4 4 0 0 1 4 4v6a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V9a4 4 0 0 1 4-4zm4 3.8v6.4l5.6-3.2z"/>'),
+}
+
+
+def social_linki(klasa, z_lista=False):
+    """Ikony Facebook / Instagram / YouTube z linkami do profili klubu (C.KLUB)."""
+    linki = []
+    for klucz, (nazwa, ksztalt) in IKONY_SOCIAL.items():
+        adres = C.KLUB.get(klucz)
+        if not adres:
+            continue
+        a = (f'<a class="ikona-social" href="{e(adres)}" target="_blank" rel="noopener" '
+             f'aria-label="{nazwa} – profil klubu" title="{nazwa}">'
+             f'<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">{ksztalt}</svg></a>')
+        linki.append(f"<li>{a}</li>" if z_lista else a)
+    return "".join(linki)
+
+
 def galeria_ma_zdjecia():
     for a in C.GALERIA:
         folder = os.path.join(FOLDER, "img", "galeria", a["folder"])
@@ -239,11 +263,7 @@ def belka(p, kandydaci):
 <div class="belka" role="region" aria-label="Najbliższy mecz">
   <div class="kontener">
     <div class="belka__tablica" data-belka>{''.join(szablony)}</div>
-    <nav class="belka__social" aria-label="Media społecznościowe">
-      <a href="{C.KLUB['facebook']}" rel="noopener">Facebook</a>
-      <a href="{C.KLUB['instagram']}" rel="noopener">Instagram</a>
-      <a href="{C.KLUB['youtube']}" rel="noopener">YouTube</a>
-    </nav>
+    <nav class="belka__social" aria-label="Media społecznościowe">{social_linki("belka")}</nav>
   </div>
 </div>"""
 
@@ -300,10 +320,7 @@ def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja):
     <div class="stopka__kolumny">
       <div><h2>Klub</h2><p>{e(C.KLUB['nazwa_prawna'])}<br>{e(C.KLUB['adres'])}</p></div>
       <div><h2>Kontakt</h2><p><a href="mailto:{e(C.KLUB['email'])}">{e(C.KLUB['email'])}</a>{f"<br>{e(C.KLUB['telefon'])}" if C.KLUB.get('telefon') else ''}</p></div>
-      <div><h2>Obserwuj</h2><ul class="stopka__social">
-        <li><a href="{C.KLUB['facebook']}" rel="noopener">Facebook</a></li>
-        <li><a href="{C.KLUB['instagram']}" rel="noopener">Instagram</a></li>
-        <li><a href="{C.KLUB['youtube']}" rel="noopener">YouTube</a></li></ul></div>
+      <div><h2>Obserwuj</h2><ul class="stopka__social">{social_linki("stopka", True)}</ul></div>
       <div><h2>Na skróty</h2><ul>
         {skroty}
         <li><a href="{p}akademia.html#ochrona">Standardy ochrony małoletnich</a></li>
