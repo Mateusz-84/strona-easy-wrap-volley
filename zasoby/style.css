@@ -14,6 +14,15 @@
   --blekit-jasny:#E3F4FC;
   --blekit-tekst:#0071AD;   /* ciemniejszy błękit do TEKSTU na jasnym tle (kontrast WCAG AA) */
   --trening:#0A6E9C;        /* kolor treningów w kalendarium */
+  --granat-jasny:#003A80;   /* górna część granatowych gradientów */
+  --blekit-mocny:#0A94D3;   /* dolna część błękitnych gradientów (ciemny tekst nadal czytelny) */
+  --wydarzenie:#E0A800;     /* wydarzenia w kalendarium */
+  /* Wspólne tła – zamiast przypadkowych gradientów w każdym module */
+  --tlo-granat:radial-gradient(70% 80% at 85% 20%,rgba(6,157,223,.38) 0,transparent 60%),linear-gradient(160deg,var(--granat-jasny) 0%,var(--granat) 45%,var(--granat-ciemny) 100%);
+  --tlo-blekit:radial-gradient(70% 80% at 85% 20%,rgba(255,255,255,.32) 0,transparent 60%),linear-gradient(160deg,#36B7EC 0%,var(--blekit) 50%,var(--blekit-mocny) 100%);
+  --paski:repeating-linear-gradient(115deg,rgba(255,255,255,.045) 0 14px,transparent 14px 28px);
+  --pilka-biala:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%20fill='none'%20stroke='white'%20stroke-opacity='.16'%20stroke-width='2.2'%3E%3Ccircle%20cx='50'%20cy='50'%20r='46'/%3E%3Cpath%20d='M50%2050C34%2042%2026%2024%2032%206M50%2050c18-4%2034%204%2044%2020M50%2050c-2%2018-14%2034-34%2040'/%3E%3Cpath%20d='M40%2046C26%2036%2020%2022%2022%209M58%2055c16%202%2028%2012%2032%2026M46%2060c-6%2014-18%2024-32%2026'/%3E%3C/svg%3E");
+  --pilka-granat:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%20fill='none'%20stroke='rgb%280%2C26%2C63%29'%20stroke-opacity='.16'%20stroke-width='2.2'%3E%3Ccircle%20cx='50'%20cy='50'%20r='46'/%3E%3Cpath%20d='M50%2050C34%2042%2026%2024%2032%206M50%2050c18-4%2034%204%2044%2020M50%2050c-2%2018-14%2034-34%2040'/%3E%3Cpath%20d='M40%2046C26%2036%2020%2022%2022%209M58%2055c16%202%2028%2012%2032%2026M46%2060c-6%2014-18%2024-32%2026'/%3E%3C/svg%3E");
   --zolty:#FFC72C;          /* TYMCZASOWY – podmienić na HEX z księgi znaku */
   --tlo:#F4F6FA;
   --bialy:#FFFFFF;
@@ -99,20 +108,16 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
 /* =====================================================================
    ZDJĘCIA W NAGŁÓWKACH (plakat meczu i nagłówki podstron)
    Zdjęcia ustawiasz w content.py → ZDJECIA_NAGLOWKOW.
-   Bez zdjęcia nagłówek jest po prostu granatowy.
    ===================================================================== */
 .hero,.plakat{border-radius:0 0 var(--r-l) var(--r-l)}
-
-/* Nagłówek podstrony ze zdjęciem: zdjęcie w tle + granatowe przyciemnienie dla czytelności */
 .plakat--z-foto{min-height:300px;display:flex;align-items:flex-end}
 .plakat--z-foto .kontener{width:100%}
 .plakat__tlo{position:absolute;inset:0;z-index:-1}
 .plakat__tlo::after{content:"";position:absolute;inset:0;
   background:linear-gradient(180deg,rgba(0,47,108,.35) 0%,rgba(0,26,63,.92) 78%)}
 .plakat__foto-img{width:100%;height:100%;object-fit:cover;object-position:center 35%}
-
-/* Plakat meczu ze zdjęciem – telefon: zdjęcie w tle pod przyciemnieniem */
-.hero--z-foto .hero__zdjecie--foto{position:absolute;inset:0;width:100%;height:100%;right:auto;opacity:1;z-index:-2}
+/* Plakat meczu z własnym zdjęciem (content.py → MECZE → "zdjecie_plakatu") */
+.hero--z-foto .hero__zdjecie--foto{position:absolute;inset:0;width:100%;height:100%;z-index:-2}
 .hero__zdjecie--foto .hero__foto{width:100%;height:100%;object-fit:cover;object-position:center 30%}
 .hero--z-foto::before{content:"";position:absolute;inset:0;z-index:-1;
   background:linear-gradient(180deg,rgba(0,47,108,.78) 0%,rgba(0,26,63,.95) 70%)}
@@ -120,74 +125,87 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
 
 /* =====================================================================
    2. HERO – plakat najbliższego meczu
-   granatowy = u siebie, .hero--wyjazd = jasnoniebieski
+   granatowy = u siebie, .hero--wyjazd = błękitny (jak grafiki meczowe klubu)
    ===================================================================== */
-.hero{position:relative;overflow:hidden;background:var(--granat);color:#fff;padding:28px 0 76px;isolation:isolate}
-.hero--wyjazd{background:var(--blekit);color:var(--granat-ciemny)}
-.hero__tlo-slowo{position:absolute;right:-20px;top:40px;font-family:var(--font-naglowki);font-size:240px;line-height:.8;color:transparent;-webkit-text-stroke:2px rgba(255,255,255,.09);z-index:-1;pointer-events:none}
-.hero--wyjazd .hero__tlo-slowo{-webkit-text-stroke-color:rgba(0,26,63,.12)}
-.hero__zdjecie{position:absolute;right:-60px;bottom:0;width:340px;height:440px;z-index:-1;opacity:.45}
-.hero__foto{width:100%;height:100%;object-fit:contain;object-position:bottom}
-.hero__grafika{width:100%;height:100%}
+.hero{position:relative;overflow:hidden;background:var(--tlo-granat);color:#fff;padding:24px 0 60px;isolation:isolate}
+.hero::after{content:"";position:absolute;inset:0;z-index:-3;background:var(--paski);pointer-events:none}
+.hero--wyjazd{background:var(--tlo-blekit);color:var(--granat-ciemny)}
 .hero .kontener{position:relative;z-index:1}
-.hero__etykieta{display:inline-flex;align-items:center;background:var(--zolty);color:var(--granat-ciemny);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:15px;padding:6px 12px}
+.hero__tresc{max-width:640px}
+.hero__gora{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
+.hero__etykieta{display:inline-flex;align-items:center;background:var(--zolty);color:var(--granat-ciemny);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:15px;padding:6px 14px}
 .hero--wyjazd .hero__etykieta{background:var(--granat-ciemny);color:#fff}
-.hero__liga{display:block;margin-top:8px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-size:15px;color:var(--jasny-na-granacie)}
+.hero__liga{font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-size:15px;color:var(--jasny-na-granacie)}
 .hero--wyjazd .hero__liga{color:var(--granat-ciemny)}
-.hero__druzyny{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:6px 14px;margin:22px 0 18px}
-.hero__druzyny .herb{width:58px;height:68px;object-fit:contain}
-.hero__druzyny .nazwa{font-family:var(--font-naglowki);font-size:38px;line-height:.9}
-.hero__vs{grid-column:1/-1;font-family:var(--font-naglowki);font-size:28px;color:var(--zolty);padding-left:14px}
-.hero--wyjazd .hero__vs{color:#fff}
+/* Herby obok siebie: gospodarz – VS – gość */
+.hero__druzyny{display:flex;align-items:flex-start;gap:12px;margin:20px 0 14px}
+.hero__druzyna{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-width:0}
+.hero__druzyna .herb{width:56px;height:66px;object-fit:contain;filter:drop-shadow(0 6px 12px rgba(0,10,30,.3))}
+.hero__druzyna .nazwa{font-family:var(--font-naglowki);font-size:26px;line-height:.9;max-width:10ch}
+.hero__vs{font-family:var(--font-naglowki);font-size:34px;line-height:1;color:var(--zolty);margin-top:16px}
+.hero--wyjazd .hero__vs{color:var(--granat-ciemny)}
 .hero__data{display:flex;align-items:flex-end;gap:14px;font-family:var(--font-naglowki);line-height:.8}
-.hero__dzien{font-size:132px}
-.hero__dzien-opis{font-size:40px;line-height:.9}
+.hero__dzien{font-size:120px}
+.hero__dzien-opis{font-size:34px;line-height:.9}
 .hero__dzien-opis span{display:block;color:var(--zolty)}
-.hero--wyjazd .hero__dzien-opis span{color:#fff}
-.hero__szczegoly{display:flex;flex-wrap:wrap;gap:6px 22px;margin:18px 0 22px;font-size:18px;font-weight:600}
-.hero__szczegoly strong{font-family:var(--font-naglowki);font-weight:400;font-size:40px;line-height:.95;display:block}
-.hero__szczegoly .hero__hala strong{font-size:28px;max-width:20ch}
-.hero__przyciski{display:flex;flex-wrap:wrap;gap:12px}
+.hero--wyjazd .hero__dzien-opis span{color:var(--granat)}
+.hero__szczegoly{display:flex;flex-wrap:wrap;gap:8px 24px;margin:16px 0 20px;font-size:16px;font-weight:600}
+.hero__szczegoly strong{font-family:var(--font-naglowki);font-weight:400;font-size:36px;line-height:.95;display:block}
+.hero__godzina--brak strong{font-size:26px;color:var(--zolty)}
+.hero--wyjazd .hero__godzina--brak strong{color:var(--granat)}
+.hero__szczegoly .hero__hala strong{font-size:24px;max-width:22ch}
+.hero__przyciski{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px}
 .hero--wyjazd .btn--zolty{background:var(--granat-ciemny);color:#fff}
-.hero__sponsor{display:flex;align-items:center;gap:12px;border-top:1px solid rgba(255,255,255,.25);padding-top:14px;margin-top:22px;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--jasny-na-granacie)}
+.hero__link{display:inline-flex;align-items:center;min-height:48px;font-weight:700;font-size:17px;text-transform:uppercase;letter-spacing:.08em;text-decoration:none;color:inherit;
+  background:linear-gradient(var(--zolty),var(--zolty)) 0 calc(100% - 10px)/100% 2px no-repeat}
+.hero--wyjazd .hero__link{background-image:linear-gradient(var(--granat-ciemny),var(--granat-ciemny))}
+.hero__link:hover{background-size:100% 6px}
+.hero__sponsor{display:flex;align-items:center;gap:12px;border-top:1px solid rgba(255,255,255,.2);padding-top:14px;margin-top:20px;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--jasny-na-granacie)}
 .hero--wyjazd .hero__sponsor{color:var(--granat-ciemny);border-color:rgba(0,26,63,.25)}
 .logo-sponsora{background:#fff;color:var(--granat);font-family:var(--font-naglowki);font-size:22px;letter-spacing:.04em;padding:6px 14px}
 .logo-sponsora__img{height:28px;width:auto}
 .hero__tytul-sezon{font-size:120px;margin:20px 0}
+/* Wycięta zawodniczka z kadry – co mecz inna */
+.hero__postac{position:absolute;right:-28px;top:64px;width:50%;max-width:240px;height:330px;z-index:-1;pointer-events:none}
+.hero__postac::before{content:"";position:absolute;inset:10% -10% 0;background:radial-gradient(closest-side,rgba(6,157,223,.55),transparent);z-index:-1}
+.hero--wyjazd .hero__postac::before{background:radial-gradient(closest-side,rgba(255,255,255,.5),transparent)}
+.hero__postac-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:right bottom;
+  -webkit-mask-image:linear-gradient(180deg,#000 72%,transparent);mask-image:linear-gradient(180deg,#000 72%,transparent)}
+.hero__postac-nr{position:absolute;right:6px;top:-18px;font-family:var(--font-naglowki);font-size:190px;line-height:.8;color:transparent;-webkit-text-stroke:2px rgba(255,255,255,.2)}
+.hero--wyjazd .hero__postac-nr{-webkit-text-stroke-color:rgba(0,26,63,.18)}
+.hero__postac-podpis{display:none}
 
-/* Telefon: kompaktowy plakat – przyciski widoczne bez przewijania */
 @media (max-width:767px){
-  .hero{padding:20px 0 64px}
-  .hero__zdjecie{width:240px;height:320px;right:-70px;opacity:.16}
-  .hero__druzyny{margin:14px 0 10px;gap:4px 12px}
-  .hero__druzyny .herb{width:42px;height:50px}
-  .hero__druzyny .nazwa{font-size:31px}
-  .hero__vs{font-size:22px;padding-left:8px}
-  .hero__dzien{font-size:108px}
-  .hero__dzien-opis{font-size:32px}
-  .hero__szczegoly{margin:12px 0 16px;font-size:16px}
-  .hero__szczegoly strong{font-size:32px}
-  .hero__szczegoly .hero__hala strong{font-size:23px}
-  .hero__przyciski .btn{padding:12px 16px;font-size:16px}
   .hero__przyciski .btn--zolty{flex:1 1 100%;justify-content:center}
-  .hero__sponsor{margin-top:16px}
   .panel h2{font-size:44px}
 }
 
 /* =====================================================================
    PLAKAT – nagłówek podstrony
    ===================================================================== */
-.plakat{position:relative;overflow:hidden;background:var(--granat);color:#fff;padding:40px 0 72px;isolation:isolate}
+.plakat{position:relative;overflow:hidden;background:var(--tlo-granat);color:#fff;padding:28px 0 48px;isolation:isolate}
+.plakat:not(.plakat--z-foto)::after{content:"";position:absolute;inset:0;z-index:-2;background:var(--paski)}
+.plakat:not(.plakat--z-foto):not(.plakat--akademia)::before{content:"";position:absolute;right:-60px;top:-40px;width:300px;height:300px;z-index:-1;background:var(--pilka-biala) center/contain no-repeat}
 .plakat .kontener{position:relative;z-index:1}
 .plakat__nad{font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:15px;color:var(--zolty);margin:0 0 10px}
-.plakat__tytul{font-size:76px;line-height:.85;word-break:break-word}
-.plakat__tytul--artykul{font-size:52px;max-width:18ch}
-.plakat__tytul--mega{font-size:96px}
+.plakat__tytul{font-size:54px;line-height:.85;word-break:break-word}
+.plakat__tytul--artykul{font-size:46px;max-width:18ch}
+.plakat__tytul--mega{font-size:86px}
 .plakat__opis{font-size:21px;max-width:36ch;margin:16px 0 22px}
-.plakat--akademia{background:var(--blekit);color:var(--granat-ciemny)}
+.plakat--akademia{background:var(--tlo-blekit);color:var(--granat-ciemny)}
 .plakat--akademia .plakat__nad{color:var(--granat-ciemny)}
 .plakat__uklad{display:grid;gap:24px;align-items:center}
 .plakat__foto img{width:100%;max-height:420px;object-fit:cover}
+
+/* Cennik Akademii (pierwszy ekran strony Akademii) */
+.cennik{background:var(--granat-ciemny);color:#fff;border-radius:var(--r-l);padding:24px;box-shadow:0 24px 50px rgba(0,26,63,.3)}
+.cennik__tytul{font-size:40px;color:var(--zolty)}
+.cennik__lista{list-style:none;margin:12px 0 18px;padding:0}
+.cennik__lista li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.15);font-weight:600}
+.cennik__lista strong{font-family:var(--font-naglowki);font-weight:400;font-size:30px;line-height:1;white-space:nowrap}
+@media (min-width:768px){.cennik{padding:30px}.cennik__lista strong{font-size:40px}}
+.cennik__fakty{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:17px;color:var(--jasny-na-granacie)}
+.cennik__fakty li::before{content:"✓";color:var(--zolty);font-weight:700;margin-right:8px}
 
 /* =====================================================================
    11. TAŚMA Z HASŁEM
@@ -216,9 +234,9 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
    ===================================================================== */
 .odbiorcy{display:grid;gap:12px}
 .panel{position:relative;display:block;min-height:180px;padding:22px 22px 26px;color:#fff;text-decoration:none;overflow:hidden;isolation:isolate}
-.panel::before{content:"";position:absolute;inset:0;z-index:-1;background:repeating-linear-gradient(115deg,rgba(255,255,255,.05) 0 14px,transparent 14px 28px)}
-.panel--seniorki{background:var(--granat)}
-.panel--akademia{background:var(--blekit);color:var(--granat-ciemny)}
+.panel::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--paski)}
+.panel--seniorki{background:var(--tlo-granat)}
+.panel--akademia{background:var(--tlo-blekit);color:var(--granat-ciemny)}
 .panel__nr{position:absolute;right:-6px;bottom:-30px;font-family:var(--font-naglowki);font-size:180px;line-height:1;color:transparent;-webkit-text-stroke:2px currentColor;opacity:.18;z-index:-1}
 .panel small{font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:14px}
 .panel h2{font-size:52px;margin:6px 60px 8px 0}
@@ -229,14 +247,16 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
 /* =====================================================================
    4. KARTY MECZÓW
    ===================================================================== */
-.filtry{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+.filtry{display:flex;gap:8px;flex-wrap:nowrap;margin:0 -16px 18px;padding:2px 16px;align-items:center;overflow-x:auto;scrollbar-width:none}
+.filtry::-webkit-scrollbar{display:none}
+.filtr{flex:none}
 .filtry__odstep{width:100%;height:0}
 .filtr{font-family:var(--font-tresc);font-weight:700;font-size:16px;letter-spacing:.06em;text-transform:uppercase;border:2px solid var(--granat);background:transparent;color:var(--granat);padding:8px 14px;cursor:pointer;min-height:44px}
 .filtr[aria-pressed="true"]{background:var(--granat);color:#fff}
 .mecze{display:grid;grid-auto-flow:column;grid-auto-columns:86%;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 16px 12px;margin:0 -16px}
 .mecze--siatka{grid-auto-flow:row;grid-template-columns:1fr;overflow:visible;margin:0;padding:0}
-.mecz{scroll-snap-align:start;background:var(--granat);color:#fff;display:flex;flex-direction:column;position:relative;overflow:hidden}
-.mecz--wyjazd{background:var(--blekit);color:var(--granat-ciemny)}
+.mecz{scroll-snap-align:start;background:linear-gradient(160deg,var(--granat-jasny),var(--granat) 55%);color:#fff;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.mecz--wyjazd{background:linear-gradient(160deg,#36B7EC,var(--blekit) 55%);color:var(--granat-ciemny)}
 .mecz--inne{background:#fff;color:var(--granat);border:2px solid var(--granat)}
 .mecz[hidden]{display:none}
 .mecz--najblizszy{box-shadow:inset 0 0 0 4px var(--zolty)}
@@ -280,8 +300,7 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
    ===================================================================== */
 .kadra{display:grid;grid-auto-flow:column;grid-auto-columns:70%;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:0 16px 12px}
 .kadra--siatka{grid-auto-flow:row;grid-template-columns:1fr 1fr;overflow:visible;margin:0;padding:0}
-.zawodniczka{scroll-snap-align:start;position:relative;aspect-ratio:3/4;background:linear-gradient(160deg,var(--granat) 0%,var(--granat-ciemny) 100%);color:#fff;overflow:hidden;cursor:pointer;isolation:isolate}
-.zawodniczka:nth-child(even){background:linear-gradient(160deg,#0B6FA8 0%,var(--granat) 100%)}
+.zawodniczka{scroll-snap-align:start;position:relative;aspect-ratio:3/4;background:radial-gradient(60% 45% at 50% 40%,rgba(6,157,223,.5) 0,transparent 72%),linear-gradient(170deg,var(--granat-jasny) 0%,var(--granat-ciemny) 100%);color:#fff;overflow:hidden;cursor:pointer;isolation:isolate}
 .zawodniczka[hidden]{display:none}
 .zawodniczka__numer{position:absolute;top:-24px;right:-10px;font-family:var(--font-naglowki);font-size:200px;line-height:1;color:transparent;-webkit-text-stroke:2px rgba(255,255,255,.35);z-index:-1}
 .zawodniczka__foto{position:absolute;inset:auto 0 0 0;width:100%;height:92%;object-fit:contain;object-position:bottom;z-index:-1}
@@ -339,7 +358,7 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
 .tabela--harmonogram td:first-child{font-family:var(--font-tresc);font-size:18px;font-weight:700;width:auto}
 
 /* Ostatni wynik */
-.ostatni{background:var(--granat-ciemny);color:#fff;padding:22px;position:relative;overflow:hidden;align-self:start}
+.ostatni{background:var(--paski),var(--tlo-granat);color:#fff;padding:22px;position:relative;overflow:hidden;align-self:start}
 .ostatni__wynik{font-family:var(--font-naglowki);font-size:120px;line-height:.8;color:var(--zolty);margin:14px 0 10px}
 .ostatni__wynik span{color:#fff}
 .ostatni__pary{font-weight:700;text-transform:uppercase;margin:0 0 10px}
@@ -369,12 +388,12 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
 .kal__kropka{width:8px;height:8px;border-radius:50%}
 .typ-mecz{background:var(--granat)}
 .typ-trening{background:var(--trening)}
-.typ-wydarzenie{background:#E0A800}
+.typ-wydarzenie{background:var(--wydarzenie)}
 .kal__dzien--dzis .typ-wydarzenie{background:var(--granat-ciemny)}
 .kal__lista{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .kal__wpis{display:grid;grid-template-columns:64px 1fr;gap:12px;background:#fff;padding:10px 12px;border-left:6px solid var(--granat)}
 .kal__wpis--trening{border-left-color:var(--trening)}
-.kal__wpis--wydarzenie{border-left-color:#E0A800}
+.kal__wpis--wydarzenie{border-left-color:var(--wydarzenie)}
 .kal__wpis--dzis{box-shadow:inset 0 0 0 2px var(--zolty)}
 .kal__wpis-data{font-family:var(--font-naglowki);font-size:30px;line-height:.9;color:var(--granat)}
 .kal__wpis-data small{display:block;font-size:16px;color:var(--tekst-szary)}
@@ -390,17 +409,18 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
 .kafel__img{width:100%;height:100%;object-fit:cover}
 .kafel::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,transparent 30%,rgba(0,26,63,.85))}
 .kafel:hover .kafel__foto{transform:scale(1.06)}
-.kafel__slowo{font-family:var(--font-naglowki);font-size:50px;line-height:.85}
+.kafel__slowo{font-family:var(--font-naglowki);font-size:40px;line-height:.85}
 .kafel small{font-weight:600;font-size:16px}
 .kafel--akademia{grid-column:1/-1;min-height:260px}
 .kafel--akademia .kafel__slowo{font-size:88px}
-.kafel--kontakt{grid-column:1/-1;min-height:120px}
-/* Grafiki zastępcze – gdy brak zdjęcia */
-.foto-a,.foto-0{background:radial-gradient(circle at 70% 30%,#2AB6F0 0,transparent 45%),linear-gradient(135deg,#069DDF,#002F6C)}
-.foto-b,.foto-1{background:radial-gradient(circle at 30% 20%,#FFD866 0,transparent 40%),linear-gradient(160deg,#0E5FA8,#001A3F)}
-.foto-c,.foto-2{background:repeating-linear-gradient(45deg,#00265A 0 18px,#002F6C 18px 36px)}
-.foto-d,.foto-3{background:linear-gradient(200deg,#4CC3F2,#002F6C)}
-.foto-e{background:linear-gradient(90deg,#001A3F,#003E8A)}
+.kafel--kontakt{min-height:120px}
+.kafel--kontakt-pelny{grid-column:1/-1}
+/* Grafiki zastępcze – gdy brak zdjęcia. Cztery warianty w barwach klubu:
+   0 granat, 1 błękit, 2 ciemny granat z żółtą „rysą”, 3 granat/błękit przecięty po skosie */
+.foto-0,.foto-a{background:var(--pilka-biala) right -40px bottom -50px/230px no-repeat,var(--paski),var(--tlo-granat)}
+.foto-1,.foto-b,.foto-d{background:var(--pilka-granat) right -40px bottom -50px/230px no-repeat,var(--paski),var(--tlo-blekit)}
+.foto-2,.foto-c{background:linear-gradient(115deg,transparent 0 62%,var(--zolty) 62% 63.2%,transparent 63.2%),var(--paski),linear-gradient(160deg,var(--granat),var(--granat-ciemny))}
+.foto-3,.foto-e{background:var(--paski),linear-gradient(115deg,var(--granat-ciemny) 0 58%,var(--blekit) 58% 100%)}
 
 /* =====================================================================
    AKTUALNOŚCI I ARTYKUŁ
@@ -412,7 +432,7 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
 .news__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .news__tresc{padding:12px 14px}
 .news__tresc p{margin:8px 0 0;color:var(--tekst-szary)}
-.news__kat{font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#0B6FA8}
+.news__kat{font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--blekit-tekst)}
 .news__kat time{color:var(--tekst-szary);margin-left:8px}
 .news h3{font-size:30px;color:var(--granat);margin-top:4px}
 .news--duzy{grid-template-columns:1fr}
@@ -434,15 +454,16 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
 .poziom__nazwa::after{content:"";flex:1;height:1px;background:var(--linia)}
 .loga{display:grid;gap:10px;grid-template-columns:repeat(2,1fr)}
 .loga--tytularny{grid-template-columns:1fr}
-.loga--partner{grid-template-columns:repeat(3,1fr)}
-.logo-sp{background:var(--tlo);display:grid;place-content:center;justify-items:center;min-height:90px;font-family:var(--font-naglowki);color:var(--granat);font-size:24px;text-align:center;padding:12px;text-decoration:none;filter:grayscale(1);transition:filter .2s}
-.logo-sp:hover{filter:none}
+.loga--partner{grid-template-columns:repeat(2,1fr)}
+.logo-sp{background:var(--blekit-jasny);display:grid;place-content:center;justify-items:center;min-height:90px;font-family:var(--font-naglowki);color:var(--granat);font-size:26px;line-height:1;text-align:center;padding:14px;text-decoration:none;transition:transform .2s}
+a.logo-sp:hover{transform:translateY(-2px)}
+.loga--partner .logo-sp{background:#fff;box-shadow:inset 0 0 0 1px var(--linia)}
 .logo-sp__img{max-height:60px;width:auto}
-.loga--tytularny .logo-sp{min-height:150px;font-size:56px;background:var(--granat);color:#fff;filter:none}
+.loga--tytularny .logo-sp{min-height:150px;font-size:56px;background:var(--paski),var(--tlo-granat);color:#fff}
 .loga--tytularny .logo-sp small{display:block;font-family:var(--font-tresc);font-size:14px;letter-spacing:.2em;color:var(--zolty)}
 .loga--tytularny .logo-sp__img{max-height:90px}
-.loga--partner .logo-sp{min-height:70px;font-size:18px}
-.cta{max-width:720px}
+.loga--partner .logo-sp{min-height:72px;font-size:19px}
+.cta > *{max-width:720px}
 .cta p{font-size:21px}
 
 /* =====================================================================
@@ -453,12 +474,12 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
 .grupa:nth-child(2){border-color:var(--granat)}
 .grupa:nth-child(3){border-color:var(--zolty)}
 .grupa__wiek{font-family:var(--font-naglowki);font-size:54px;line-height:.9;color:var(--granat);display:block}
-.grupa h3{font-size:30px;color:#0B6FA8;margin:4px 0 8px}
+.grupa h3{font-size:30px;color:var(--blekit-tekst);margin:4px 0 8px}
 .grupa p{margin:0}
 .formularz{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
 .formularz__info{width:100%;font-size:16px;color:var(--tekst-szary);margin:4px 0 0}
 .formularz__ramka iframe{width:100%;min-height:1100px;border:0;background:#fff;margin-top:18px}
-.sekcja--ochrona{background:var(--granat);color:#fff}
+.sekcja--ochrona{background:var(--paski),var(--tlo-granat);color:#fff}
 .sekcja--ochrona .sekcja__tytul{color:#fff}
 .sekcja--ochrona .sekcja__tytul span{color:var(--zolty)}
 .sekcja--ochrona a:not(.btn){color:var(--zolty)}
@@ -497,7 +518,7 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
 .produkt__opis{padding:14px}
 .produkt h3{font-size:30px;color:var(--granat)}
 .produkt__rozmiary{margin:6px 0 0;color:var(--tekst-szary);font-size:16px}
-.produkt__cena{font-family:var(--font-naglowki);font-size:38px;color:#0B6FA8;margin:4px 0 10px}
+.produkt__cena{font-family:var(--font-naglowki);font-size:38px;color:var(--blekit-tekst);margin:4px 0 10px}
 .produkt__brak{font-weight:700;text-transform:uppercase;color:var(--tekst-szary)}
 .trofea{background:var(--granat-ciemny);color:#fff;padding:18px 0}
 .trofea ul{list-style:none;display:flex;gap:28px;overflow-x:auto;margin:0 auto}
@@ -523,11 +544,13 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
 /* =====================================================================
    STOPKA
    ===================================================================== */
-.stopka{background:var(--granat-ciemny);color:#D5E2F2;padding:56px 0 24px;font-size:17px}
-.stopka__kolumny{display:grid;gap:24px}
+.stopka{background:var(--granat-ciemny);color:#D5E2F2;padding:44px 0 24px;font-size:17px}
+.stopka__kolumny{display:grid;grid-template-columns:1fr 1fr;gap:22px 16px}
+.stopka__kolumny > div:nth-child(-n+2){grid-column:1/-1}
+.stopka__social{display:flex;flex-wrap:wrap;gap:0 16px}
 .stopka h2{font-size:26px;color:var(--blekit);margin-bottom:8px}
 .stopka ul{list-style:none;margin:0;padding:0}
-.stopka a{color:#fff;text-decoration:none;display:inline-flex;align-items:center;min-height:44px}
+.stopka a{color:#fff;text-decoration:none;display:inline-flex;align-items:center;min-height:40px}
 .stopka p a{min-height:0;display:inline}
 .stopka a:hover{text-decoration:underline;text-decoration-color:var(--zolty)}
 .stopka__dol{border-top:1px solid rgba(255,255,255,.15);margin-top:36px;padding-top:16px;font-size:14px;display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between}
@@ -593,7 +616,7 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
 /* Wpisy kalendarium: kolorowy pasek z lewej (rysowany cieniem, bo ramka nie lubi zaokrągleń) */
 .kal__wpis{border-left:0;--pasek:var(--granat);box-shadow:inset 6px 0 0 var(--pasek),0 4px 14px rgba(0,26,63,.06)}
 .kal__wpis--trening{--pasek:var(--trening)}
-.kal__wpis--wydarzenie{--pasek:#E0A800}
+.kal__wpis--wydarzenie{--pasek:var(--wydarzenie)}
 .kal__wpis--dzis{box-shadow:inset 6px 0 0 var(--pasek),inset 0 0 0 2px var(--zolty)}
 .grupa{border-top:0}
 .tabela{background:transparent;border-collapse:separate;border-spacing:0}
@@ -612,7 +635,7 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
 
 /* Sekcje na białym i granatowym tle jako „wyspy” z zaokrąglonymi rogami */
 .sekcja--biala,.sponsorzy,.sekcja--ochrona{border-radius:var(--r-l);margin-inline:8px}
-@media (min-width:1280px){.sekcja--biala,.sponsorzy,.sekcja--ochrona{margin-inline:24px}}
+@media (min-width:1280px){.sekcja--biala,.sponsorzy,.sekcja--ochrona{margin-inline:auto;max-width:calc(var(--szerokosc) + 48px)}}
 
 /* =====================================================================
    POJAWIANIE SIĘ SEKCJI PRZY PRZEWIJANIU
@@ -634,7 +657,15 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
   .kadra{grid-auto-flow:row;grid-template-columns:repeat(3,1fr);overflow:visible;margin:0;padding:0}
   .bento{grid-template-columns:repeat(4,1fr);grid-auto-rows:200px}
   .kafel--akademia{grid-column:span 2;grid-row:span 2}
-  .kafel--kontakt{grid-column:span 2;min-height:0}
+  .kafel--kontakt{min-height:0}
+  .kafel--kontakt-pelny{grid-column:span 2}
+  .kafel__slowo{font-size:50px}
+  .filtry{flex-wrap:wrap;margin-inline:0;padding-inline:0;overflow:visible}
+  .hero__druzyna .herb{width:72px;height:86px}
+  .hero__druzyna .nazwa{font-size:32px}
+  .hero__vs{font-size:44px;margin-top:20px}
+  .hero__postac{max-width:320px;height:420px;width:44%}
+  .hero__postac-nr{font-size:260px}
   .kafel--akademia .kafel__slowo{font-size:130px}
   .newsy{grid-template-columns:2fr 1fr;grid-template-rows:auto auto}
   .news--duzy{grid-row:span 2}
@@ -643,8 +674,10 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
   .newsy--wszystkie .news--duzy{grid-column:1/-1;grid-row:auto}
   .loga{grid-template-columns:repeat(4,1fr)}
   .loga--tytularny{grid-template-columns:1fr}
-  .loga--partner{grid-template-columns:repeat(6,1fr)}
+  .loga--strategiczny{grid-template-columns:repeat(2,1fr)}
+  .loga--partner{grid-template-columns:repeat(4,1fr)}
   .stopka__kolumny{grid-template-columns:repeat(4,1fr)}
+  .stopka__kolumny > div:nth-child(-n+2){grid-column:auto}
   .tabela .ukryj-mobile{display:table-cell}
   .grupy{grid-template-columns:repeat(3,1fr)}
   .galeria{grid-template-columns:repeat(4,1fr)}
@@ -654,9 +687,11 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
   .ochrona__ikona{width:96px}
   .kal__dzien{min-height:84px;font-size:24px}
   .kal__kropka{width:10px;height:10px}
-  .plakat__tytul{font-size:120px}
-  .plakat__tytul--artykul{font-size:76px}
-  .plakat__tytul--mega{font-size:150px}
+  .plakat__tytul{font-size:96px}
+  .plakat__tytul--artykul{font-size:70px}
+  .plakat__tytul--mega{font-size:140px}
+  .plakat{padding:40px 0 64px}
+  .plakat:not(.plakat--z-foto):not(.plakat--akademia)::before{width:440px;height:440px;right:4%;top:-90px}
   .plakat__uklad{grid-template-columns:1.2fr 1fr}
 }
 
@@ -665,22 +700,29 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
    ===================================================================== */
 @media (min-width:1024px){
   body{font-size:20px}
-  .hero{padding:56px 0 120px;min-height:640px}
-  .hero .kontener{display:grid;grid-template-columns:1.1fr 1fr;align-items:center}
-  .hero__zdjecie{right:4%;width:520px;height:640px;opacity:1}
+  .hero{padding:56px 0 96px;min-height:660px}
+  .hero__postac{top:auto;bottom:0;right:max(0px,calc((100vw - var(--szerokosc)) / 2));width:540px;max-width:none;height:94%}
+  .hero__postac-img{-webkit-mask-image:linear-gradient(180deg,#000 84%,transparent);mask-image:linear-gradient(180deg,#000 84%,transparent)}
+  .hero__postac-nr{font-size:520px;right:20px;top:-10px}
+  .hero__postac-podpis{display:block;position:absolute;right:28px;bottom:36px;background:rgba(0,26,63,.72);color:#fff;font-weight:700;font-size:15px;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;border-radius:var(--r-pill);backdrop-filter:blur(4px)}
+  .hero--wyjazd .hero__postac-podpis{background:rgba(0,26,63,.85)}
   /* Komputer: zdjęcie w zaokrąglonej ramce po prawej stronie plakatu */
   .hero--z-foto .hero__zdjecie--foto{inset:48px auto 96px auto;right:max(16px,calc((100vw - var(--szerokosc)) / 2 + 16px));
     width:min(44%,560px);height:auto;z-index:0;border-radius:var(--r-l);overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,.35)}
   .hero--z-foto::before{display:none}
   .plakat--z-foto{min-height:420px}
   .plakat__tlo::after{background:linear-gradient(90deg,rgba(0,26,63,.92) 0%,rgba(0,47,108,.7) 50%,rgba(0,47,108,.25) 100%)}
-  .hero__tlo-slowo{font-size:480px;top:-20px;right:auto;left:-30px}
-  .hero__druzyny .nazwa{font-size:56px}
-  .hero__druzyny .herb{width:76px;height:90px}
-  .hero__dzien{font-size:220px}
-  .hero__dzien-opis{font-size:64px}
+  .hero__druzyny{gap:22px;margin:30px 0 18px}
+  .hero__druzyna .herb{width:96px;height:112px}
+  .hero__druzyna .nazwa{font-size:40px}
+  .hero__vs{font-size:64px;margin-top:22px}
+  .hero__dzien{font-size:200px}
+  .hero__dzien-opis{font-size:60px}
+  .hero__szczegoly strong{font-size:44px}
+  .hero__godzina--brak strong{font-size:34px}
+  .hero__szczegoly .hero__hala strong{font-size:30px}
   .hero__tytul-sezon{font-size:200px}
-  .plakat{padding:72px 0 110px}
+  .plakat{padding:52px 0 80px}
   .sekcja{padding:88px 0}
   .sekcja--bez-gory{padding-top:0}
   .sekcja__tytul{font-size:96px}
@@ -690,15 +732,17 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
   .uklad-tabela{grid-template-columns:1fr 1.5fr;align-items:start}
   .newsy--wszystkie{grid-template-columns:repeat(3,1fr)}
   .produkty{grid-template-columns:repeat(3,1fr)}
+  .loga--partner{grid-template-columns:repeat(5,1fr)}
   .produkt{grid-template-columns:1fr}
   .produkt__foto{min-height:260px}
 }
 
-/* Pełne menu w nagłówku – od 1200 px (10 pozycji musi się zmieścić) */
-@media (min-width:1200px){
+/* Pełne menu w nagłówku – od 1024 px (6 głównych pozycji; reszta w menu na telefonie i w stopce) */
+@media (min-width:1024px){
+  .menu__dodatkowe{display:none}
   .menu-przycisk{display:none}
   .menu{display:block;position:static;background:none;padding:0;max-height:none;overflow:visible}
-  .menu ul{display:flex;gap:18px}
+  .menu ul{display:flex;gap:26px}
   .menu a{color:var(--granat);font-family:var(--font-tresc);font-weight:700;font-size:16px;text-transform:uppercase;letter-spacing:.05em;border:0;padding:4px 0;border-bottom:3px solid transparent}
   .menu a:hover,.menu a[aria-current]{color:var(--granat);border-bottom-color:var(--zolty)}
 }

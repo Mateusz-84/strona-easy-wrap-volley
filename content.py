@@ -246,12 +246,12 @@ MECZE = [
         "relacja": "wygrana-w-lodzi",
     },
 
-    # B) turniej Akademii – PRZYKŁAD
-    {
-        "druzyna": "akademia", "data": "2026-11-08", "godzina": "10:00",
-        "gospodarz": "Turniej Mini Volley U12", "gosc": None,
-        "hala": "Hala Sportowa przy PSP nr 3 w Kobyłce",
-    },
+    # B) turniej Akademii – wzór (odkomentuj i uzupełnij, gdy będzie prawdziwy):
+    # {
+    #     "druzyna": "akademia", "data": "2026-11-08", "godzina": "10:00",
+    #     "gospodarz": "Turniej Akademii", "gosc": None,
+    #     "hala": "Hala Sportowa przy PSP nr 3 w Kobyłce",
+    # },
 ]
 
 
@@ -306,23 +306,13 @@ NEWSY = [
         "data": "2026-10-17",
         "kategoria": "Seniorki",          # Seniorki / Akademia / Klub
         "tytul": "Trzy punkty z Łodzi! Wygrywamy 3:1",
-        "zajawka": "Pewne zwycięstwo na wyjeździe z ŁKS AZS UMED Łódź.",
+        "zajawka": "Zwycięstwo 3:1 na wyjeździe z ŁKS AZS UMED Łódź.",
         "zdjecie": None,
         "tresc": """
-PRZYKŁAD – tu wpisz relację z meczu.
+Easy Wrap Volley Kobyłka wygrał w Łodzi z ŁKS AZS UMED 3:1 (25:19, 13:25, 25:16, 25:20)
+i przywozi do Kobyłki trzy punkty.
 
-Drugi akapit relacji.
-""",
-    },
-    {
-        "adres": "nowa-grupa-mini-volley",
-        "data": "2026-10-14",
-        "kategoria": "Akademia",
-        "tytul": "Nowa grupa Mini Volley od listopada",
-        "zajawka": "Ruszają zapisy dzieci w wieku 7–9 lat.",
-        "zdjecie": None,
-        "tresc": """
-PRZYKŁAD – opis nowej grupy.
+Kolejny mecz gramy u siebie – szczegóły w terminarzu.
 """,
     },
     {
@@ -330,10 +320,13 @@ PRZYKŁAD – opis nowej grupy.
         "data": "2026-09-01",
         "kategoria": "Klub",
         "tytul": "Easy Wrap sponsorem tytularnym",
-        "zajawka": "Kolejny sezon razem z naszym sponsorem tytularnym.",
+        "zajawka": "Easy Wrap jest sponsorem tytularnym drużyny seniorek w sezonie 2026/27.",
         "zdjecie": None,
         "tresc": """
-PRZYKŁAD – treść informacji.
+Easy Wrap jest sponsorem tytularnym naszej drużyny seniorek w sezonie 2026/27.
+Dlatego w rozgrywkach 2. ligi kobiet występujemy jako Easy Wrap Volley Kobyłka.
+
+Dziękujemy za wsparcie!
 """,
     },
 ]
@@ -344,12 +337,21 @@ PRZYKŁAD – treść informacji.
 #   prezentuje: nazwa sekcji, przy której pokaże się „prezentowane przez”:
 #   "tabela", "kadra", "akademia", "terminarz" albo None
 # ---------------------------------------------------------------------
+#   logo: plik w img/sponsorzy/ (PNG/SVG/WebP), np. "sponsorzy/easy-wrap.png" – dopóki brak, widać nazwę
 SPONSORZY = {
-    "easy-wrap": {"nazwa": "Easy Wrap", "poziom": "tytularny", "logo": None, "www": None, "prezentuje": None},
-    "miasto":    {"nazwa": "Miasto Kobyłka", "poziom": "strategiczny", "logo": None, "www": None,
-                  "prezentuje": "akademia"},                              # PRZYKŁAD
-    "partner-1": {"nazwa": "Partner 1", "poziom": "partner", "logo": None, "www": None, "prezentuje": "tabela"},  # PRZYKŁAD
-    "partner-2": {"nazwa": "Partner 2", "poziom": "partner", "logo": None, "www": None, "prezentuje": None},      # PRZYKŁAD
+    "easy-wrap":  {"nazwa": "Easy Wrap", "poziom": "tytularny", "logo": None, "www": None, "prezentuje": None},
+    "miasto":     {"nazwa": "Miasto Kobyłka", "poziom": "strategiczny", "logo": None, "www": None, "prezentuje": None},
+    "pit-radwar": {"nazwa": "PIT-RADWAR", "poziom": "strategiczny", "logo": None, "www": None, "prezentuje": None},
+    "dorol":      {"nazwa": "Dorol", "poziom": "partner", "logo": None, "www": None, "prezentuje": None},
+    "fhr":        {"nazwa": "FHR", "poziom": "partner", "logo": None, "www": None, "prezentuje": None},
+    "fortisgo":   {"nazwa": "fortisGO", "poziom": "partner", "logo": None, "www": None, "prezentuje": None},
+    "impression": {"nazwa": "Impression Studio Reklamy", "poziom": "partner", "logo": None, "www": None, "prezentuje": None},
+    "kriva":      {"nazwa": "Kriva HiTech Beauty", "poziom": "partner", "logo": None, "www": None, "prezentuje": None},
+    "racbus":     {"nazwa": "Racbus", "poziom": "partner", "logo": None, "www": None, "prezentuje": None},
+    "zdrofit":    {"nazwa": "Zdrofit", "poziom": "partner", "logo": None, "www": None, "prezentuje": None},
+    "sp3":        {"nazwa": "SP nr 3 im. Karola Wojtyły w Kobyłce", "poziom": "partner", "logo": None, "www": None, "prezentuje": None},
+    "osir":       {"nazwa": "OSiR „Wicher” w Kobyłce", "poziom": "partner", "logo": None, "www": None, "prezentuje": None},
+    "osp":        {"nazwa": "OSP Kobyłka", "poziom": "partner", "logo": None, "www": None, "prezentuje": None},
 }
 
 SPONSORZY_TEKST = ("Wspierasz lokalny sport? Pokaż swoją markę na meczach 2. ligi, "
@@ -360,9 +362,8 @@ SPONSORZY_TEKST = ("Wspierasz lokalny sport? Pokaż swoją markę na meczach 2. 
 # 9. KALENDARIUM – wydarzenia (mecze i treningi dodają się same)
 #   typ: "wydarzenie" (inne typy: mecze z MECZE i związku, treningi z AKADEMIA)
 # ---------------------------------------------------------------------
+#   Wzór: {"data": "2026-12-20", "godzina": "17:00", "tytul": "Wigilia klubowa", "miejsce": "Hala przy PSP nr 3"},
 WYDARZENIA = [
-    {"data": "2026-11-11", "godzina": "12:00", "tytul": "Bieg Niepodległości z klubem", "miejsce": "Kobyłka"},  # PRZYKŁAD
-    {"data": "2026-12-20", "godzina": "17:00", "tytul": "Wigilia klubowa", "miejsce": "Hala przy PSP nr 3"},   # PRZYKŁAD
 ]
 
 
@@ -371,25 +372,30 @@ WYDARZENIA = [
 # ---------------------------------------------------------------------
 AKADEMIA = {
     "haslo": "Dołącz do nas!",
-    "opis": "Treningi siatkówki dla dziewcząt i chłopców od 7 lat. Pierwszy trening za darmo.",
+    "opis": "Treningi siatkówki dla dziewcząt w hali przy ul. Załuskiego 57 w Kobyłce. Bez wpisowego.",
+    # Cennik i najważniejsze zasady – pokazują się w pierwszym ekranie strony Akademii
+    "cennik": [
+        {"co": "2 treningi w tygodniu", "cena": "180 zł / mies."},
+        {"co": "1 trening w tygodniu", "cena": "130 zł / mies."},
+    ],
+    "fakty": ["Trening trwa 90 minut", "Bez wpisowego", "Zajęcia tylko dla dziewcząt", "Umowa na sezon (wrzesień–czerwiec)"],
     "formularz_google": None,   # wklej link do formularza Google, np. "https://docs.google.com/forms/d/e/.../viewform"
     "zdjecie": None,            # zdjęcie do nagłówka, np. "akademia/hero.webp"
-    "grupy": [                  # PRZYKŁAD
-        {"nazwa": "Mini Volley", "wiek": "7–10 lat", "opis": "Zabawa z piłką, koordynacja i pierwsze odbicia."},
-        {"nazwa": "Młodziczki",  "wiek": "11–13 lat", "opis": "Technika, gra 4×4 i pierwsze turnieje."},
-        {"nazwa": "Kadetki",     "wiek": "14–16 lat", "opis": "Rozgrywki ligowe i przygotowanie do gry seniorskiej."},
+    # Grupy – DO UZUPEŁNIENIA. Pusta lista = sekcja się nie pokazuje.
+    #   Wzór: {"nazwa": "Mini Volley", "wiek": "7–10 lat", "opis": "Zabawa z piłką i pierwsze odbicia."},
+    "grupy": [
     ],
-    "trenerzy": [               # PRZYKŁAD
-        {"imie": "Ewa", "nazwisko": "Nowak", "opis": "Trenerka II klasy, prowadzi grupy Mini Volley.", "zdjecie": None},
+    # Trenerzy – DO UZUPEŁNIENIA. Pusta lista = sekcja się nie pokazuje.
+    #   Wzór: {"imie": "Jan", "nazwisko": "Kowalski", "opis": "Trener II klasy.", "zdjecie": None},
+    "trenerzy": [
     ],
     # Harmonogram treningów – pojawi się też w kalendarium (w okresie sezonu)
     "sezon_od": "2026-09-01",
     "sezon_do": "2027-06-20",
     "dni_wolne": ["2026-11-11", "2026-12-24", "2026-12-25", "2026-12-26", "2026-12-31", "2027-01-01", "2027-01-06"],
-    "harmonogram": [            # PRZYKŁAD
-        {"grupa": "Mini Volley", "dzien": "poniedziałek", "od": "16:00", "do": "17:00", "hala": "Hala przy PSP nr 3"},
-        {"grupa": "Młodziczki",  "dzien": "środa",        "od": "17:00", "do": "18:30", "hala": "Hala przy PSP nr 3"},
-        {"grupa": "Kadetki",     "dzien": "czwartek",     "od": "18:30", "do": "20:00", "hala": "Hala przy PSP nr 3"},
+    # Harmonogram – DO UZUPEŁNIENIA. Pusta lista = sekcja się nie pokazuje.
+    #   Wzór: {"grupa": "Mini Volley", "dzien": "poniedziałek", "od": "16:00", "do": "17:30", "hala": "Hala przy PSP nr 3"},
+    "harmonogram": [
     ],
     "ochrona_maloletnich": {
         "tekst": "Klub stosuje Standardy Ochrony Małoletnich. Każda osoba pracująca z dziećmi "
@@ -408,10 +414,9 @@ AKADEMIA = {
 SKLEP = {
     "jak_zamowic": "Napisz do nas z nazwą produktu i rozmiarem. Odbiór na meczu u siebie.",
     "formularz_google": None,
-    "produkty": [               # PRZYKŁAD
-        {"nazwa": "Koszulka kibica 2026/27", "cena": "89 zł", "rozmiary": "XS–XXL", "zdjecie": None, "dostepny": True},
-        {"nazwa": "Szalik klubowy", "cena": "45 zł", "rozmiary": None, "zdjecie": None, "dostepny": True},
-        {"nazwa": "Bluza z kapturem", "cena": "149 zł", "rozmiary": "S–XL", "zdjecie": None, "dostepny": False},
+    # Produkty – DO UZUPEŁNIENIA. Pusta lista = sklep znika z menu i strony głównej.
+    #   Wzór: {"nazwa": "Koszulka kibica 2026/27", "cena": "89 zł", "rozmiary": "XS–XXL", "zdjecie": None, "dostepny": True},
+    "produkty": [
     ],
 }
 
@@ -420,8 +425,9 @@ SKLEP = {
 # 12. GALERIA
 #   Zdjęcia wrzuć do img/galeria/<folder>/ – strona sama je znajdzie.
 # ---------------------------------------------------------------------
+#   Galeria znika z menu, dopóki żaden album nie ma zdjęć.
+#   Wzór: {"tytul": "ŁKS AZS UMED Łódź – Easy Wrap Volley", "data": "2026-10-17", "folder": "2026-10-17-lodz"},
 GALERIA = [
-    {"tytul": "ŁKS AZS UMED Łódź – Easy Wrap Volley", "data": "2026-10-17", "folder": "2026-10-17-lodz"},  # PRZYKŁAD
 ]
 
 
@@ -430,16 +436,17 @@ GALERIA = [
 # ---------------------------------------------------------------------
 O_KLUBIE = {
     "historia": """
-PRZYKŁAD – historia klubu. Klub Sportowy Volley z Kobyłki szkoli dziewczęta i chłopców,
-a pierwsza drużyna kobiet gra w 2. lidze pod nazwą Easy Wrap Volley Kobyłka.
+Klub Sportowy Volley z Kobyłki powstał w 2021 roku. Skupiamy się na szkoleniu młodzieży,
+wspieraniu zawodniczek i udziale w rozgrywkach seniorskich.
 
-Kolejny akapit historii.
+Nasza pierwsza drużyna gra w 2. lidze kobiet jako Easy Wrap Volley Kobyłka.
+Szkolimy dziewczęta w Akademii Siatkówki Volley i organizujemy obozy sportowe.
 """,
-    "trofea": [                 # PRZYKŁAD – pasek trofeów
-        {"rok": 2025, "opis": "Awans do 2. ligi"},
-        {"rok": 2024, "opis": "Mistrzostwo 3. ligi"},
+    # Pasek sukcesów – DO UZUPEŁNIENIA. Pusta lista = pasek się nie pokazuje.
+    #   Wzór: {"rok": 2025, "opis": "Awans do 2. ligi"},
+    "trofea": [
     ],
-    "wartosci": ["Szacunek", "Ambicja", "Wspólnota"],
+    "wartosci": ["Zaangażowanie", "Pasja", "Determinacja", "Ambicja"],
 }
 
 
@@ -447,7 +454,7 @@ Kolejny akapit historii.
 # 14. KONTAKT
 # ---------------------------------------------------------------------
 KONTAKT = {
-    "osoby": [                  # PRZYKŁAD
+    "osoby": [
         {"rola": "Sprawy klubu i sponsorzy", "imie": None, "email": "ks.volley.kobylka@gmail.com"},
         {"rola": "Zapisy do Akademii", "imie": None, "email": "ks.volley.kobylka@gmail.com"},
     ],

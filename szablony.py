@@ -30,19 +30,44 @@ MIESIACE = ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec",
 MIESIACE_DOP = ["stycznia", "lutego", "marca", "kwietnia", "maja", "czerwca",
                 "lipca", "sierpnia", "września", "października", "listopada", "grudnia"]
 
-# Menu główne: (plik, nazwa)
+# Menu główne: (plik, nazwa, na_komputerze)
+#   na_komputerze=False → pozycja jest tylko w menu na telefonie i w stopce,
+#   żeby menu na komputerze miało 6 najważniejszych pozycji.
+#   Galeria i Sklep pokazują się dopiero, gdy mają treść (zdjęcia / produkty).
 MENU = [
-    ("index.html", "Start"),
-    ("aktualnosci.html", "Aktualności"),
-    ("druzyny.html", "Drużyny"),
-    ("terminarz.html", "Terminarz"),
-    ("akademia.html", "Akademia"),
-    ("galeria.html", "Galeria"),
-    ("sklep.html", "Sklep"),
-    ("sponsorzy.html", "Sponsorzy"),
-    ("o-klubie.html", "O klubie"),
-    ("kontakt.html", "Kontakt"),
+    ("index.html", "Start", False),
+    ("aktualnosci.html", "Aktualności", True),
+    ("druzyny.html", "Drużyny", True),
+    ("terminarz.html", "Terminarz", True),
+    ("akademia.html", "Akademia", True),
+    ("galeria.html", "Galeria", False),
+    ("sklep.html", "Sklep", False),
+    ("sponsorzy.html", "Sponsorzy", True),
+    ("o-klubie.html", "O klubie", False),
+    ("kontakt.html", "Kontakt", True),
 ]
+
+
+def galeria_ma_zdjecia():
+    for a in C.GALERIA:
+        folder = os.path.join(FOLDER, "img", "galeria", a["folder"])
+        if os.path.isdir(folder) and any(f.lower().endswith((".webp", ".jpg", ".jpeg", ".png")) for f in os.listdir(folder)):
+            return True
+    return False
+
+
+def sklep_ma_produkty():
+    return bool(C.SKLEP.get("produkty"))
+
+
+def menu_pozycje():
+    """Pozycje menu bez pustych działów (Galeria bez zdjęć, Sklep bez produktów)."""
+    ukryte = set()
+    if not galeria_ma_zdjecia():
+        ukryte.add("galeria.html")
+    if not sklep_ma_produkty():
+        ukryte.add("sklep.html")
+    return [m for m in MENU if m[0] not in ukryte]
 
 
 def e(tekst):
@@ -228,9 +253,12 @@ def belka(p, kandydaci):
 # ---------------------------------------------------------------------
 def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja):
     menu = ""
-    for plik, nazwa in MENU:
+    for plik, nazwa, glowne in menu_pozycje():
         biezaca = ' aria-current="page"' if plik == aktywna else ""
-        menu += f'<li><a href="{p}{plik}"{biezaca}>{e(nazwa)}</a></li>'
+        klasa = "" if glowne else ' class="menu__dodatkowe"'
+        menu += f'<li{klasa}><a href="{p}{plik}"{biezaca}>{e(nazwa)}</a></li>'
+    skroty = "".join(f'<li><a href="{p}{plik}">{e(nazwa)}</a></li>'
+                     for plik, nazwa, glowne in menu_pozycje() if not glowne and plik != "index.html")
     pelny_tytul = C.KLUB["nazwa"] if aktywna == "index.html" else f"{tytul} – {C.KLUB['nazwa']}"
     logo = (f'<img src="{p}img/{e(C.KLUB["herb"])}" alt="" height="48">'
             if jest_plik(C.KLUB["herb"]) else herb_nasz_svg())
@@ -272,15 +300,14 @@ def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja):
     <div class="stopka__kolumny">
       <div><h2>Klub</h2><p>{e(C.KLUB['nazwa_prawna'])}<br>{e(C.KLUB['adres'])}</p></div>
       <div><h2>Kontakt</h2><p><a href="mailto:{e(C.KLUB['email'])}">{e(C.KLUB['email'])}</a>{f"<br>{e(C.KLUB['telefon'])}" if C.KLUB.get('telefon') else ''}</p></div>
-      <div><h2>Obserwuj</h2><ul>
+      <div><h2>Obserwuj</h2><ul class="stopka__social">
         <li><a href="{C.KLUB['facebook']}" rel="noopener">Facebook</a></li>
         <li><a href="{C.KLUB['instagram']}" rel="noopener">Instagram</a></li>
         <li><a href="{C.KLUB['youtube']}" rel="noopener">YouTube</a></li></ul></div>
       <div><h2>Na skróty</h2><ul>
-        <li><a href="{p}akademia.html">Akademia Siatkówki Volley</a></li>
+        {skroty}
         <li><a href="{p}akademia.html#ochrona">Standardy ochrony małoletnich</a></li>
-        <li><a href="{p}sponsorzy.html">Zostań sponsorem</a></li>
-        <li><a href="{p}kontakt.html">Kontakt</a></li></ul></div>
+        <li><a href="{p}sponsorzy.html">Zostań sponsorem</a></li></ul></div>
     </div>
     <div class="stopka__dol"><span>© {rok} {e(C.KLUB['nazwa_prawna'])} · {e(C.KLUB['nazwa'])}</span>
       <a href="{p}polityka-prywatnosci.html">Polityka prywatności i cookies</a></div>
@@ -294,26 +321,40 @@ def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja):
 # ---------------------------------------------------------------------
 # Plakat najbliższego meczu (hero strony głównej)
 # ---------------------------------------------------------------------
+def postac_do_plakatu(m):
+    """Wycięta zawodniczka na plakat meczu – co mecz inna (gdy mecz nie ma własnego zdjęcia)."""
+    kandydatki = [z for z in C.KADRA if z["druzyna"] == "seniorki" and jest_plik(z.get("zdjecie"))]
+    if not kandydatki:
+        return None
+    kandydatki.sort(key=lambda z: z["numer"])
+    klucz = m["data"].toordinal() if m else date.today().toordinal()
+    return kandydatki[klucz % len(kandydatki)]
+
+
 def hero(p, m):
-    # Zdjęcie plakatu: własne zdjęcie meczu ("zdjecie_plakatu") albo domyślne z ZDJECIA_NAGLOWKOW
+    # 1) własne zdjęcie meczu ("zdjecie_plakatu") albo domyślne z ZDJECIA_NAGLOWKOW → zdjęcie w ramce
     foto = img(p, (m or {}).get("zdjecie_plakatu"), "", "hero__foto", lazy=False) \
         or img(p, C.ZDJECIA_NAGLOWKOW.get("plakat_meczu"), "", "hero__foto", lazy=False)
+    klasy = ["hero"]
     if foto:
         foto_html = f'<div class="hero__zdjecie hero__zdjecie--foto" aria-hidden="true">{foto}</div>'
-    else:  # grafika zastępcza (widoczna tylko na komputerze): piłka i duży numer
-        foto_html = """<div class="hero__zdjecie" aria-hidden="true"><svg class="hero__grafika" viewBox="0 0 520 640">
-<defs><linearGradient id="hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#069DDF"/><stop offset="1" stop-color="#069DDF" stop-opacity="0"/></linearGradient></defs>
-<text x="520" y="560" text-anchor="end" font-family="Bebas Neue,Impact" font-size="640" fill="url(#hg)" opacity=".5">2</text>
-<circle cx="300" cy="190" r="120" fill="#fff"/>
-<path d="M190 150c60 10 110 60 120 160M300 70c-20 80-10 170 60 230M410 150c-80 0-170 40-220 120" fill="none" stroke="#002F6C" stroke-width="6"/>
-<circle cx="300" cy="190" r="120" fill="none" stroke="#FFC72C" stroke-width="6"/></svg></div>"""
-    z_foto = " hero--z-foto" if foto else ""
+        klasy.append("hero--z-foto")
+    else:
+        # 2) wycięta zawodniczka z kadry (co mecz inna) z wielkim numerem w tle
+        z = postac_do_plakatu(m)
+        if z:
+            foto_html = (f'<div class="hero__postac" aria-hidden="true"><span class="hero__postac-nr">{e(z["numer"])}</span>'
+                         f'<img class="hero__postac-img" src="{p}img/{e(z["zdjecie"])}" alt="" fetchpriority="high">'
+                         f'<span class="hero__postac-podpis">#{e(z["numer"])} {e(z["imie"])} {e(z["nazwisko"])}</span></div>')
+            klasy.append("hero--z-postacia")
+        else:
+            foto_html = ""
 
     if m is None:
         return f"""
-<section class="hero{z_foto}" id="hero">
-  <div class="hero__tlo-slowo" aria-hidden="true">SEZON</div>{foto_html}
-  <div class="kontener"><div>
+<section class="{' '.join(klasy)}" id="hero">
+  {foto_html}
+  <div class="kontener"><div class="hero__tresc">
     <span class="hero__etykieta">{e(C.DRUZYNY['seniorki']['liga'])}</span>
     <h1 class="hero__tytul-sezon">Sezon<br>trwa</h1>
     <div class="hero__przyciski"><a class="btn btn--zolty" href="{p}terminarz.html">Terminarz i wyniki →</a></div>
@@ -322,9 +363,11 @@ def hero(p, m):
 
     gosp, gosc = m["strony"]
     wyjazd = not m["u_siebie"]
+    if wyjazd:
+        klasy.append("hero--wyjazd")
     d = m["data"]
-    godzina = (f'<strong>{e(m["godzina"])}</strong>godzina' if m.get("godzina")
-               else '<strong>Wkrótce</strong>godzina meczu')
+    godzina = (f'<div class="hero__godzina"><strong>{e(m["godzina"])}</strong>godzina meczu</div>' if m.get("godzina")
+               else '<div class="hero__godzina hero__godzina--brak"><strong>Godzina wkrótce</strong>ustala organizator</div>')
     miejsce = m.get("hala") or ("Hala do potwierdzenia" if wyjazd else C.HALA_DOMOWA["nazwa"])
     adres = m.get("adres") or ("" if wyjazd else C.HALA_DOMOWA["adres"])
     mapa = ("https://www.google.com/maps/search/?api=1&query=" + "+".join(adres.split())) if adres else None
@@ -335,30 +378,32 @@ def hero(p, m):
         logo = img(p, s.get("logo"), s["nazwa"], "logo-sponsora__img") or e(s["nazwa"])
         sponsor = f'<div class="hero__sponsor">Sponsor meczu <span class="logo-sponsora">{logo}</span></div>'
 
+    # Jeden główny przycisk, reszta jako lżejsze linki
     przyciski = [f'<a class="btn btn--zolty" href="{p}kalendarz/{m["plik_ics"]}" download>Dodaj do kalendarza</a>']
     if m.get("transmisja"):
-        przyciski.append(f'<a class="btn btn--obrys" href="{e(m["transmisja"])}" rel="noopener">Transmisja</a>')
+        przyciski.append(f'<a class="hero__link" href="{e(m["transmisja"])}" rel="noopener">Transmisja ↗</a>')
     if mapa:
-        przyciski.append(f'<a class="btn btn--obrys" href="{e(mapa)}" rel="noopener">Dojazd</a>')
+        przyciski.append(f'<a class="hero__link" href="{e(mapa)}" rel="noopener">Dojazd ↗</a>')
 
+    druzyna_gosc = (f'<span class="hero__vs">vs</span><div class="hero__druzyna">{herb(p, gosc)}<span class="nazwa">{e(gosc["krotko"])}</span></div>'
+                    if gosc else "")
     return f"""
-<section class="hero{' hero--wyjazd' if wyjazd else ''}{z_foto}" id="hero" aria-labelledby="hero-tytul">
-  <div class="hero__tlo-slowo" aria-hidden="true">{'WYJAZD' if wyjazd else 'MECZ'}</div>
+<section class="{' '.join(klasy)}" id="hero" aria-labelledby="hero-tytul">
   {foto_html}
-  <div class="kontener"><div>
-    <span class="hero__etykieta">{'Mecz wyjazdowy' if wyjazd else 'Mecz u siebie'}</span>
-    <span class="hero__liga">{e(m['liga'])}</span>
+  <div class="kontener"><div class="hero__tresc">
+    <div class="hero__gora"><span class="hero__etykieta">{'Mecz wyjazdowy' if wyjazd else 'Mecz u siebie'}</span>
+    <span class="hero__liga">{e(m['liga'])}</span></div>
     <h1 class="ukryte" id="hero-tytul">Najbliższy mecz: {e(gosp['nazwa'])} – {e(gosc['nazwa'] if gosc else '')}, {e(data_pl(d))}</h1>
     <div class="hero__druzyny" aria-hidden="true">
-      {herb(p, gosp)}<span class="nazwa">{e(gosp['krotko'])}</span>
-      {'<span class="hero__vs">VS</span>' + herb(p, gosc) + f'<span class="nazwa">{e(gosc["krotko"])}</span>' if gosc else ''}
+      <div class="hero__druzyna">{herb(p, gosp)}<span class="nazwa">{e(gosp['krotko'])}</span></div>
+      {druzyna_gosc}
     </div>
     <div class="hero__data">
       <span class="hero__dzien">{d.day}</span>
-      <span class="hero__dzien-opis">{DNI[d.weekday()]}<span>{MIESIACE[d.month - 1]}</span></span>
+      <span class="hero__dzien-opis">{DNI[d.weekday()]}<span>{MIESIACE_DOP[d.month - 1]}</span></span>
     </div>
     <div class="hero__szczegoly">
-      <div>{godzina}</div>
+      {godzina}
       <div class="hero__hala"><strong>{e(miejsce)}</strong>{e(adres)}</div>
     </div>
     <div class="hero__przyciski">{''.join(przyciski)}</div>
@@ -419,7 +464,7 @@ def karta_meczu(p, m):
         etykieta = '<span class="wynik-etykieta wynik-etykieta--p">Wynik wkrótce</span>'
         a = b = ""
     else:
-        etykieta = f'<span class="mecz__godz">{e(m.get("godzina") or "--:--")}</span>'
+        etykieta = f'<span class="mecz__godz">{e(m["godzina"])}</span>' if m.get("godzina") else ""
         a = b = ""
 
     def wiersz(strona, punkty):
