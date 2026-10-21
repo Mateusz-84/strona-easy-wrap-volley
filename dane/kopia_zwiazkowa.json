@@ -22,7 +22,7 @@
   }
  },
  "seniorki": {
-  "pobrano": "2026-10-21T10:42",
+  "pobrano": "2026-10-21T20:43",
   "pzps_lista": [
    {
     "data": "2026-09-26",
@@ -454,8 +454,8 @@
    },
    {
     "data": "2026-10-24",
-    "godzina": null,
-    "godzina_pewna": false,
+    "godzina": "18:00",
+    "godzina_pewna": true,
     "gosc": "Energa MKS Kalisz II",
     "gospodarz": "EASY WRAP Volley Kobyłka"
    },
