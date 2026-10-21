@@ -347,7 +347,7 @@ SPONSORZY = {
     "dorol":      {"nazwa": "Dorol", "poziom": "partner", "logo": "sponsorzy/dorol.webp", "www": "https://dorol.pl", "prezentuje": None},
     "fhr":        {"nazwa": "FHR", "poziom": "partner", "logo": "sponsorzy/fhr.webp", "www": "https://fhr.com.pl", "prezentuje": None},
     "fortisgo":   {"nazwa": "fortisGO", "poziom": "partner", "logo": "sponsorzy/fortisgo.webp", "www": "https://fortisgo.com", "prezentuje": None},
-    "impression": {"nazwa": "Impression Studio Reklamy", "poziom": "partner", "logo": "sponsorzy/impression.webp", "www": "https://impression4you.pl", "prezentuje": None},
+    "impression": {"nazwa": "Impression Studio Reklamy", "poziom": "partner", "logo": "sponsorzy/impression-czarne.webp", "www": "https://impression4you.pl", "prezentuje": None},
     "kriva":      {"nazwa": "Kriva HiTech Beauty", "poziom": "partner", "logo": "sponsorzy/kriva.webp", "www": None, "prezentuje": None},
     "racbus":     {"nazwa": "Racbus", "poziom": "partner", "logo": "sponsorzy/racbus.webp", "www": "https://racbus.pl", "prezentuje": None},
     "zdrofit":    {"nazwa": "Zdrofit", "poziom": "partner", "logo": "sponsorzy/zdrofit.webp", "www": "https://zdrofit.pl", "prezentuje": None},
