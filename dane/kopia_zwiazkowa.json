@@ -19,10 +19,15 @@
    "adres": "ul. Warszawska 13, Łask",
    "godzina": null,
    "hala": "Hala MOS w Łasku"
+  },
+  "/system/mecz/188/": {
+   "adres": "Kobyłka, ul. ks. Marcina Załuskiego 57",
+   "godzina": null,
+   "hala": "Hala Sportowa przy PSP nr 3 w Kobyłce"
   }
  },
  "seniorki": {
-  "pobrano": "2026-10-21T20:43",
+  "pobrano": "2026-10-22T00:37",
   "pzps_lista": [
    {
     "data": "2026-09-26",
