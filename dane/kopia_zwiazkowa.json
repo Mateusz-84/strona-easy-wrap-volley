@@ -27,7 +27,7 @@
   }
  },
  "seniorki": {
-  "pobrano": "2026-10-24T20:37",
+  "pobrano": "2026-10-25T00:33",
   "pzps_lista": [
    {
     "data": "2026-09-26",
@@ -280,15 +280,15 @@
     },
     {
      "lp": 5,
-     "male_minus": 423,
-     "male_plus": 405,
-     "mecze": 5,
+     "male_minus": 525,
+     "male_plus": 512,
+     "mecze": 6,
      "nasz": false,
      "nazwa": "TPS Bielsk Podlaski",
-     "pkt": 9,
-     "sety_minus": 8,
-     "sety_plus": 10,
-     "zwyciestwa": 3
+     "pkt": 11,
+     "sety_minus": 10,
+     "sety_plus": 13,
+     "zwyciestwa": 4
     },
     {
      "lp": 6,
@@ -328,14 +328,14 @@
     },
     {
      "lp": 9,
-     "male_minus": 481,
-     "male_plus": 450,
-     "mecze": 5,
+     "male_minus": 588,
+     "male_plus": 552,
+     "mecze": 6,
      "nasz": false,
      "nazwa": "MOS Wola AZS Warszawa",
-     "pkt": 5,
-     "sety_minus": 13,
-     "sety_plus": 9,
+     "pkt": 6,
+     "sety_minus": 16,
+     "sety_plus": 11,
      "zwyciestwa": 2
     },
     {
