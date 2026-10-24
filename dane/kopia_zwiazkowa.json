@@ -27,7 +27,7 @@
   }
  },
  "seniorki": {
-  "pobrano": "2026-10-22T00:37",
+  "pobrano": "2026-10-24T18:36",
   "pzps_lista": [
    {
     "data": "2026-09-26",
@@ -232,15 +232,15 @@
    "tabela": [
     {
      "lp": 1,
-     "male_minus": 332,
-     "male_plus": 409,
-     "mecze": 5,
+     "male_minus": 383,
+     "male_plus": 484,
+     "mecze": 6,
      "nasz": false,
      "nazwa": "GKS Orlęta Raszyn",
-     "pkt": 12,
+     "pkt": 15,
      "sety_minus": 4,
-     "sety_plus": 13,
-     "zwyciestwa": 4
+     "sety_plus": 16,
+     "zwyciestwa": 5
     },
     {
      "lp": 2,
@@ -352,13 +352,13 @@
     },
     {
      "lp": 11,
-     "male_minus": 434,
-     "male_plus": 408,
-     "mecze": 5,
+     "male_minus": 509,
+     "male_plus": 459,
+     "mecze": 6,
      "nasz": false,
      "nazwa": "MUKS Krótka",
      "pkt": 5,
-     "sety_minus": 12,
+     "sety_minus": 15,
      "sety_plus": 7,
      "zwyciestwa": 1
     },
