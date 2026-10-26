@@ -27,7 +27,7 @@
   }
  },
  "seniorki": {
-  "pobrano": "2026-10-25T00:33",
+  "pobrano": "2026-10-26T09:49",
   "pzps_lista": [
    {
     "data": "2026-09-26",
@@ -85,8 +85,8 @@
    },
    {
     "data": "2026-10-28",
-    "godzina": null,
-    "godzina_pewna": false,
+    "godzina": "20:00",
+    "godzina_pewna": true,
     "gosc": "EASY WRAP Volley Kobyłka",
     "gospodarz": "MUKS Krótka",
     "id": "/system/mecz/172/",
