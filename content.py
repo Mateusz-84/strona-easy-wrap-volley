@@ -34,7 +34,7 @@ KLUB = {
     "facebook": "https://facebook.com/easywrapvolley",
     "instagram": "https://instagram.com/easy_wrap_volley_kobylka",
     "youtube": "https://youtube.com/@ks_Volley",
-    "adres_strony": "https://mateusz-84.github.io/strona-easy-wrap-volley/",  # zmień, gdy będzie własna domena
+    "adres_strony": "https://volleykobylka.pl/",
     "opis": "Easy Wrap Volley Kobyłka – klub siatkówki kobiet z Kobyłki. 2. liga kobiet, "
             "Akademia Siatkówki Volley dla dzieci i młodzieży.",
 }
@@ -267,22 +267,22 @@ MECZE = [
 KADRA = [
     # Rozgrywające
     {"druzyna": "seniorki", "numer": 7,  "imie": "Natalia",   "nazwisko": "Bielińska",       "pozycja": "Rozgrywająca", "zdjecie": "zawodniczki/natalia-bielinska.webp"},
-    {"druzyna": "seniorki", "numer": 20, "imie": "Zuzanna",   "nazwisko": "Kałkowska",       "pozycja": "Rozgrywająca", "zdjecie": None},
+    {"druzyna": "seniorki", "numer": 20, "imie": "Zuzanna",   "nazwisko": "Kałkowska",       "pozycja": "Rozgrywająca", "zdjecie": "zawodniczki/zuzanna-kalkowska.webp"},
     # Atakujące
-    {"druzyna": "seniorki", "numer": 14, "imie": "Nikola",    "nazwisko": "Gutowska",        "pozycja": "Atakująca",    "zdjecie": "zawodniczki/nikola-gutowska.webp"},
-    {"druzyna": "seniorki", "numer": 17, "imie": "Natalia",   "nazwisko": "Dąbrowska",       "pozycja": "Atakująca",    "zdjecie": "zawodniczki/natalia-dabrowska.webp"},
+    {"druzyna": "seniorki", "numer": 14, "imie": "Nikola",    "nazwisko": "Gutowska",        "pozycja": "Atakująca",    "zdjecie": "zawodniczki/nikola-gutowska-mecz.webp"},
+    {"druzyna": "seniorki", "numer": 17, "imie": "Natalia",   "nazwisko": "Dąbrowska",       "pozycja": "Atakująca",    "zdjecie": "zawodniczki/natalia-dabrowska-mecz.webp"},
     # Przyjmujące
-    {"druzyna": "seniorki", "numer": 2,  "imie": "Julia",     "nazwisko": "Grzelak",         "pozycja": "Przyjmująca",  "zdjecie": None},
-    {"druzyna": "seniorki", "numer": 6,  "imie": "Kamila",    "nazwisko": "Wrzosek",         "pozycja": "Przyjmująca",  "zdjecie": "zawodniczki/kamila-wrzosek.webp"},
-    {"druzyna": "seniorki", "numer": 10, "imie": "Kaja",      "nazwisko": "Klepacz",         "pozycja": "Przyjmująca",  "zdjecie": "zawodniczki/kaja-klepacz.webp"},
-    {"druzyna": "seniorki", "numer": 21, "imie": "Matylda",   "nazwisko": "Woźny",           "pozycja": "Przyjmująca",  "zdjecie": "zawodniczki/matylda-wozny.webp"},
+    {"druzyna": "seniorki", "numer": 2,  "imie": "Julia",     "nazwisko": "Grzelak",         "pozycja": "Przyjmująca",  "zdjecie": "zawodniczki/julia-grzelak.webp"},
+    {"druzyna": "seniorki", "numer": 6,  "imie": "Kamila",    "nazwisko": "Wrzosek",         "pozycja": "Przyjmująca",  "zdjecie": "zawodniczki/kamila-wrzosek-mecz.webp"},
+    {"druzyna": "seniorki", "numer": 10, "imie": "Kaja",      "nazwisko": "Klepacz",         "pozycja": "Przyjmująca",  "zdjecie": "zawodniczki/kaja-klepacz-mecz.webp"},
+    {"druzyna": "seniorki", "numer": 21, "imie": "Matylda",   "nazwisko": "Woźny",           "pozycja": "Przyjmująca",  "zdjecie": "zawodniczki/matylda-wozny-mecz.webp"},
     # Środkowe
-    {"druzyna": "seniorki", "numer": 11, "imie": "Natalia",   "nazwisko": "Pietruszkiewicz", "pozycja": "Środkowa",     "zdjecie": "zawodniczki/natalia-pietruszkiewicz.webp"},
-    {"druzyna": "seniorki", "numer": 12, "imie": "Wiktoria",  "nazwisko": "Sztylko",         "pozycja": "Środkowa",     "zdjecie": None},
-    {"druzyna": "seniorki", "numer": 22, "imie": "Adrianna",  "nazwisko": "Sitarska",        "pozycja": "Środkowa",     "zdjecie": "zawodniczki/adrianna-sitarska.webp"},
+    {"druzyna": "seniorki", "numer": 11, "imie": "Natalia",   "nazwisko": "Pietruszkiewicz", "pozycja": "Środkowa",     "zdjecie": "zawodniczki/natalia-pietruszkiewicz-mecz.webp"},
+    {"druzyna": "seniorki", "numer": 12, "imie": "Wiktoria",  "nazwisko": "Sztylko",         "pozycja": "Środkowa",     "zdjecie": "zawodniczki/wiktoria-sztylko.webp"},
+    {"druzyna": "seniorki", "numer": 22, "imie": "Adrianna",  "nazwisko": "Sitarska",        "pozycja": "Środkowa",     "zdjecie": "zawodniczki/adrianna-sitarska-mecz.webp"},
     # Libero
-    {"druzyna": "seniorki", "numer": 8,  "imie": "Klaudia",   "nazwisko": "Kucharska",       "pozycja": "Libero",       "zdjecie": "zawodniczki/klaudia-kucharska.webp", "kapitan": True},
-    {"druzyna": "seniorki", "numer": 23, "imie": "Małgorzata", "nazwisko": "Czajka",         "pozycja": "Libero",       "zdjecie": "zawodniczki/malgorzata-czajka.webp"},
+    {"druzyna": "seniorki", "numer": 8,  "imie": "Klaudia",   "nazwisko": "Kucharska",       "pozycja": "Libero",       "zdjecie": "zawodniczki/klaudia-kucharska-mecz.webp", "kapitan": True},
+    {"druzyna": "seniorki", "numer": 23, "imie": "Małgorzata", "nazwisko": "Czajka",         "pozycja": "Libero",       "zdjecie": "zawodniczki/malgorzata-czajka-mecz.webp"},
 ]
 
 # Kolejność pozycji na stronie Drużyny
@@ -348,7 +348,7 @@ SPONSORZY = {
     "fhr":        {"nazwa": "FHR", "poziom": "partner", "logo": "sponsorzy/fhr.webp", "www": "https://fhr.com.pl", "prezentuje": None},
     "fortisgo":   {"nazwa": "fortisGO", "poziom": "partner", "logo": "sponsorzy/fortisgo.webp", "www": "https://fortisgo.com", "prezentuje": None},
     "impression": {"nazwa": "Impression Studio Reklamy", "poziom": "partner", "logo": "sponsorzy/impression-czarne.webp", "www": "https://impression4you.pl", "prezentuje": None},
-    "kriva":      {"nazwa": "Kriva HiTech Beauty", "poziom": "partner", "logo": "sponsorzy/kriva.webp", "www": None, "prezentuje": None},
+    "kriva":      {"nazwa": "Kriva HiTech Beauty", "poziom": "partner", "logo": "sponsorzy/kriva.webp", "www": "https://kriva-hitechbeauty.pl/", "prezentuje": None},
     "racbus":     {"nazwa": "Racbus", "poziom": "partner", "logo": "sponsorzy/racbus.webp", "www": "https://racbus.pl", "prezentuje": None},
     "zdrofit":    {"nazwa": "Zdrofit", "poziom": "partner", "logo": "sponsorzy/zdrofit.webp", "www": "https://zdrofit.pl", "prezentuje": None},
     "sp3":        {"nazwa": "SP nr 3 im. Karola Wojtyły w Kobyłce", "poziom": "partner", "logo": "sponsorzy/sp3.webp", "www": "https://sp3kobylka.pl", "prezentuje": None},
