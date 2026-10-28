@@ -90,8 +90,9 @@ POSTY_FB = {
     "ile": 12,                          # ile ostatnich postów pokazywać
     "usun_hashtagi": True,              # hashtagi na końcu opisu nie trafiają na stronę
     # "strona" = fragment nazwy strony na Facebooku – po nim strona rozpoznaje, który token jest czyj
-    "druzyna":  {"kategoria": "Seniorki", "strona": "Easy Wrap Volley"},
-    "akademia": {"kategoria": "Akademia", "strona": "Akademia Siatkówki Volley"},
+    # "id" = numer strony na Facebooku (potrzebny, gdy dostęp do strony jest przez konto firmowe Meta)
+    "druzyna":  {"kategoria": "Seniorki", "strona": "Easy Wrap Volley", "id": "101162122310332"},
+    "akademia": {"kategoria": "Akademia", "strona": "Akademia Siatkówki Volley", "id": "108955808681291"},
 }
 
 # Zapowiedź meczu – plakat pokazywany przez kilka sekund po wejściu na stronę główną.

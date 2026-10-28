@@ -601,6 +601,17 @@ def tokeny_stron(konfig=None):
         except Exception as blad:
             if "kod 100" not in blad_meta(blad):   # token strony nie ma listy me/accounts – to normalne
                 print(f"  (me/accounts: {blad_meta(blad)})")
+        # Strony, do których dostęp jest przez konto firmowe (portfolio Meta), nie ma na liście me/accounts –
+        # token takiej strony bierzemy bezpośrednio po jej ID z content.py
+        for czesc in ("druzyna", "akademia"):
+            ident = (konfig.get(czesc) or {}).get("id")
+            if ident and not any(bez_ogonkow((konfig.get(czesc) or {}).get("strona") or "-") in bez_ogonkow(n) for n, _ in kandydaci):
+                try:
+                    s = json.loads(pobierz(f"{API_META}/{WERSJA_API}/{ident}?fields=name,access_token&access_token={token}"))
+                    if s.get("access_token"):
+                        kandydaci.append((s.get("name"), s["access_token"]))
+                except Exception:
+                    pass
         # Do logu tylko NAZWY (nigdy tokeny) – żeby było widać, co jest w sekrecie
         print("  Token w META_TOKEN: " + str(ja.get("name")) +
               (" → strony: " + ", ".join(str(n) for n, _ in kandydaci[1:]) if len(kandydaci) > 1 else ""))
