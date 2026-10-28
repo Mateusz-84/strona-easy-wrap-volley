@@ -1037,6 +1037,13 @@ def main():
     b.nie_znaleziono()
     b.kalendarze()
     zapisz("robots.txt", "User-agent: *\nAllow: /\n")
+    # Ikona strony: favicon.ico w katalogu głównym (przeglądarki i Google szukają jej tam) + manifest
+    if os.path.isfile(os.path.join(FOLDER, "img", "favicon.ico")):
+        shutil.copy(os.path.join(FOLDER, "img", "favicon.ico"), os.path.join(WYJSCIE, "favicon.ico"))
+    zapisz("site.webmanifest", '{"name":"KS Volley Kobyłka","short_name":"Volley Kobyłka",'
+           '"icons":[{"src":"img/favicon-192.png","sizes":"192x192","type":"image/png"},'
+           '{"src":"img/favicon-512.png","sizes":"512x512","type":"image/png"}],'
+           '"theme_color":"#002F6C","background_color":"#ffffff","display":"browser"}')
 
     nm = b.najblizszy
     print(f"\nGotowe! Strona jest w folderze: {WYJSCIE}")

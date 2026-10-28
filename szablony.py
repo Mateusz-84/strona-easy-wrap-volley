@@ -293,7 +293,7 @@ def belka(p, kandydaci):
 # ---------------------------------------------------------------------
 # Układ każdej podstrony
 # ---------------------------------------------------------------------
-def glowa(pelny_tytul, opis, p, wersja, kolor="#002F6C", ikona="img/favicon.svg"):
+def glowa(pelny_tytul, opis, p, wersja, kolor="#002F6C", ikona=None):
     return f"""<!doctype html>
 <html lang="pl">
 <head>
@@ -305,7 +305,10 @@ def glowa(pelny_tytul, opis, p, wersja, kolor="#002F6C", ikona="img/favicon.svg"
 <meta property="og:title" content="{e(pelny_tytul)}">
 <meta property="og:description" content="{e(opis)}">
 <meta property="og:locale" content="pl_PL">
-<link rel="icon" href="{p}{ikona}">
+{f'<link rel="icon" href="{p}{ikona}">' if ikona else f'''<link rel="icon" href="{p}favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="{p}img/favicon-32.png">'''}
+<link rel="apple-touch-icon" href="{p}img/apple-touch-icon.png">
+<link rel="manifest" href="{p}site.webmanifest">
 <link rel="preload" href="{p}zasoby/fonty/bebas-neue-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{p}zasoby/fonty.css?v={wersja}">
 <link rel="stylesheet" href="{p}zasoby/style.css?v={wersja}">
@@ -385,7 +388,7 @@ def uklad_akademii(tytul, opis, tresc, p, wersja, aktualnosci=False):
         f'<a href="tel:{e((k.get("telefon") or "").replace(" ", ""))}">{e(k["telefon"])}</a>' if k.get("telefon") else "",
         f'<a href="mailto:{e(k["email"])}">{e(k["email"])}</a>' if k.get("email") else ""] if x)
     rok = date.today().year
-    return f"""{glowa(f"{tytul}", opis, p, wersja, kolor="#1C6FD1", ikona=A.get("logo") and "img/" + A["logo"] or "img/favicon.svg")}
+    return f"""{glowa(f"{tytul}", opis, p, wersja, kolor="#1C6FD1", ikona=A.get("logo") and "img/" + A["logo"] or None)}
 <body class="strefa-akademia">
 <a class="przeskocz" href="#tresc">Przejdź do treści</a>
 <div class="belka belka--akademia"><div class="kontener">
