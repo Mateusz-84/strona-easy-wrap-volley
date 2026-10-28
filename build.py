@@ -14,6 +14,7 @@
 
 import hashlib
 import json
+import re
 import os
 import shutil
 import sys
@@ -162,6 +163,7 @@ class Budowa:
         if self.najblizszy:
             self.najblizszy["najblizszy"] = True   # wyróżnienie na kartach meczów
         self.newsy = sorted(C.NEWSY, key=lambda n: n["data"], reverse=True)
+        self.newsy_akademii = []       # uzupełnia main() z postów FB Akademii
 
     # --- wspólny układ ---------------------------------------------------
     def strona(self, plik, tytul, opis, tresc, aktywna=None, p=None):
@@ -435,8 +437,9 @@ class Budowa:
     <p class="plakat__nad">{e(n['kategoria'])} · <time datetime="{d.isoformat()}">{e(S.data_pl(d))}</time></p>
     <h1 class="plakat__tytul plakat__tytul--artykul">{e(n['tytul'])}</h1></div></header>
   <div class="kontener artykul__kontener">
-    {f'<p class="artykul__zajawka">{e(n["zajawka"])}</p>' if n.get('zajawka') else ''}
-    <div class="artykul__tresc">{S.akapity(n['tresc'])}</div>
+    {f'<p class="artykul__zajawka">{e(n["zajawka"])}</p>' if n.get('zajawka') and n.get('zrodlo') != 'fb' else ''}
+    <div class="artykul__tresc">{S.akapity_fb(n['tresc']) if n.get('zrodlo') == 'fb' else S.akapity(n['tresc'])}</div>
+    {S.przycisk_fb(n)}
     <p><a class="sekcja__link" href="{p}aktualnosci.html">← Wszystkie aktualności</a></p>
   </div>
 </article>
@@ -508,6 +511,18 @@ class Budowa:
         <p class="ochrona__telefon">Możesz też zadzwonić bezpłatnie i anonimowo: <strong>Telefon Zaufania dla Dzieci i Młodzieży
           <a href="tel:116111">116 111</a></strong> (całą dobę).</p>
       </div>""" if punkty else "")
+        na = self.newsy_akademii
+        karty_ak = "".join(S.karta_newsa("", n, i == 0, "akademia-aktualnosci", A.get("logo") or "favicon.svg")
+                           for i, n in enumerate(na[:7]))
+        wiecej_fb = (f'<p class="ak-przypis"><a href="{e(A["facebook"])}" rel="noopener" target="_blank">'
+                     f'Więcej na Facebooku Akademii ↗</a></p>' if A.get("facebook") else "")
+        sekcja_aktualnosci = (f"""<section class="sekcja ak-sekcja" id="aktualnosci" aria-labelledby="ak-news-tytul">
+  <div class="kontener">
+    <h2 class="ak-h2" id="ak-news-tytul">Aktualności</h2>
+    <div class="newsy newsy--wszystkie">{karty_ak}</div>
+    {wiecej_fb}
+  </div>
+</section>""" if na else "")
         mapa = C.HALA_DOMOWA.get("mapa")
         sekcja_grupy = (f'<div class="grupy pojaw">{grupy}</div>' if grupy else "")
         tresc = f"""
@@ -565,6 +580,7 @@ class Budowa:
   </div>
 </section>
 
+{sekcja_aktualnosci}
 <section class="sekcja ak-sekcja ak-sekcja--biala" id="kontakt" aria-labelledby="kontakt-tytul">
   <div class="kontener ak-kontakt">
     <div>
@@ -597,8 +613,36 @@ class Budowa:
 </section>"""
         html = S.uklad_akademii("Akademia Siatkówki Volley – Kobyłka",
                                 "Akademia Siatkówki Volley w Kobyłce – treningi siatkówki dla dziewcząt. Cennik, plan treningów, zapisy i kontakt.",
-                                tresc, p, self.wersja)
+                                tresc, p, self.wersja, aktualnosci=bool(na))
         zapisz("akademia.html", html)
+
+        # Podstrony aktualności Akademii (z postów FB)
+        herb_ak = A.get("logo") or "favicon.svg"
+        for n in na:
+            pp = "../"
+            foto = S.img(pp, n.get("zdjecie"), n["tytul"], "plakat__foto-img", lazy=False)
+            d = date.fromisoformat(n["data"])
+            inne = "".join(S.karta_newsa(pp, x, False, "akademia-aktualnosci", herb_ak) for x in [x for x in na if x is not n][:2])
+            czytaj = (f'<section class="sekcja ak-sekcja"><div class="kontener"><h2 class="ak-h2">Czytaj też</h2>'
+                      f'<div class="newsy">{inne}</div></div></section>' if inne else "")
+            naglowek = f'<div class="plakat__tlo">{foto}</div>' if foto else ""
+            tresc_n = f"""
+<article class="artykul artykul--akademia">
+  <header class="plakat{' plakat--z-foto' if foto else ''}">
+    {naglowek}
+    <div class="kontener">
+    <p class="plakat__nad">Akademia · <time datetime="{d.isoformat()}">{e(S.data_pl(d))}</time></p>
+    <h1 class="plakat__tytul plakat__tytul--artykul">{e(n['tytul'])}</h1></div></header>
+  <div class="kontener artykul__kontener">
+    <div class="artykul__tresc">{S.akapity_fb(n['tresc'])}</div>
+    {S.przycisk_fb(n)}
+    <p><a class="sekcja__link" href="{pp}akademia.html#aktualnosci">← Wszystkie aktualności Akademii</a></p>
+  </div>
+</article>
+{czytaj}"""
+            zapisz(f"akademia-aktualnosci/{n['adres']}.html",
+                   S.uklad_akademii(f"{n['tytul']} – Akademia Siatkówki Volley", n.get("zajawka") or n["tytul"],
+                                    tresc_n, pp, self.wersja, aktualnosci=True))
 
     # --- STRONA WYBORU (volleykobylka.pl) -----------------------------------
     def wybor(self):
@@ -778,6 +822,8 @@ w systemach Polskiego Związku Piłki Siatkowej i Wojewódzkiego Związku Piłki
 <p>Publikujemy zdjęcia i filmy z meczów, treningów i wydarzeń klubowych. Wizerunek dzieci z Akademii publikujemy wyłącznie za pisemną zgodą
 rodziców lub opiekunów, bez podawania nazwisk. Zgodę można w każdej chwili wycofać – usuniemy wtedy zdjęcie ze strony i z naszych profili.
 Jeśli widzisz zdjęcie, które chcesz usunąć, napisz: {mail}.</p>
+<p>Aktualności na stronie to posty z naszych profili na Facebooku (drużyny i Akademii). Strona sama kopiuje ich treść i zdjęcia
+na nasz serwer – usunięcie posta na Facebooku usuwa go też ze strony przy najbliższej aktualizacji.</p>
 
 <h2>4. Komu przekazujemy dane</h2>
 <p>Danych nie sprzedajemy. Korzystają z nich tylko osoby działające w imieniu Klubu (zarząd, trenerzy, koordynator) oraz dostawcy usług:</p>
@@ -868,6 +914,40 @@ Krótka wersja dla dzieci jest na stronie <a href="{p}akademia.html#ochrona">Aka
 # =====================================================================
 # 4. URUCHOMIENIE
 # =====================================================================
+def newsy_z_fb(posty, kategoria):
+    """Posty z FB → wpisy aktualności (tytuł, zajawka, treść, zdjęcie, link do posta)."""
+    nazwy = [s["nazwa"] for s in C.SPONSORZY.values()]
+    wynik, adresy = [], set()
+    for post in posty:
+        opis = zrodla.oczysc_opis(post.get("opis"), nazwy, C.POSTY_FB.get("usun_hashtagi", True))
+        tytul, tresc, zajawka = zrodla.podziel_post(opis)
+        if not tytul:
+            continue
+        czas = datetime.fromisoformat(post["czas"].replace("+0000", "+00:00")).astimezone()
+        adres = f"{czas.date().isoformat()}-{zrodla.slug(tytul)}"
+        if adres in adresy:
+            adres += "-" + zrodla.klucz_posta("", post["id"])[1:6]
+        adresy.add(adres)
+        wynik.append({"adres": adres, "data": czas.date().isoformat(), "czas": czas.isoformat(),
+                      "kategoria": kategoria, "tytul": tytul, "zajawka": zajawka, "tresc": tresc,
+                      "zdjecie": post.get("zdjecie"), "link_fb": post.get("link"), "zrodlo": "fb"})
+    return wynik
+
+
+def podepnij_relacje(mecze, newsy):
+    """Mecz bez relacji dostaje news z FB opublikowany do 2 dni po meczu, w którym jest jego wynik."""
+    for m in mecze:
+        if not m.get("wynik") or m.get("relacja"):
+            continue
+        a, b = m["wynik"].split(":")
+        wzor = re.compile(rf"\b({a}\s*:\s*{b}|{b}\s*:\s*{a})\b")
+        for n in sorted(newsy, key=lambda n: n.get("czas") or n["data"]):
+            dni = (date.fromisoformat(n["data"]) - m["data"]).days
+            if n.get("zrodlo") == "fb" and 0 <= dni <= 2 and wzor.search(n["tytul"] + " " + n["tresc"]):
+                m["relacja"] = n["adres"]
+                break
+
+
 def mecz_do_zapowiedzi(mecz):
     """Data najbliższego meczu i wszystkie znane nazwy rywala – do rozpoznania posta z plakatem."""
     if mecz is None:
@@ -890,9 +970,30 @@ def main():
     przygotuj_herby(bez_internetu)   # przed kopiowaniem img/, żeby nowe herby trafiły na serwer
     b = Budowa(dane)
 
+    # Aktualności z Facebooka (drużyna i Akademia) – sprawdzane 2 razy dziennie
+    nowe_fb_druzyny = None
+    for czesc in ("druzyna", "akademia"):
+        try:
+            zapisane, nowe, uwaga = zrodla.aktualnosci_fb(czesc, C.POSTY_FB, bez_internetu)
+        except Exception as blad:
+            zapisane, nowe, uwaga = [], None, f"aktualności FB ({czesc}): {type(blad).__name__} – pomijam"
+        if uwaga:
+            print("  UWAGA:", uwaga)
+        kategoria = (C.POSTY_FB.get(czesc) or {}).get("kategoria", "Klub")
+        if czesc == "druzyna":
+            nowe_fb_druzyny = nowe
+            b.newsy = sorted(C.NEWSY + newsy_z_fb(zapisane, kategoria),
+                             key=lambda n: n.get("czas") or n["data"], reverse=True)
+        else:
+            b.newsy_akademii = newsy_z_fb(zapisane, kategoria)
+        print(f"  Aktualności z FB ({czesc}): {len(zapisane)}" + (" – sprawdzono nowe posty" if nowe is not None else ""))
+    podepnij_relacje(b.mecze, b.newsy)
+
     # Posty z Instagrama/Facebooka: zapowiedź meczu i zdjęcia wygranych.
     # Każdy błąd tylko pomija zdjęcie – nigdy nie zatrzymuje budowania strony.
     posty, uwaga = zrodla.pobierz_posty(C.META, bez_internetu)
+    if posty is None and nowe_fb_druzyny:
+        posty, uwaga = nowe_fb_druzyny, None    # te same posty z FB drużyny służą też do zapowiedzi
     if uwaga:
         print("  UWAGA:", uwaga)
     for m in b.mecze:

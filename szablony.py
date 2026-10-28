@@ -368,13 +368,16 @@ def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja):
 
 # Menu Akademii – jedna strona, przewijanie do sekcji
 MENU_AKADEMII = [("o-akademii", "O Akademii"), ("cennik", "Cennik"), ("plan", "Plan treningów"),
-                 ("zapisy", "Zapisy"), ("kontakt", "Kontakt")]
+                 ("zapisy", "Zapisy"), ("aktualnosci", "Aktualności"), ("kontakt", "Kontakt")]
 
 
-def uklad_akademii(tytul, opis, tresc, p, wersja):
-    """Część AKADEMII SIATKÓWKI VOLLEY: własne logo, menu, stopka i tylko Facebook."""
+def uklad_akademii(tytul, opis, tresc, p, wersja, aktualnosci=False):
+    """Część AKADEMII SIATKÓWKI VOLLEY: własne logo, menu, stopka i tylko Facebook.
+    p = "" dla akademia.html, "../" dla podstron (np. aktualności Akademii)."""
     A = C.AKADEMIA
-    menu = "".join(f'<li><a href="#{k}">{e(n)}</a></li>' for k, n in MENU_AKADEMII)
+    k_ = "" if not p else f"{p}akademia.html"      # kotwice prowadzą do strony głównej Akademii
+    menu = "".join(f'<li><a href="{k_}#{k}">{e(n)}</a></li>' for k, n in MENU_AKADEMII
+                   if k != "aktualnosci" or aktualnosci)
     logo = (f'<img src="{p}img/{e(A["logo"])}" alt="" width="52" height="52">' if jest_plik(A.get("logo")) else "")
     k = A.get("koordynator") or {}
     kontakt = "<br>".join(x for x in [
@@ -391,7 +394,7 @@ def uklad_akademii(tytul, opis, tresc, p, wersja):
 </div></div>
 <header class="naglowek naglowek--akademia">
   <div class="kontener">
-    <a class="logo" href="#tresc">{logo}<span class="logo__tekst">Akademia Siatkówki<small>Volley · Kobyłka</small></span></a>
+    <a class="logo" href="{k_ or '#tresc'}">{logo}<span class="logo__tekst">Akademia Siatkówki<small>Volley · Kobyłka</small></span></a>
     <button class="menu-przycisk" aria-expanded="false" aria-controls="menu"><span></span><span></span><span></span><span class="ukryte">Menu</span></button>
     <nav class="menu" id="menu" aria-label="Menu Akademii"><ul>{menu}</ul></nav>
   </div>
@@ -406,8 +409,8 @@ def uklad_akademii(tytul, opis, tresc, p, wersja):
       <div><h2>Kontakt</h2><p>{kontakt}</p></div>
       <div><h2>Obserwuj</h2><ul class="stopka__social">{social_linki("stopka", True, {"facebook": A.get("facebook")}, "Akademii")}</ul></div>
       <div><h2>Na skróty</h2><ul>
-        <li><a href="#zapisy">Zapisy</a></li>
-        <li><a href="#ochrona">Standardy ochrony małoletnich</a></li>
+        <li><a href="{k_}#zapisy">Zapisy</a></li>
+        <li><a href="{k_}#ochrona">Standardy ochrony małoletnich</a></li>
         <li><a href="{p}{START_DRUZYNY}">Easy Wrap Volley Kobyłka →</a></li></ul></div>
     </div>
     <div class="stopka__dol"><span>© {rok} {e(C.KLUB['nazwa_prawna'])} · <a href="{p}index.html">volleykobylka.pl</a></span>
@@ -688,18 +691,37 @@ def tabela_html(p, wiersze, opis_druzyny, podpis):
 # ---------------------------------------------------------------------
 # Karta aktualności
 # ---------------------------------------------------------------------
-def karta_newsa(p, n, duza=False):
+def karta_newsa(p, n, duza=False, folder="aktualnosci", herb="herby/easy-wrap-volley.png"):
     d = date.fromisoformat(n["data"])
     foto = img(p, n.get("zdjecie"), n["tytul"], "news__img")
     if not foto:  # brak zdjęcia: herb klubu + kategoria zamiast pustego pola
-        foto = (f'<img class="news__herb" src="{p}img/herby/easy-wrap-volley.png" alt="" aria-hidden="true" loading="lazy">'
+        foto = (f'<img class="news__herb" src="{p}img/{herb}" alt="" aria-hidden="true" loading="lazy">'
                 f'<span class="news__znak" aria-hidden="true">{e(n["kategoria"])}</span>')
     return f"""
-<a class="news{' news--duzy' if duza else ''}{'' if n.get('zdjecie') and jest_plik(n.get('zdjecie')) else ' news--bez-foto'}" href="{p}aktualnosci/{e(n['adres'])}.html">
+<a class="news{' news--duzy' if duza else ''}{'' if n.get('zdjecie') and jest_plik(n.get('zdjecie')) else ' news--bez-foto'}" href="{p}{folder}/{e(n['adres'])}.html">
   <span class="news__foto foto-{sum(map(ord, n['adres'])) % 4}">{foto}</span>
   <div class="news__tresc"><span class="news__kat">{e(n['kategoria'])}<time datetime="{d.isoformat()}">{d.strftime('%d.%m.%Y')}</time></span>
   <h3>{e(n['tytul'])}</h3>{f"<p>{e(n['zajawka'])}</p>" if duza and n.get('zajawka') else ''}</div>
 </a>"""
+
+
+def akapity_fb(tekst):
+    """Opis posta z FB → akapity z zachowanym podziałem linii i klikalnymi linkami."""
+    import re as _re
+    wynik = ""
+    for czesc in [c.strip() for c in str(tekst or "").strip().split("\n\n") if c.strip()]:
+        linie = "<br>".join(e(l.strip()) for l in czesc.split("\n") if l.strip())
+        linie = _re.sub(r"(https?://[^\s<]+)", r'<a href="\1" rel="noopener" target="_blank">\1</a>', linie)
+        wynik += f"<p>{linie}</p>"
+    return wynik
+
+
+def przycisk_fb(n):
+    """Link do oryginalnego posta (tylko link – Facebook nie ładuje się na naszej stronie)."""
+    if not n.get("link_fb"):
+        return ""
+    return (f'<p class="artykul__fb"><a class="btn btn--fb" href="{e(n["link_fb"])}" rel="noopener" target="_blank">'
+            f'Zobacz post na Facebooku ↗</a></p>')
 
 
 def akapity(tekst):

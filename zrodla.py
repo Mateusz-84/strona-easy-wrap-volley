@@ -369,7 +369,7 @@ def pobierz_posty(meta, bez_internetu=False):
     Jedno zapytanie do Meta na całe budowanie. Zwraca (lista_postów albo None, uwaga).
     None = nie wiemy nic nowego (brak tokenu, brak internetu, błąd) → używamy zapisanych plików.
     """
-    token = os.environ.get("META_TOKEN")
+    token = token_meta("druzyna")
     ident = meta.get("instagram_id") if meta.get("zrodlo") == "instagram" else meta.get("facebook_id")
     if bez_internetu:
         return None, None
@@ -447,6 +447,188 @@ def zdjecie_wygranej(klucz, dzien_meczu, posty, konfig):
         return gotowe
     post = post_o_wygranej(posty, dzien_meczu, konfig["hashtagi"], konfig["dni_po_meczu"])
     return pobierz_obraz("wyniki", klucz, post["obraz"], 900) if post else None
+
+
+# ---------------------------------------------------------------------
+# 7. AKTUALNOŚCI Z FACEBOOKA (drużyna i Akademia – osobne strony FB)
+#   Posty pobieramy oficjalnym Graph API tokenem strony (sekrety na GitHubie).
+#   Sprawdzamy tylko o wybranych godzinach (np. 7:00 i 19:00) – między nimi
+#   strona korzysta z zapisanej kopii dane/posty_fb_<część>.json.
+#   Z opisu usuwamy część z oznaczeniami sponsorów (wszystko pod kreską
+#   „_________”), dopiski typu @obserwujący i końcowe hashtagi.
+# ---------------------------------------------------------------------
+WERSJA_API = "v21.0"
+# Linia-separator: kilka podkreśleń, kresek lub kropek
+SEPARATOR = re.compile(r"^[ \t]*[_\-–—=~.•*]{4,}[ \t]*$", re.M)
+OZNACZENIA = re.compile(r"@(obserwujący|obserwujacy|followers|highlight|wszyscy|everyone)\b", re.I)
+EMOJI = re.compile("[\U0001F000-\U0001FAFF\u2600-\u27BF\u2B00-\u2BFF\uFE0F\u200D\u20E3\u2190-\u21FF\u2300-\u23FF]+")
+
+
+def _litery(tekst):
+    return len(re.findall(r"[^\W\d_]", tekst))
+
+
+def linia_sponsorow(linia, nazwy_sponsorow):
+    """Czy linia to same nazwy sponsorów/oznaczenia (gdy w poście zabrakło kreski-separatora)."""
+    przed = _litery(linia)
+    if przed < 12:
+        return False
+    reszta = linia.lower()
+    for nazwa in sorted(nazwy_sponsorow, key=len, reverse=True):
+        reszta = reszta.replace(nazwa.lower(), " ")
+    reszta = re.sub(r"@\S+|#\S+", " ", reszta)
+    return _litery(reszta) <= przed * 0.25
+
+
+def oczysc_opis(opis, nazwy_sponsorow=(), usun_hashtagi=True):
+    """Opis posta bez części ze sponsorami, oznaczeń @obserwujący i końcowych hashtagów."""
+    tekst = (opis or "").replace("\r\n", "\n")
+    tekst = SEPARATOR.split(tekst, maxsplit=1)[0]          # wszystko pod kreską = sponsorzy
+    tekst = OZNACZENIA.sub("", tekst)
+    linie = [l.rstrip() for l in tekst.split("\n")]
+    # Od końca: puste linie, same hashtagi, same nazwy sponsorów
+    while linie:
+        l = linie[-1].strip()
+        same_hashtagi = l and all(s.startswith("#") for s in l.split())
+        oznaczenie = l.startswith("@") and len(l) < 60      # np. „@liderzy wśród fanów”
+        if not l or (usun_hashtagi and same_hashtagi) or oznaczenie or linia_sponsorow(l, nazwy_sponsorow):
+            linie.pop()
+            continue
+        break
+    tekst = "\n".join(linie)
+    if usun_hashtagi:   # hashtagi doklejone na końcu ostatniego zdania
+        tekst = re.sub(r"(\s+#[^\s#]+)+\s*$", "", tekst)
+    tekst = re.sub(r"[ \t]+\n", "\n", tekst)
+    return re.sub(r"\n{3,}", "\n\n", tekst).strip()
+
+
+def bez_emoji(tekst):
+    return re.sub(r"\s{2,}", " ", EMOJI.sub(" ", tekst or "")).strip(" -–—:|•")
+
+
+def podziel_post(opis):
+    """(tytuł, treść, zajawka) z oczyszczonego opisu posta."""
+    linie = [l for l in opis.split("\n")]
+    while linie and not bez_emoji(linie[0]):
+        linie.pop(0)
+    if not linie:
+        return "", "", ""
+    pierwsza = bez_emoji(linie[0])
+    reszta = "\n".join(linie[1:]).strip()
+    if len(pierwsza) > 100:   # długi pierwszy akapit – tytułem jest pierwsze zdanie
+        zdanie = re.split(r"(?<=[.!?])\s", pierwsza, maxsplit=1)[0]
+        if len(zdanie) > 100:
+            zdanie = zdanie[:97].rsplit(" ", 1)[0] + "…"
+        tytul, do_zajawki, reszta = zdanie, (pierwsza[len(zdanie):] + "\n" + reszta).strip(), opis.strip()
+    else:
+        tytul, do_zajawki = pierwsza, reszta
+    zdania = [bez_emoji(x) for x in do_zajawki.split("\n") if bez_emoji(x)]
+    plaski = " ".join(z if z[-1] in ".!?…:;," else z + "." for z in zdania)
+    zajawka = plaski if len(plaski) <= 170 else plaski[:167].rsplit(" ", 1)[0] + "…"
+    return tytul, reszta, zajawka
+
+
+def slug(tekst, dlugosc=48):
+    s = re.sub(r"[^a-z0-9]+", "-", bez_ogonkow(tekst)).strip("-")
+    return (s[:dlugosc].rstrip("-")) or "post"
+
+
+def klucz_posta(czesc, ident):
+    import hashlib
+    return f"{czesc}-" + hashlib.sha1(ident.encode()).hexdigest()[:10]
+
+
+def pora_sprawdzic(sprawdzono, godziny, teraz=None):
+    """Czy minęła kolejna godzina sprawdzania (np. 7:00 lub 19:00) od ostatniego sprawdzenia."""
+    if not sprawdzono:
+        return True
+    teraz = teraz or datetime.now().astimezone()
+    try:
+        ostatnio = datetime.fromisoformat(sprawdzono)
+    except ValueError:
+        return True
+    if ostatnio.tzinfo is None:
+        ostatnio = ostatnio.astimezone()
+    sloty = [datetime.combine(teraz.date() - timedelta(days=d), datetime.min.time()).replace(hour=h).astimezone()
+             for d in (0, 1) for h in godziny]
+    ostatni_slot = max(s for s in sloty if s <= teraz)
+    return ostatnio < ostatni_slot
+
+
+def token_meta(czesc="druzyna"):
+    """
+    Tokeny stron FB z sekretu META_TOKEN na GitHubie.
+    W sekrecie mogą być DWA tokeny oddzielone spacją lub nową linią:
+    pierwszy – strona drużyny, drugi – strona Akademii.
+    (Osobny sekret META_TOKEN_AKADEMIA też działa, jeśli jest przekazany do budowania.)
+    """
+    tokeny = re.split(r"[\s,;]+", (os.environ.get("META_TOKEN") or "").strip())
+    tokeny = [t for t in tokeny if t]
+    if czesc == "akademia":
+        return os.environ.get("META_TOKEN_AKADEMIA") or (tokeny[1] if len(tokeny) > 1 else None)
+    return tokeny[0] if tokeny else None
+
+
+def posty_strony_fb(token, ile):
+    """Ostatnie posty strony FB, do której należy token (token strony → /me)."""
+    pola = "id,message,full_picture,permalink_url,created_time"
+    url = f"{API_META}/{WERSJA_API}/me/posts?fields={pola}&limit={ile}&access_token={token}"
+    dane = json.loads(pobierz(url))
+    return [{"id": d["id"], "opis": d.get("message") or "", "link": d.get("permalink_url"),
+             "czas": d.get("created_time"), "obraz": d.get("full_picture")}
+            for d in dane.get("data", [])]
+
+
+def aktualnosci_fb(czesc, konfig, bez_internetu=False):
+    """
+    Zwraca (posty_z_kopii, nowe_posty_z_API albo None, uwaga).
+    posty_z_kopii: [{id, opis, czas, link, zdjecie}] – zdjęcia już leżą w img/posty/.
+    """
+    plik = os.path.join(FOLDER, "dane", f"posty_fb_{czesc}.json")
+    try:
+        with open(plik, encoding="utf-8") as f:
+            kopia = json.load(f)
+    except (OSError, ValueError):
+        kopia = {"sprawdzono": None, "posty": []}
+    token = token_meta(czesc)
+    if bez_internetu or not konfig.get("wlaczone"):
+        return kopia["posty"], None, None
+    if not token:
+        brak = "drugiego tokenu w sekrecie META_TOKEN" if czesc == "akademia" else "sekretu META_TOKEN"
+        return kopia["posty"], None, f"aktualności FB ({czesc}): brak {brak} – pokazuję zapisane posty"
+    if not pora_sprawdzic(kopia.get("sprawdzono"), konfig.get("godziny", [7, 19])):
+        return kopia["posty"], None, None
+    try:
+        nowe = posty_strony_fb(token, konfig.get("ile", 12))
+    except Exception as blad:
+        return kopia["posty"], None, f"aktualności FB ({czesc}): nie udało się odczytać ({type(blad).__name__}) – pokazuję zapisane posty"
+
+    stare = {p["id"]: p for p in kopia["posty"]}
+    posty = []
+    for n in nowe:
+        if not (n["opis"] or "").strip():
+            continue                      # same zdjęcia bez opisu – pomijamy
+        klucz = klucz_posta(czesc, n["id"])
+        zdjecie = None
+        try:
+            zdjecie = pobierz_obraz("posty", klucz, n.get("obraz"), 1200)
+        except Exception as blad:
+            print(f"  UWAGA: zdjęcie posta {klucz}: {type(blad).__name__} – bez zdjęcia")
+            zdjecie = (stare.get(n["id"]) or {}).get("zdjecie")
+        posty.append({"id": n["id"], "opis": n["opis"], "czas": n["czas"], "link": n["link"], "zdjecie": zdjecie})
+
+    # Sprzątamy zdjęcia postów, które wypadły z listy (tylko tej części strony)
+    folder = os.path.join(FOLDER, "img", "posty")
+    uzywane = {os.path.basename(p["zdjecie"]) for p in posty if p.get("zdjecie")}
+    if os.path.isdir(folder):
+        for nazwa in os.listdir(folder):
+            if nazwa.startswith(czesc + "-") and nazwa not in uzywane:
+                os.remove(os.path.join(folder, nazwa))
+    os.makedirs(os.path.dirname(plik), exist_ok=True)
+    with open(plik, "w", encoding="utf-8") as f:
+        json.dump({"sprawdzono": datetime.now().astimezone().isoformat(timespec="minutes"), "posty": posty},
+                  f, ensure_ascii=False, indent=1)
+    return posty, nowe, None
 
 
 # ---------------------------------------------------------------------

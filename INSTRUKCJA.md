@@ -343,6 +343,38 @@ w repozytorium. Gdy API Meta nie odpowiada, strona używa ostatnio zapisanych.
 
 ---
 
+## 9b. Aktualności z Facebooka (same się dodają)
+
+Aktualności drużyny (strona **Aktualności**) i Akademii (sekcja **Aktualności**
+na stronie Akademii) biorą się z postów na Facebooku:
+
+- strona sprawdza nowe posty **2 razy dziennie** (ok. 7:00 i 19:00 – godziny
+  zmienisz w `content.py`, sekcja `POSTY_FB`),
+- tytuł to pierwsza linia posta, a treść to reszta opisu,
+- z opisu znika wszystko **pod kreską `_________`** (oznaczenia sponsorów),
+  dopiski typu `@obserwujący` i hashtagi na końcu,
+- zdjęcie posta zapisuje się na naszym serwerze (`img/posty/`),
+- pod każdą aktualnością jest przycisk „Zobacz post na Facebooku”,
+- jeśli post podaje wynik meczu, sam podpina się jako „Relacja” przy tym meczu,
+- usunięty z Facebooka post znika ze strony przy kolejnym sprawdzeniu.
+
+**Potrzebny jest jeden sekret na GitHubie z dwoma tokenami** (jednorazowo,
+punkty 2–5 z 9a):
+
+- nazwa sekretu: `META_TOKEN`,
+- wartość: **token strony Easy Wrap Volley Kobyłka**, potem **spacja**, potem
+  **token strony Akademia Siatkówki Volley** (oba z listy `me/accounts`).
+
+Przy generowaniu tokenu zaznacz obie strony. Uprawnienia: `pages_show_list`
+i `pages_read_engagement`. ID stron nie trzeba nigdzie wpisywać. Tokeny stron
+uzyskane z tokenu długoterminowego (punkt 4) nie wygasają.
+
+Sprawdzenie: **Actions → Aktualizacja strony → Run workflow**. W logu kroku
+„Zbuduj stronę” pojawi się „Aktualności z FB (druzyna): … – sprawdzono nowe posty”.
+Bez tokenu strona pokazuje ostatnio zapisane posty (`dane/posty_fb_*.json`).
+
+---
+
 ## 10. Podgląd na własnym komputerze (opcjonalnie)
 
 1. Zainstaluj Pythona **3.12 lub nowszego** z <https://www.python.org/downloads/>.

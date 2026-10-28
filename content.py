@@ -78,6 +78,21 @@ META = {
     "facebook_id": None,                # ID strony FB, np. "100000000000000"
 }
 
+# AKTUALNOŚCI Z FACEBOOKA – same się dodają, osobno dla drużyny i dla Akademii.
+#   Strona sprawdza nowe posty 2 razy dziennie (o godzinach z listy "godziny").
+#   Z opisu posta znika część z oznaczeniami sponsorów (wszystko pod kreską „_________”),
+#   dopiski typu @obserwujący i hashtagi na końcu. Zdjęcie posta zapisuje się na naszym serwerze.
+#   Wymaga tokenów stron FB w sekrecie GitHuba META_TOKEN (dwa tokeny: drużyna, potem Akademia) – patrz INSTRUKCJA.md.
+#   Bez tokenu strona pokazuje ostatnio zapisane posty (dane/posty_fb_*.json).
+POSTY_FB = {
+    "wlaczone": True,
+    "godziny": [7, 19],                 # o której (mniej więcej) sprawdzać nowe posty
+    "ile": 12,                          # ile ostatnich postów pokazywać
+    "usun_hashtagi": True,              # hashtagi na końcu opisu nie trafiają na stronę
+    "druzyna":  {"kategoria": "Seniorki"},     # pierwszy token w sekrecie META_TOKEN
+    "akademia": {"kategoria": "Akademia"},     # drugi token w sekrecie META_TOKEN
+}
+
 # Zapowiedź meczu – plakat pokazywany przez kilka sekund po wejściu na stronę główną.
 #   Strona szuka posta z plakatem NAJBLIŻSZEGO meczu. Post jest uznany za zapowiedź, gdy:
 #    • ma zdjęcie i ukazał się w ciągu "dni_przed" dni przed meczem,
@@ -245,7 +260,7 @@ MECZE = [
     {
         "druzyna": "seniorki", "data": "2026-10-17",
         "mvp": None,                                    # np. "Klaudia Kucharska"
-        "relacja": "wygrana-w-lodzi",
+        "relacja": None,                                # relacja z FB podpina się sama (post z wynikiem)
     },
 
     # B) turniej Akademii – wzór (odkomentuj i uzupełnij, gdy będzie prawdziwy):
@@ -303,20 +318,6 @@ SZTAB = [
 #   Najnowsze na górze strony układają się same (wg daty).
 # ---------------------------------------------------------------------
 NEWSY = [
-    {
-        "adres": "wygrana-w-lodzi",
-        "data": "2026-10-17",
-        "kategoria": "Seniorki",          # Seniorki / Akademia / Klub
-        "tytul": "Trzy punkty z Łodzi! Wygrywamy 3:1",
-        "zajawka": "Zwycięstwo 3:1 na wyjeździe z ŁKS AZS UMED Łódź.",
-        "zdjecie": None,
-        "tresc": """
-Easy Wrap Volley Kobyłka wygrał w Łodzi z ŁKS AZS UMED 3:1 (25:19, 13:25, 25:16, 25:20)
-i przywozi do Kobyłki trzy punkty.
-
-Kolejny mecz gramy u siebie – szczegóły w terminarzu.
-""",
-    },
     {
         "adres": "easy-wrap-sponsorem-tytularnym",
         "data": "2026-09-01",
