@@ -196,9 +196,10 @@ class Budowa:
   {f'<p class="ostatni__mvp">MVP: <strong>{e(ost["mvp"])}</strong></p>' if ost.get('mvp') else ''}
   {f'<a class="btn btn--zolty" href="{p}aktualnosci/{e(ost["relacja"])}.html">Relacja z meczu →</a>' if ost.get('relacja') else ''}
 </div>"""
-            # Na stronie głównej: kapitan + kolejne zawodniczki wg numeru (razem 4)
+            # Na stronie głównej: 3 losowe zawodniczki (losuje main.js przy każdym wejściu;
+            # bez JS widać kapitan + kolejne wg numeru)
             kadra = sorted([z for z in C.KADRA if z["druzyna"] == GLOWNA],
-                           key=lambda z: (not z.get("kapitan"), z["numer"]))[:4]
+                           key=lambda z: (not z.get("kapitan"), z["numer"]))
             newsy = self.newsy[:3]
             sponsorzy = self.sponsorzy_html(p)
             return f"""
@@ -228,7 +229,7 @@ class Budowa:
   <div class="kontener">
     {S.naglowek_sekcji('Nasza', 'kadra', p + 'druzyny.html', 'Wszystkie zawodniczki', id_='kadra-tytul')}
     {S.prezentuje('kadra', p)}
-    <div class="kadra pojaw">{''.join(S.karta_zawodniczki(p, z) for z in kadra)}</div>
+    <div class="kadra kadra--losowa pojaw" data-losowa-kadra>{''.join(S.karta_zawodniczki(p, z) for z in kadra)}</div>
     <p class="przesun" aria-hidden="true">Przesuń</p>
   </div>
 </section>

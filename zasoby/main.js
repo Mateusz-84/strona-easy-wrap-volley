@@ -193,6 +193,18 @@
   });
 
   /* ---------------------------------------------------------------
+     „NASZA KADRA” na stronie głównej: 3 losowe zawodniczki
+     (CSS pokazuje tylko 3 pierwsze karty – tasujemy ich kolejność)
+     --------------------------------------------------------------- */
+  document.querySelectorAll('[data-losowa-kadra]').forEach(function (rzad) {
+    var karty = Array.prototype.slice.call(rzad.children);
+    for (var i = karty.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1)), tmp = karty[i]; karty[i] = karty[j]; karty[j] = tmp;
+    }
+    karty.forEach(function (k) { rzad.appendChild(k); });
+  });
+
+  /* ---------------------------------------------------------------
      KARUZELA MECZÓW (telefon): zaczyna od najbliższego meczu,
      a nie od najstarszego wyniku
      --------------------------------------------------------------- */
