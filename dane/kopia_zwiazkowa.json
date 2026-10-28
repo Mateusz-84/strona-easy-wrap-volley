@@ -27,7 +27,7 @@
   }
  },
  "seniorki": {
-  "pobrano": "2026-10-28T07:56",
+  "pobrano": "2026-10-28T19:52",
   "pzps_lista": [
    {
     "data": "2026-09-26",
@@ -280,6 +280,18 @@
     },
     {
      "lp": 5,
+     "male_minus": 566,
+     "male_plus": 584,
+     "mecze": 7,
+     "nasz": false,
+     "nazwa": "Libero VIP Gwarant Aleksandrów Łódzki",
+     "pkt": 12,
+     "sety_minus": 12,
+     "sety_plus": 14,
+     "zwyciestwa": 4
+    },
+    {
+     "lp": 6,
      "male_minus": 525,
      "male_plus": 512,
      "mecze": 6,
@@ -291,7 +303,7 @@
      "zwyciestwa": 4
     },
     {
-     "lp": 6,
+     "lp": 7,
      "male_minus": 591,
      "male_plus": 580,
      "mecze": 6,
@@ -303,19 +315,19 @@
      "zwyciestwa": 3
     },
     {
-     "lp": 7,
-     "male_minus": 513,
-     "male_plus": 509,
-     "mecze": 6,
+     "lp": 8,
+     "male_minus": 576,
+     "male_plus": 531,
+     "mecze": 7,
      "nasz": false,
-     "nazwa": "Libero VIP Gwarant Aleksandrów Łódzki",
-     "pkt": 9,
-     "sety_minus": 12,
+     "nazwa": "ŁKS AZS UMED Łódź",
+     "pkt": 8,
+     "sety_minus": 15,
      "sety_plus": 11,
      "zwyciestwa": 3
     },
     {
-     "lp": 8,
+     "lp": 9,
      "male_minus": 505,
      "male_plus": 506,
      "mecze": 6,
@@ -327,27 +339,15 @@
      "zwyciestwa": 2
     },
     {
-     "lp": 9,
-     "male_minus": 588,
-     "male_plus": 552,
-     "mecze": 6,
+     "lp": 10,
+     "male_minus": 664,
+     "male_plus": 606,
+     "mecze": 7,
      "nasz": false,
      "nazwa": "MOS Wola AZS Warszawa",
      "pkt": 6,
-     "sety_minus": 16,
+     "sety_minus": 19,
      "sety_plus": 11,
-     "zwyciestwa": 2
-    },
-    {
-     "lp": 10,
-     "male_minus": 522,
-     "male_plus": 455,
-     "mecze": 6,
-     "nasz": false,
-     "nazwa": "ŁKS AZS UMED Łódź",
-     "pkt": 5,
-     "sety_minus": 15,
-     "sety_plus": 8,
      "zwyciestwa": 2
     },
     {
@@ -364,13 +364,13 @@
     },
     {
      "lp": 12,
-     "male_minus": 492,
-     "male_plus": 373,
-     "mecze": 6,
+     "male_minus": 567,
+     "male_plus": 426,
+     "mecze": 7,
      "nasz": false,
      "nazwa": "MKS Kalisz II",
      "pkt": 0,
-     "sety_minus": 18,
+     "sety_minus": 21,
      "sety_plus": 2,
      "zwyciestwa": 0
     }
