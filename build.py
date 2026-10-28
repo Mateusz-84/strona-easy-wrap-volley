@@ -137,7 +137,7 @@ def zapisz(sciezka, tekst):
 def wersja_zasobow():
     """Krótki „odcisk” CSS i JS – przeglądarki pobiorą nowe pliki tylko po zmianie."""
     h = hashlib.md5()
-    for plik in ("style.css", "main.js"):
+    for plik in ("fonty.css", "style.css", "main.js"):
         with open(os.path.join(FOLDER, "zasoby", plik), "rb") as f:
             h.update(f.read())
     return h.hexdigest()[:8]
@@ -146,6 +146,9 @@ def wersja_zasobow():
 # =====================================================================
 # 3. PODSTRONY
 # =====================================================================
+POLITYKA_DATA = "28 października 2026"
+
+
 class Budowa:
     def __init__(self, dane_zwiazkowe):
         self.dane = dane_zwiazkowe
@@ -497,7 +500,14 @@ class Budowa:
         logo = (f'<img class="ak-hero__logo" src="img/{e(A["logo"])}" alt="Logo Akademii Siatkówki Volley" width="320" height="320">'
                 if S.jest_plik(A.get("logo")) else "")
         om = A["ochrona_maloletnich"]
-        dokument = f'<a class="btn btn--obrys" href="img/{e(om["dokument"])}">Pobierz standardy (PDF)</a>' if S.jest_plik(om.get("dokument")) else ""
+        dokument = f'<a class="btn btn--obrys" href="img/{e(om["dokument"])}">Pełne Standardy Ochrony Małoletnich (PDF)</a>' if S.jest_plik(om.get("dokument")) else ""
+        punkty = "".join(f"<li>{e(x)}</li>" for x in om.get("dla_dzieci") or [])
+        dla_dzieci = (f"""<div class="ochrona__dzieci">
+        <h3>Wersja dla dzieci – Twoje prawa w Klubie</h3>
+        <ul>{punkty}</ul>
+        <p class="ochrona__telefon">Możesz też zadzwonić bezpłatnie i anonimowo: <strong>Telefon Zaufania dla Dzieci i Młodzieży
+          <a href="tel:116111">116 111</a></strong> (całą dobę).</p>
+      </div>""" if punkty else "")
         mapa = C.HALA_DOMOWA.get("mapa")
         sekcja_grupy = (f'<div class="grupy pojaw">{grupy}</div>' if grupy else "")
         tresc = f"""
@@ -543,6 +553,15 @@ class Budowa:
     </ol>
     {formularz}
     <div class="formularz__ramka" data-formularz-ramka></div>
+    <details class="ak-rodo">
+      <summary>Kto przetwarza dane ze zgłoszenia? (RODO)</summary>
+      <p>Administratorem danych podanych w zgłoszeniu (dane rodzica i dziecka) jest {e(C.KLUB['nazwa_prawna'])}, {e(C.KLUB['adres'])},
+      e-mail: <a href="mailto:{e(C.KLUB['email'])}">{e(C.KLUB['email'])}</a>. Dane wykorzystujemy, aby odpowiedzieć na zgłoszenie,
+      przydzielić grupę i zawrzeć umowę uczestnictwa (art. 6 ust. 1 lit. b RODO), a także do kontaktu w sprawach zajęć (art. 6 ust. 1 lit. f RODO).
+      Podanie danych jest dobrowolne, ale bez nich nie zapiszemy dziecka. Jeśli dziecko nie dołączy do zajęć, usuwamy zgłoszenie po zakończeniu sezonu.
+      Masz prawo dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania, sprzeciwu oraz skargi do Prezesa UODO.
+      Więcej: <a href="polityka-prywatnosci.html">Polityka prywatności</a>.</p>
+    </details>
   </div>
 </section>
 
@@ -572,6 +591,7 @@ class Budowa:
       <p>{e(om['tekst'])}</p>
       <p>Kontakt w sprawie standardów: <a href="mailto:{e(om['osoba_kontaktowa'])}">{e(om['osoba_kontaktowa'])}</a></p>
       {dokument}
+      {dla_dzieci}
     </div>
   </div>
 </section>"""
@@ -706,6 +726,8 @@ class Budowa:
     {f'<ul class="kontakt__osoby">{osoby}</ul>' if osoby else ''}
     {forma}
     <ul class="kontakt__social">{S.social_linki("kontakt", True)}</ul>
+    <p class="kontakt__rodo">Dane z wiadomości (adres e-mail, treść) wykorzystujemy tylko do odpowiedzi.
+      Szczegóły: <a href="{p}polityka-prywatnosci.html">Polityka prywatności</a>.</p>
   </div>
   <div class="kontakt__karta">
     <h2>Klub</h2><p>{e(C.KLUB['nazwa_prawna'])}<br>{e(C.KLUB['adres'])}</p>
@@ -719,30 +741,90 @@ class Budowa:
     def polityka(self):
         def tresc(p):
             k = C.KLUB
+            A = C.AKADEMIA
+            mail = f'<a href="mailto:{e(k["email"])}">{e(k["email"])}</a>'
+            rej = ", ".join(f"{n}: {e(k[x])}" for n, x in (("KRS", "krs"), ("NIP", "nip"), ("REGON", "regon")) if k.get(x))
+            om = A["ochrona_maloletnich"]
+            standardy = (f'<a href="{p}img/{e(om["dokument"])}">Standardy Ochrony Małoletnich (PDF)</a>'
+                         if S.jest_plik(om.get("dokument")) else "Standardy Ochrony Małoletnich")
             return f"""
 {S.plakat_podstrony(p, 'Polityka prywatności', 'i plików cookies', 'polityka')}
 <section class="sekcja"><div class="kontener artykul__tresc polityka">
-<p><em>Wzór – przed publikacją warto sprawdzić go z osobą znającą RODO.</em></p>
-<h2>Administrator danych</h2>
-<p>Administratorem danych jest {e(k['nazwa_prawna'])}, {e(k['adres'])}, e-mail: <a href="mailto:{e(k['email'])}">{e(k['email'])}</a>.</p>
-<h2>Jakie dane zbieramy</h2>
-<p>Sama strona nie zbiera danych osobowych i nie ustawia własnych plików cookies. Nie używamy narzędzi analitycznych ani reklamowych.</p>
-<p>Dane podajesz nam tylko wtedy, gdy wypełnisz formularz Google (np. zapis do Akademii) albo napiszesz e-mail. Wykorzystujemy je wyłącznie do odpowiedzi, organizacji zajęć i kontaktu z rodzicami (art. 6 ust. 1 lit. b, c i f RODO). Dane z formularzy przechowujemy przez czas uczestnictwa w zajęciach i okres wymagany przepisami.</p>
-<h2>Usługi zewnętrzne</h2>
+<p class="polityka__skrot"><strong>W skrócie:</strong> strona nie używa plików cookies, nie śledzi odwiedzających i nie ma reklam.
+Dane osobowe dostajemy tylko wtedy, gdy sam(a) do nas napiszesz albo zapiszesz dziecko do Akademii.</p>
+
+<h2>1. Administrator danych</h2>
+<p>Administratorem danych osobowych jest <strong>{e(k['nazwa_prawna'])}</strong>, {e(k['adres'])}{', ' + rej if rej else ''}
+(dalej: „Klub”). Klub prowadzi drużynę {e(k['nazwa'])} oraz {e(A.get('nazwa') or 'Akademię Siatkówki Volley')}.
+Kontakt w sprawach danych osobowych: {mail}. Klub nie wyznaczył inspektora ochrony danych (nie ma takiego obowiązku).</p>
+
+<h2>2. Kiedy i po co przetwarzamy dane</h2>
 <ul>
-<li><strong>Google Fonts</strong> – czcionki strony są pobierane z serwerów Google; przeglądarka przekazuje przy tym adres IP.</li>
-<li><strong>Formularze Google</strong> – wczytują się dopiero po kliknięciu przycisku; Google może wtedy zapisać swoje cookies (zasady: policies.google.com).</li>
-<li><strong>Licznik wyświetleń</strong> – przy wejściu na stronę przeglądarka wysyła zapytanie do darmowego serwisu Abacus (abacus.jasoncameron.dev), który zwiększa licznik o 1; serwis widzi adres IP, ale nie zapisuje cookies i nie identyfikuje odwiedzających.</li>
-<li><strong>Facebook, Instagram, YouTube</strong> – na stronie są tylko linki; dane trafiają do tych serwisów dopiero po przejściu na nie.</li>
-<li><strong>Serwer (hosting)</strong> – dostawca serwera może zapisywać standardowe logi (adres IP, czas wizyty) w celach bezpieczeństwa.</li>
+<li><strong>Wiadomość e-mail do Klubu</strong> – adres e-mail, imię i nazwisko oraz treść wiadomości wykorzystujemy, aby odpowiedzieć
+i prowadzić korespondencję (art. 6 ust. 1 lit. f RODO – prawnie uzasadniony interes, czyli kontakt z osobą, która do nas pisze).
+Korespondencję przechowujemy do czasu zakończenia sprawy, a jeśli dotyczy umowy – przez okres jej trwania i przedawnienia roszczeń.</li>
+<li><strong>Zgłoszenie do Akademii</strong> – dane rodzica (imię, nazwisko, telefon, e-mail) i dziecka (imię, nazwisko, rok urodzenia)
+wykorzystujemy, aby przydzielić grupę, zawrzeć i wykonać umowę uczestnictwa oraz kontaktować się w sprawie zajęć
+(art. 6 ust. 1 lit. b i f RODO). Dane uczestników przechowujemy przez czas uczestnictwa w zajęciach, a potem przez okres wymagany
+przepisami podatkowymi i rachunkowymi oraz przedawnienia roszczeń. Zgłoszenia osób, które nie dołączyły, usuwamy po zakończeniu sezonu.</li>
+<li><strong>Sponsorzy i partnerzy</strong> – dane osób kontaktowych firm wykorzystujemy do rozmów i wykonania umów (art. 6 ust. 1 lit. b i f RODO).</li>
+<li><strong>Skład drużyny i wyniki</strong> – imiona, nazwiska, numery, pozycje i zdjęcia zawodniczek seniorskiej drużyny publikujemy
+na podstawie ich zgody oraz w związku z udziałem w rozgrywkach (art. 6 ust. 1 lit. a i f RODO). Wyniki i składy meczowe są też jawne
+w systemach Polskiego Związku Piłki Siatkowej i Wojewódzkiego Związku Piłki Siatkowej.</li>
 </ul>
-<h2>Twoje prawa</h2>
-<p>Masz prawo do dostępu do swoich danych, ich sprostowania, usunięcia, ograniczenia przetwarzania, przeniesienia oraz sprzeciwu. Możesz też złożyć skargę do Prezesa Urzędu Ochrony Danych Osobowych. W sprawach danych pisz na: <a href="mailto:{e(k['email'])}">{e(k['email'])}</a>.</p>
-<h2>Wizerunek</h2>
-<p>Na stronie publikujemy zdjęcia z meczów i treningów. Zdjęcia dzieci publikujemy wyłącznie za zgodą rodziców. Jeśli chcesz usunąć zdjęcie, napisz do nas.</p>
+<p>Nie podejmujemy zautomatyzowanych decyzji i nie profilujemy odwiedzających.</p>
+
+<h2>3. Wizerunek</h2>
+<p>Publikujemy zdjęcia i filmy z meczów, treningów i wydarzeń klubowych. Wizerunek dzieci z Akademii publikujemy wyłącznie za pisemną zgodą
+rodziców lub opiekunów, bez podawania nazwisk. Zgodę można w każdej chwili wycofać – usuniemy wtedy zdjęcie ze strony i z naszych profili.
+Jeśli widzisz zdjęcie, które chcesz usunąć, napisz: {mail}.</p>
+
+<h2>4. Komu przekazujemy dane</h2>
+<p>Danych nie sprzedajemy. Korzystają z nich tylko osoby działające w imieniu Klubu (zarząd, trenerzy, koordynator) oraz dostawcy usług:</p>
+<ul>
+<li><strong>Hosting strony – GitHub Pages</strong> (GitHub, Inc., USA). Serwer, podobnie jak każdy serwer WWW, zapisuje techniczne logi
+(adres IP, czas wizyty, odwiedzana strona) w celach bezpieczeństwa. GitHub jest objęty programem EU–U.S. Data Privacy Framework
+i stosuje standardowe klauzule umowne. Zasady: <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener" target="_blank">GitHub Privacy Statement</a>.</li>
+<li><strong>Poczta e-mail – Google (Gmail)</strong>. Wiadomości wysłane na adres Klubu są przechowywane na serwerach Google
+(Google Ireland Ltd. / Google LLC, objęta Data Privacy Framework).</li>
+<li><strong>Formularze Google</strong> – jeśli zgłoszenie odbywa się przez formularz, wczytuje się on dopiero po kliknięciu przycisku.
+Wtedy Google przetwarza dane wpisane w formularzu i może użyć własnych plików cookies (<a href="https://policies.google.com/privacy?hl=pl" rel="noopener" target="_blank">zasady Google</a>).</li>
+<li><strong>Licznik wyświetleń</strong> – przy wejściu na stronę przeglądarka wysyła jedno zapytanie do serwisu Abacus
+(abacus.jasoncameron.dev), który zwiększa ogólny licznik o 1. Serwis technicznie widzi adres IP, ale nie zapisuje cookies,
+nie identyfikuje odwiedzających i nie zbiera statystyk o konkretnych osobach. Podstawa: art. 6 ust. 1 lit. f RODO
+(informacja o popularności strony). Serwer licznika może znajdować się poza Europejskim Obszarem Gospodarczym.</li>
+<li><strong>Organy i instytucje</strong> (np. urząd skarbowy, związki sportowe) – tylko gdy wymagają tego przepisy.</li>
+</ul>
+
+<h2>5. Pliki cookies i pamięć przeglądarki</h2>
+<p><strong>Strona nie zapisuje plików cookies</strong> – ani własnych, ani reklamowych czy analitycznych (nie używamy Google Analytics,
+pikseli Facebooka itp.). Dlatego nie wyświetlamy baneru zgody na cookies.</p>
+<ul>
+<li>Jedyną rzeczą, którą strona zapisuje w Twojej przeglądarce, jest znacznik w <em>pamięci sesji</em> (sessionStorage),
+że zapowiedź najbliższego meczu została już pokazana – żeby nie wyskakiwała przy każdym kliknięciu. Znacznik nie zawiera danych osobowych,
+nie jest nigdzie wysyłany i znika po zamknięciu karty. Jest niezbędny do działania tej funkcji – zgodnie z art. 399 Prawa komunikacji elektronicznej taki zapis nie wymaga zgody.</li>
+<li>Czcionki strony są zapisane na naszym serwerze – nie pobieramy ich z Google Fonts.</li>
+<li>Facebook, Instagram, YouTube i Mapy Google są tylko <strong>linkami</strong>. Te serwisy dostają Twoje dane (i mogą zapisać swoje cookies)
+dopiero po przejściu na nie – wtedy obowiązują ich własne zasady prywatności.</li>
+<li>Pamięć sesji i cookies możesz w każdej chwili wyczyścić lub zablokować w ustawieniach przeglądarki.</li>
+</ul>
+
+<h2>6. Twoje prawa</h2>
+<p>Masz prawo do: dostępu do swoich danych i otrzymania ich kopii, sprostowania, usunięcia, ograniczenia przetwarzania, przeniesienia danych,
+sprzeciwu wobec przetwarzania opartego na prawnie uzasadnionym interesie oraz cofnięcia zgody w dowolnym momencie (bez wpływu na wcześniejsze
+przetwarzanie). Wystarczy napisać: {mail}. Odpowiemy w ciągu miesiąca.</p>
+<p>Możesz też złożyć skargę do <strong>Prezesa Urzędu Ochrony Danych Osobowych</strong>, ul. Stawki 2, 00-193 Warszawa
+(<a href="https://uodo.gov.pl" rel="noopener" target="_blank">uodo.gov.pl</a>).</p>
+
+<h2>7. Ochrona dzieci</h2>
+<p>Klub stosuje {standardy} – zasady bezpiecznych relacji, reagowania na krzywdzenie oraz ochrony danych i wizerunku dzieci.
+Krótka wersja dla dzieci jest na stronie <a href="{p}akademia.html#ochrona">Akademii</a>.</p>
+
+<h2>8. Zmiany</h2>
+<p>Politykę aktualizujemy, gdy zmienia się sposób działania strony. Ostatnia aktualizacja: {POLITYKA_DATA}.</p>
 </div></section>"""
         self.strona("polityka-prywatnosci.html", "Polityka prywatności i cookies",
-                    "Polityka prywatności i plików cookies strony klubu.", tresc)
+                    "Polityka prywatności i plików cookies strony klubu KS Volley Kobyłka.", tresc)
 
     # --- 404 ---------------------------------------------------------------
     def nie_znaleziono(self):

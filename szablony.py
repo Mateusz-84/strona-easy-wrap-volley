@@ -306,9 +306,8 @@ def glowa(pelny_tytul, opis, p, wersja, kolor="#002F6C", ikona="img/favicon.svg"
 <meta property="og:description" content="{e(opis)}">
 <meta property="og:locale" content="pl_PL">
 <link rel="icon" href="{p}{ikona}">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<link rel="preload" href="{p}zasoby/fonty/bebas-neue-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="{p}zasoby/fonty.css?v={wersja}">
 <link rel="stylesheet" href="{p}zasoby/style.css?v={wersja}">
 <script>document.documentElement.classList.add('js')</script>
 <script src="{p}zasoby/main.js?v={wersja}" defer></script>
@@ -354,7 +353,8 @@ def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja):
       <div><h2>Na skróty</h2><ul>
         {skroty}
         <li><a href="{p}sponsorzy.html">Zostań sponsorem</a></li>
-        <li><a href="{p}akademia.html">Akademia Siatkówki Volley →</a></li></ul></div>
+        <li><a href="{p}akademia.html">Akademia Siatkówki Volley →</a></li>
+        <li><a href="{p}akademia.html#ochrona">Ochrona małoletnich</a></li></ul></div>
     </div>
     <div class="stopka__dol"><span>© {rok} {e(C.KLUB['nazwa_prawna'])} · <a href="{p}index.html">volleykobylka.pl</a></span>
       {licznik_html()}
@@ -407,7 +407,7 @@ def uklad_akademii(tytul, opis, tresc, p, wersja):
       <div><h2>Obserwuj</h2><ul class="stopka__social">{social_linki("stopka", True, {"facebook": A.get("facebook")}, "Akademii")}</ul></div>
       <div><h2>Na skróty</h2><ul>
         <li><a href="#zapisy">Zapisy</a></li>
-        <li><a href="#ochrona">Bezpieczeństwo dzieci</a></li>
+        <li><a href="#ochrona">Standardy ochrony małoletnich</a></li>
         <li><a href="{p}{START_DRUZYNY}">Easy Wrap Volley Kobyłka →</a></li></ul></div>
     </div>
     <div class="stopka__dol"><span>© {rok} {e(C.KLUB['nazwa_prawna'])} · <a href="{p}index.html">volleykobylka.pl</a></span>

@@ -891,3 +891,18 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
 }
 .wybor__pole{gap:14px}
 @media (min-width:900px){.ak-hero__logo{width:320px}}
+
+/* ---- RODO / ochrona małoletnich ---- */
+.ak-rodo{margin-top:1.75rem;max-width:62rem;font-size:.92rem;color:#3d4b63;border-top:1px solid rgba(15,76,150,.15);padding-top:1rem}
+.ak-rodo summary{cursor:pointer;font-weight:600;color:var(--ak-ciemny,#0F4C96);list-style:none;display:flex;align-items:center;gap:.5rem}
+.ak-rodo summary::-webkit-details-marker{display:none}
+.ak-rodo summary::before{content:"+";display:inline-grid;place-items:center;width:1.35rem;height:1.35rem;border-radius:50%;background:var(--ak-jasny,#EAF3FF);font-weight:700}
+.ak-rodo[open] summary::before{content:"–"}
+.ak-rodo p{margin:.75rem 0 0;line-height:1.6}
+.ochrona__dzieci{margin-top:1.75rem;padding:1.25rem 1.4rem;border-radius:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18)}
+.ochrona__dzieci h3{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.02em;margin:0 0 .6rem;color:#FFC72C}
+.ochrona__dzieci ul{margin:0;padding-left:1.2rem;display:grid;gap:.55rem;line-height:1.55}
+.ochrona__telefon{margin:1rem 0 0}
+.ochrona__telefon a{color:#FFC72C;font-size:1.15em}
+.kontakt__rodo{margin-top:1.5rem;font-size:.85rem;color:#5b6880;max-width:34rem}
+.polityka__skrot{padding:1rem 1.2rem;border-left:4px solid #069DDF;background:#EEF7FD;border-radius:0 12px 12px 0}

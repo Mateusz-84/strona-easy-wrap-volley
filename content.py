@@ -28,6 +28,8 @@ KLUB = {
     "adres": "ul. ks. Marcina Załuskiego 57, 05-230 Kobyłka",
     "email": "ks.volley.kobylka@gmail.com",
     "telefon": None,                         # brak – wpisz, gdy będzie
+    # Dane rejestrowe – pokazują się w polityce prywatności (administrator danych)
+    "krs": "0000921839", "nip": "1251723179", "regon": "389970100",
     "herb": "herby/easy-wrap-volley.svg",    # oficjalny herb z księgi znaku – gdy wrzucisz ten plik, ma pierwszeństwo
     # Dopóki nie ma pliku powyżej, herb pobiera się z VolleyStation (raz, potem leży w img/herby/)
     "herb_volleystation": "https://assets.volleystation.com/website/teams/2248406/badge.png",
@@ -416,7 +418,15 @@ AKADEMIA = {
                  "ma aktualne zaświadczenie o niekaralności i jest sprawdzona w Rejestrze Sprawców "
                  "Przestępstw na Tle Seksualnym. Masz wątpliwości lub niepokoi Cię czyjeś zachowanie? "
                  "Napisz do osoby odpowiedzialnej za standardy.",
-        "dokument": None,                         # np. "dokumenty/standardy-ochrony-maloletnich.pdf" (w folderze img/)
+        "dokument": "dokumenty/standardy-ochrony-maloletnich.pdf",   # pełna wersja (w folderze img/)
+        # Wersja skrócona dla dzieci (wymóg ustawy) – prostym językiem, na podstawie Standardów Klubu
+        "dla_dzieci": [
+            "Każdy w Klubie traktuje Cię z szacunkiem. Nikt nie może Cię bić, popychać, wyzywać, ośmieszać ani na Ciebie krzyczeć (chyba że ostrzega przed niebezpieczeństwem).",
+            "Trener może Cię dotknąć tylko wtedy, gdy pomaga w ćwiczeniu lub poprawia ułożenie ciała – zawsze jawnie. Jeśli coś jest dla Ciebie nieprzyjemne, masz prawo powiedzieć „nie”.",
+            "Trenerzy nie spotykają się z Tobą prywatnie i nie zapraszają Cię do domu. Rozmawiamy na treningach i w hali.",
+            "Twoje zdjęcia i informacje o Tobie są chronione – publikujemy je tylko za zgodą rodzica.",
+            "Jeśli ktoś sprawia Ci przykrość albo coś Cię niepokoi – w Klubie, w domu czy w internecie – powiedz rodzicowi, trenerowi albo osobie, której ufasz. Pomożemy.",
+        ],
         "osoba_kontaktowa": "ks.volley.kobylka@gmail.com",
     },
 }
