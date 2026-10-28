@@ -27,7 +27,7 @@
   }
  },
  "seniorki": {
-  "pobrano": "2026-10-28T19:52",
+  "pobrano": "2026-10-28T21:47",
   "pzps_lista": [
    {
     "data": "2026-09-26",
@@ -232,6 +232,18 @@
    "tabela": [
     {
      "lp": 1,
+     "male_minus": 478,
+     "male_plus": 594,
+     "mecze": 7,
+     "nasz": true,
+     "nazwa": "EASY WRAP Volley Kobyłka",
+     "pkt": 18,
+     "sety_minus": 6,
+     "sety_plus": 20,
+     "zwyciestwa": 6
+    },
+    {
+     "lp": 2,
      "male_minus": 383,
      "male_plus": 484,
      "mecze": 6,
@@ -240,18 +252,6 @@
      "pkt": 15,
      "sety_minus": 4,
      "sety_plus": 16,
-     "zwyciestwa": 5
-    },
-    {
-     "lp": 2,
-     "male_minus": 422,
-     "male_plus": 519,
-     "mecze": 6,
-     "nasz": true,
-     "nazwa": "EASY WRAP Volley Kobyłka",
-     "pkt": 15,
-     "sety_minus": 6,
-     "sety_plus": 17,
      "zwyciestwa": 5
     },
     {
@@ -268,6 +268,18 @@
     },
     {
      "lp": 4,
+     "male_minus": 624,
+     "male_plus": 618,
+     "mecze": 7,
+     "nasz": false,
+     "nazwa": "TPS Bielsk Podlaski",
+     "pkt": 13,
+     "sety_minus": 12,
+     "sety_plus": 16,
+     "zwyciestwa": 5
+    },
+    {
+     "lp": 5,
      "male_minus": 517,
      "male_plus": 550,
      "mecze": 6,
@@ -279,7 +291,7 @@
      "zwyciestwa": 4
     },
     {
-     "lp": 5,
+     "lp": 6,
      "male_minus": 566,
      "male_plus": 584,
      "mecze": 7,
@@ -291,27 +303,15 @@
      "zwyciestwa": 4
     },
     {
-     "lp": 6,
-     "male_minus": 525,
-     "male_plus": 512,
-     "mecze": 6,
-     "nasz": false,
-     "nazwa": "TPS Bielsk Podlaski",
-     "pkt": 11,
-     "sety_minus": 10,
-     "sety_plus": 13,
-     "zwyciestwa": 4
-    },
-    {
      "lp": 7,
-     "male_minus": 591,
-     "male_plus": 580,
-     "mecze": 6,
+     "male_minus": 697,
+     "male_plus": 679,
+     "mecze": 7,
      "nasz": false,
      "nazwa": "AZS AWF Varsovia",
-     "pkt": 9,
-     "sety_minus": 13,
-     "sety_plus": 14,
+     "pkt": 10,
+     "sety_minus": 16,
+     "sety_plus": 16,
      "zwyciestwa": 3
     },
     {
@@ -352,13 +352,13 @@
     },
     {
      "lp": 11,
-     "male_minus": 509,
-     "male_plus": 459,
-     "mecze": 6,
+     "male_minus": 584,
+     "male_plus": 515,
+     "mecze": 7,
      "nasz": false,
      "nazwa": "MUKS Krótka",
      "pkt": 5,
-     "sety_minus": 15,
+     "sety_minus": 18,
      "sety_plus": 7,
      "zwyciestwa": 1
     },
@@ -434,6 +434,15 @@
       "25:17"
      ],
      "wynik": "3:0"
+    },
+    "/system/mecz/172/": {
+     "data": "2026-10-28",
+     "sety": [
+      "18:25",
+      "19:25",
+      "19:25"
+     ],
+     "wynik": "0:3"
     }
    }
   },
