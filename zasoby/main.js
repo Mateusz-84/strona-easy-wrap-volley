@@ -184,6 +184,15 @@
   }
 
   /* ---------------------------------------------------------------
+     KAFEL „POZNAJ NAS!”: przy każdym wejściu losowa zawodniczka z kadry
+     --------------------------------------------------------------- */
+  document.querySelectorAll('img[data-losowe]').forEach(function (obraz) {
+    var lista = [];
+    try { lista = JSON.parse(obraz.dataset.losowe); } catch (e) {}
+    if (lista.length > 1) obraz.src = lista[Math.floor(Math.random() * lista.length)];
+  });
+
+  /* ---------------------------------------------------------------
      KARUZELA MECZÓW (telefon): zaczyna od najbliższego meczu,
      a nie od najstarszego wyniku
      --------------------------------------------------------------- */

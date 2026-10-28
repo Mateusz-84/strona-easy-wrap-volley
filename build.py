@@ -259,7 +259,11 @@ class Budowa:
         male += [("o-klubie.html", "O klubie", "Od 2021 w Kobyłce", "foto-2"),
                  ("sponsorzy.html", "Sponsorzy", "Zostań partnerem", "foto-1")]
         postac = S.postac_do_plakatu(None)
-        foto = (f'<img class="kafel__postac" src="{p}img/{e(postac["zdjecie"])}" alt="" loading="lazy">' if postac else "")
+        # Przy każdym wejściu main.js losuje inną zawodniczkę z listy (bez JS zostaje ta z dnia)
+        wszystkie = [f"{p}img/{z['zdjecie']}" for z in C.KADRA
+                     if z["druzyna"] == GLOWNA and S.jest_plik(z.get("zdjecie"))]
+        foto = (f'<img class="kafel__postac" src="{p}img/{e(postac["zdjecie"])}" alt="" '
+                f'data-losowe=\'{e(json.dumps(wszystkie))}\'>' if postac else "")
         html = (f'<a class="kafel kafel--akademia" href="{p}druzyny.html"><span class="kafel__foto foto-0">{foto}</span>'
                 f'<small>Kadra 2026/27</small><span class="kafel__slowo">Poznaj nas!</span>'
                 f'<small>{sum(1 for z in C.KADRA if z["druzyna"] == GLOWNA)} zawodniczek · 2. liga kobiet →</small></a>')
