@@ -364,7 +364,7 @@ SPONSORZY = {
 # Licznik wyświetleń w stopce (darmowy serwis Abacus, bez konta i bez cookies).
 #   wlaczony: False – licznik znika ze strony.
 #   klucz: zmiana nazwy = licznik od zera.
-LICZNIK = {"wlaczony": True, "przestrzen": "volleykobylka-pl", "klucz": "wyswietlenia"}
+LICZNIK = {"wlaczony": True, "przestrzen": "volleykobylka-pl", "klucz": "odwiedziny"}   # nowy klucz = licznik od zera (reset 28.10.2026)
 
 SPONSORZY_TEKST = ("Wspierasz lokalny sport? Pokaż swoją markę na meczach 2. ligi, "
                    "w mediach klubu i na koszulkach Akademii. Napisz do nas.")
