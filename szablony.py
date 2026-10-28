@@ -477,10 +477,10 @@ def hero(p, m):
         foto_html = f'<div class="hero__zdjecie hero__zdjecie--foto" aria-hidden="true">{foto}</div>'
         klasy.append("hero--z-foto")
     else:
-        # 2) wycięta zawodniczka z kadry (co mecz inna) z wielkim numerem w tle
+        # 2) wycięta zawodniczka z kadry (co mecz inna) – bez numeru w tle (mylił się z datą meczu)
         z = postac_do_plakatu(m)
         if z:
-            foto_html = (f'<div class="hero__postac" aria-hidden="true"><span class="hero__postac-nr">{e(z["numer"])}</span>'
+            foto_html = (f'<div class="hero__postac" aria-hidden="true">'
                          f'<img class="hero__postac-img" src="{p}img/{e(z["zdjecie"])}" alt="" fetchpriority="high">'
                          f'<span class="hero__postac-podpis">#{e(z["numer"])} {e(z["imie"])} {e(z["nazwisko"])}</span></div>')
             klasy.append("hero--z-postacia")
