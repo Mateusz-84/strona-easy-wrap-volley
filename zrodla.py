@@ -598,8 +598,12 @@ def tokeny_stron(konfig=None):
         try:
             strony = json.loads(pobierz(f"{API_META}/{WERSJA_API}/me/accounts?fields=name,access_token&limit=100&access_token={token}"))
             kandydaci += [(s.get("name"), s.get("access_token")) for s in strony.get("data", []) if s.get("access_token")]
-        except Exception:
-            pass   # token strony nie ma listy me/accounts – to normalne
+        except Exception as blad:
+            if "kod 100" not in blad_meta(blad):   # token strony nie ma listy me/accounts – to normalne
+                print(f"  (me/accounts: {blad_meta(blad)})")
+        # Do logu tylko NAZWY (nigdy tokeny) – żeby było widać, co jest w sekrecie
+        print("  Token w META_TOKEN: " + str(ja.get("name")) +
+              (" → strony: " + ", ".join(str(n) for n, _ in kandydaci[1:]) if len(kandydaci) > 1 else ""))
         for nazwa, tok in kandydaci:
             nazwa = bez_ogonkow(nazwa)
             for czesc in ("druzyna", "akademia"):
