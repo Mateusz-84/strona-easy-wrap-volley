@@ -82,15 +82,16 @@ META = {
 #   Strona sprawdza nowe posty 2 razy dziennie (o godzinach z listy "godziny").
 #   Z opisu posta znika część z oznaczeniami sponsorów (wszystko pod kreską „_________”),
 #   dopiski typu @obserwujący i hashtagi na końcu. Zdjęcie posta zapisuje się na naszym serwerze.
-#   Wymaga tokenów stron FB w sekrecie GitHuba META_TOKEN (dwa tokeny: drużyna, potem Akademia) – patrz INSTRUKCJA.md.
-#   Bez tokenu strona pokazuje ostatnio zapisane posty (dane/posty_fb_*.json).
+#   Wymaga tokenów stron FB w sekrecie GitHuba META_TOKEN (oba tokeny, kolejność dowolna) – patrz INSTRUKCJA.md.
+#   Bez tokenu strona pokazuje ostatnio zapisane posty (dane/aktualnosci_fb_*.json).
 POSTY_FB = {
     "wlaczone": True,
     "godziny": [7, 19],                 # o której (mniej więcej) sprawdzać nowe posty
     "ile": 12,                          # ile ostatnich postów pokazywać
     "usun_hashtagi": True,              # hashtagi na końcu opisu nie trafiają na stronę
-    "druzyna":  {"kategoria": "Seniorki"},     # pierwszy token w sekrecie META_TOKEN
-    "akademia": {"kategoria": "Akademia"},     # drugi token w sekrecie META_TOKEN
+    # "strona" = fragment nazwy strony na Facebooku – po nim strona rozpoznaje, który token jest czyj
+    "druzyna":  {"kategoria": "Seniorki", "strona": "Easy Wrap Volley"},
+    "akademia": {"kategoria": "Akademia", "strona": "Akademia Siatkówki Volley"},
 }
 
 # Zapowiedź meczu – plakat pokazywany przez kilka sekund po wejściu na stronę główną.

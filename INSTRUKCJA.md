@@ -362,8 +362,10 @@ na stronie Akademii) biorą się z postów na Facebooku:
 punkty 2–5 z 9a):
 
 - nazwa sekretu: `META_TOKEN`,
-- wartość: **token strony Easy Wrap Volley Kobyłka**, potem **spacja**, potem
-  **token strony Akademia Siatkówki Volley** (oba z listy `me/accounts`).
+- wartość: **token strony Easy Wrap Volley Kobyłka** i **token strony Akademia
+  Siatkówki Volley** (oba z listy `me/accounts`), oddzielone spacją – kolejność
+  nie ma znaczenia. Można też wkleić cały wynik `me/accounts`: strona sama
+  rozpozna, który token należy do której strony (po nazwie strony).
 
 Przy generowaniu tokenu zaznacz obie strony. Uprawnienia: `pages_show_list`
 i `pages_read_engagement`. ID stron nie trzeba nigdzie wpisywać. Tokeny stron
@@ -371,7 +373,7 @@ uzyskane z tokenu długoterminowego (punkt 4) nie wygasają.
 
 Sprawdzenie: **Actions → Aktualizacja strony → Run workflow**. W logu kroku
 „Zbuduj stronę” pojawi się „Aktualności z FB (druzyna): … – sprawdzono nowe posty”.
-Bez tokenu strona pokazuje ostatnio zapisane posty (`dane/posty_fb_*.json`).
+Bez tokenu strona pokazuje ostatnio zapisane posty (`dane/aktualnosci_fb_*.json`).
 
 ---
 

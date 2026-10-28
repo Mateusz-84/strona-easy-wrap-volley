@@ -568,19 +568,42 @@ def blad_meta(blad):
     return opis
 
 
+_TOKENY_STRON = None
+
+
+def tokeny_stron(konfig=None):
+    """
+    Tokeny stron FB z sekretu META_TOKEN (można wkleić kilka, w dowolnej kolejności –
+    nawet cały wynik me/accounts). Każdy token sprawdzamy zapytaniem /me i przypisujemy
+    do części strony po nazwie strony na Facebooku. Zwraca {"druzyna": token, "akademia": token}.
+    """
+    global _TOKENY_STRON
+    if _TOKENY_STRON is not None:
+        return _TOKENY_STRON
+    if konfig is None:
+        import content
+        konfig = content.POSTY_FB
+    surowy = (os.environ.get("META_TOKEN") or "") + " " + (os.environ.get("META_TOKEN_AKADEMIA") or "")
+    tokeny = list(dict.fromkeys(re.findall(r"EAA[0-9A-Za-z]+", surowy)))
+    wynik = {}
+    for token in tokeny:
+        try:
+            ja = json.loads(pobierz(f"{API_META}/{WERSJA_API}/me?fields=id,name&access_token={token}"))
+        except Exception as blad:
+            print(f"  UWAGA: jeden z tokenów w META_TOKEN nie działa ({blad_meta(blad)})")
+            continue
+        nazwa = bez_ogonkow(ja.get("name"))
+        for czesc in ("druzyna", "akademia"):
+            wzor = bez_ogonkow((konfig.get(czesc) or {}).get("strona") or "")
+            if wzor and wzor in nazwa and czesc not in wynik:
+                wynik[czesc] = token
+    _TOKENY_STRON = wynik
+    return wynik
+
+
 def token_meta(czesc="druzyna"):
-    """
-    Tokeny stron FB z sekretu META_TOKEN na GitHubie.
-    W sekrecie mogą być DWA tokeny oddzielone spacją lub nową linią:
-    pierwszy – strona drużyny, drugi – strona Akademii.
-    (Osobny sekret META_TOKEN_AKADEMIA też działa, jeśli jest przekazany do budowania.)
-    """
-    surowy = os.environ.get("META_TOKEN") or ""
-    # Tokeny Meta zaczynają się od „EAA” – dzięki temu działa też wklejka z cudzysłowami lub „access_token:”
-    tokeny = re.findall(r"EAA[0-9A-Za-z]+", surowy) or [x for x in re.split(r"[\s,;\"']+", surowy) if x]
-    if czesc == "akademia":
-        return os.environ.get("META_TOKEN_AKADEMIA") or (tokeny[1] if len(tokeny) > 1 else None)
-    return tokeny[0] if tokeny else None
+    """Token strony danej części (drużyna / Akademia) albo None."""
+    return tokeny_stron().get(czesc)
 
 
 def posty_strony_fb(token, ile):
@@ -593,25 +616,39 @@ def posty_strony_fb(token, ile):
             for d in dane.get("data", [])]
 
 
+def posprzataj_zdjecia_fb(czesc, posty):
+    """Usuwa z img/posty/ zdjęcia tej części strony, których nie ma już na liście postów."""
+    folder = os.path.join(FOLDER, "img", "posty")
+    uzywane = {os.path.basename(p["zdjecie"]) for p in posty if p.get("zdjecie")}
+    if os.path.isdir(folder):
+        for nazwa in os.listdir(folder):
+            if nazwa.startswith((f"fb-{czesc}-", f"{czesc}-")) and nazwa not in uzywane:
+                os.remove(os.path.join(folder, nazwa))
+
+
 def aktualnosci_fb(czesc, konfig, bez_internetu=False):
     """
     Zwraca (posty_z_kopii, nowe_posty_z_API albo None, uwaga).
     posty_z_kopii: [{id, opis, czas, link, zdjecie}] – zdjęcia już leżą w img/posty/.
     """
-    plik = os.path.join(FOLDER, "dane", f"posty_fb_{czesc}.json")
+    plik = os.path.join(FOLDER, "dane", f"aktualnosci_fb_{czesc}.json")
+    stary = os.path.join(FOLDER, "dane", f"posty_fb_{czesc}.json")      # poprzednia nazwa – sprzątamy
+    if os.path.exists(stary):
+        os.remove(stary)
     try:
         with open(plik, encoding="utf-8") as f:
             kopia = json.load(f)
     except (OSError, ValueError):
         kopia = {"sprawdzono": None, "posty": []}
-    token = token_meta(czesc)
+    posprzataj_zdjecia_fb(czesc, kopia["posty"])
     if bez_internetu or not konfig.get("wlaczone"):
         return kopia["posty"], None, None
-    if not token:
-        brak = "drugiego tokenu w sekrecie META_TOKEN" if czesc == "akademia" else "sekretu META_TOKEN"
-        return kopia["posty"], None, f"aktualności FB ({czesc}): brak {brak} – pokazuję zapisane posty"
     if not pora_sprawdzic(kopia.get("sprawdzono"), konfig.get("godziny", [7, 19])):
         return kopia["posty"], None, None
+    token = tokeny_stron(konfig).get(czesc)
+    if not token:
+        strona = (konfig.get(czesc) or {}).get("strona")
+        return kopia["posty"], None, f"aktualności FB ({czesc}): w META_TOKEN brak tokenu strony „{strona}” – pokazuję zapisane posty"
     try:
         nowe = posty_strony_fb(token, konfig.get("ile", 12))
     except Exception as blad:
@@ -622,7 +659,7 @@ def aktualnosci_fb(czesc, konfig, bez_internetu=False):
     for n in nowe:
         if not (n["opis"] or "").strip():
             continue                      # same zdjęcia bez opisu – pomijamy
-        klucz = klucz_posta(czesc, n["id"])
+        klucz = klucz_posta(f"fb-{czesc}", n["id"])
         zdjecie = None
         try:
             zdjecie = pobierz_obraz("posty", klucz, n.get("obraz"), 1200)
@@ -631,13 +668,7 @@ def aktualnosci_fb(czesc, konfig, bez_internetu=False):
             zdjecie = (stare.get(n["id"]) or {}).get("zdjecie")
         posty.append({"id": n["id"], "opis": n["opis"], "czas": n["czas"], "link": n["link"], "zdjecie": zdjecie})
 
-    # Sprzątamy zdjęcia postów, które wypadły z listy (tylko tej części strony)
-    folder = os.path.join(FOLDER, "img", "posty")
-    uzywane = {os.path.basename(p["zdjecie"]) for p in posty if p.get("zdjecie")}
-    if os.path.isdir(folder):
-        for nazwa in os.listdir(folder):
-            if nazwa.startswith(czesc + "-") and nazwa not in uzywane:
-                os.remove(os.path.join(folder, nazwa))
+    posprzataj_zdjecia_fb(czesc, posty)
     os.makedirs(os.path.dirname(plik), exist_ok=True)
     with open(plik, "w", encoding="utf-8") as f:
         json.dump({"sprawdzono": datetime.now().astimezone().isoformat(timespec="minutes"), "posty": posty},
