@@ -457,7 +457,7 @@ def zdjecie_wygranej(klucz, dzien_meczu, posty, konfig):
 #   Z opisu usuwamy część z oznaczeniami sponsorów (wszystko pod kreską
 #   „_________”), dopiski typu @obserwujący i końcowe hashtagi.
 # ---------------------------------------------------------------------
-WERSJA_API = "v21.0"
+WERSJA_API = "v26.0"
 # Linia-separator: kilka podkreśleń, kresek lub kropek
 SEPARATOR = re.compile(r"^[ \t]*[_\-–—=~.•*]{4,}[ \t]*$", re.M)
 OZNACZENIA = re.compile(r"@(obserwujący|obserwujacy|followers|highlight|wszyscy|everyone)\b", re.I)
@@ -555,6 +555,19 @@ def pora_sprawdzic(sprawdzono, godziny, teraz=None):
     return ostatnio < ostatni_slot
 
 
+def blad_meta(blad):
+    """Czytelny opis błędu z Graph API (kod i komunikat Facebooka – bez tokenu)."""
+    opis = type(blad).__name__
+    try:
+        import urllib.error
+        if isinstance(blad, urllib.error.HTTPError):
+            dane = json.loads(blad.read().decode("utf-8", "replace") or "{}").get("error", {})
+            opis = f"HTTP {blad.code}, kod {dane.get('code')}/{dane.get('error_subcode')}: {dane.get('message', '')[:160]}"
+    except Exception:
+        pass
+    return opis
+
+
 def token_meta(czesc="druzyna"):
     """
     Tokeny stron FB z sekretu META_TOKEN na GitHubie.
@@ -562,8 +575,9 @@ def token_meta(czesc="druzyna"):
     pierwszy – strona drużyny, drugi – strona Akademii.
     (Osobny sekret META_TOKEN_AKADEMIA też działa, jeśli jest przekazany do budowania.)
     """
-    tokeny = re.split(r"[\s,;]+", (os.environ.get("META_TOKEN") or "").strip())
-    tokeny = [t for t in tokeny if t]
+    surowy = os.environ.get("META_TOKEN") or ""
+    # Tokeny Meta zaczynają się od „EAA” – dzięki temu działa też wklejka z cudzysłowami lub „access_token:”
+    tokeny = re.findall(r"EAA[0-9A-Za-z]+", surowy) or [x for x in re.split(r"[\s,;\"']+", surowy) if x]
     if czesc == "akademia":
         return os.environ.get("META_TOKEN_AKADEMIA") or (tokeny[1] if len(tokeny) > 1 else None)
     return tokeny[0] if tokeny else None
@@ -601,7 +615,7 @@ def aktualnosci_fb(czesc, konfig, bez_internetu=False):
     try:
         nowe = posty_strony_fb(token, konfig.get("ile", 12))
     except Exception as blad:
-        return kopia["posty"], None, f"aktualności FB ({czesc}): nie udało się odczytać ({type(blad).__name__}) – pokazuję zapisane posty"
+        return kopia["posty"], None, f"aktualności FB ({czesc}): nie udało się odczytać ({blad_meta(blad)}) – pokazuję zapisane posty"
 
     stare = {p["id"]: p for p in kopia["posty"]}
     posty = []
