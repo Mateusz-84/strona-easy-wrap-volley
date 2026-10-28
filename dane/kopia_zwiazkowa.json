@@ -27,7 +27,7 @@
   }
  },
  "seniorki": {
-  "pobrano": "2026-10-28T21:47",
+  "pobrano": "2026-10-28T23:44",
   "pzps_lista": [
    {
     "data": "2026-09-26",
@@ -244,26 +244,26 @@
     },
     {
      "lp": 2,
-     "male_minus": 383,
-     "male_plus": 484,
-     "mecze": 6,
+     "male_minus": 540,
+     "male_plus": 627,
+     "mecze": 7,
      "nasz": false,
-     "nazwa": "GKS Orlęta Raszyn",
-     "pkt": 15,
-     "sety_minus": 4,
-     "sety_plus": 16,
-     "zwyciestwa": 5
+     "nazwa": "SMS Ostrów Łaskovia Łask",
+     "pkt": 18,
+     "sety_minus": 7,
+     "sety_plus": 19,
+     "zwyciestwa": 6
     },
     {
      "lp": 3,
-     "male_minus": 459,
-     "male_plus": 527,
-     "mecze": 6,
+     "male_minus": 476,
+     "male_plus": 559,
+     "mecze": 7,
      "nasz": false,
-     "nazwa": "SMS Ostrów Łaskovia Łask",
+     "nazwa": "GKS Orlęta Raszyn",
      "pkt": 15,
-     "sety_minus": 6,
-     "sety_plus": 16,
+     "sety_minus": 7,
+     "sety_plus": 17,
      "zwyciestwa": 5
     },
     {
@@ -280,18 +280,6 @@
     },
     {
      "lp": 5,
-     "male_minus": 517,
-     "male_plus": 550,
-     "mecze": 6,
-     "nasz": false,
-     "nazwa": "PGE LTS Legionovia Legionowo II",
-     "pkt": 12,
-     "sety_minus": 10,
-     "sety_plus": 14,
-     "zwyciestwa": 4
-    },
-    {
-     "lp": 6,
      "male_minus": 566,
      "male_plus": 584,
      "mecze": 7,
@@ -300,6 +288,18 @@
      "pkt": 12,
      "sety_minus": 12,
      "sety_plus": 14,
+     "zwyciestwa": 4
+    },
+    {
+     "lp": 6,
+     "male_minus": 617,
+     "male_plus": 631,
+     "mecze": 7,
+     "nasz": false,
+     "nazwa": "PGE LTS Legionovia Legionowo II",
+     "pkt": 12,
+     "sety_minus": 13,
+     "sety_plus": 15,
      "zwyciestwa": 4
     },
     {
@@ -316,6 +316,18 @@
     },
     {
      "lp": 8,
+     "male_minus": 580,
+     "male_plus": 599,
+     "mecze": 7,
+     "nasz": false,
+     "nazwa": "MAPEI BARYCZ Janków Przygodzki",
+     "pkt": 9,
+     "sety_minus": 15,
+     "sety_plus": 13,
+     "zwyciestwa": 3
+    },
+    {
+     "lp": 9,
      "male_minus": 576,
      "male_plus": 531,
      "mecze": 7,
@@ -325,18 +337,6 @@
      "sety_minus": 15,
      "sety_plus": 11,
      "zwyciestwa": 3
-    },
-    {
-     "lp": 9,
-     "male_minus": 505,
-     "male_plus": 506,
-     "mecze": 6,
-     "nasz": false,
-     "nazwa": "MAPEI BARYCZ Janków Przygodzki",
-     "pkt": 6,
-     "sety_minus": 14,
-     "sety_plus": 10,
-     "zwyciestwa": 2
     },
     {
      "lp": 10,
