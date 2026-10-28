@@ -26,7 +26,7 @@ KLUB = {
     "nazwa_krotka": "Easy Wrap Volley",
     "nazwa_prawna": "Klub Sportowy Volley",
     "adres": "ul. ks. Marcina Załuskiego 57, 05-230 Kobyłka",
-    "email": "ks.volley.kobylka@gmail.com",
+    "email": "kontakt@volleykobylka.pl",
     "telefon": None,                         # brak – wpisz, gdy będzie
     # Dane rejestrowe – pokazują się w polityce prywatności (administrator danych)
     "krs": "0000921839", "nip": "1251723179", "regon": "389970100",
@@ -389,7 +389,7 @@ AKADEMIA = {
     "facebook": "https://www.facebook.com/profile.php?id=100087224682607",
     # Koordynator projektu – kontakt w sekcji „Kontakt”. Puste pola się nie pokazują.
     "koordynator": {"imie": None, "rola": "Koordynator Akademii", "telefon": None,
-                    "email": "ks.volley.kobylka@gmail.com"},
+                    "email": "akademia@volleykobylka.pl"},
     "haslo": "Dołącz do nas!",
     "opis": "Treningi siatkówki dla dziewcząt w hali przy ul. Załuskiego 57 w Kobyłce. Bez wpisowego.",
     # Cennik i najważniejsze zasady – pokazują się w pierwszym ekranie strony Akademii
@@ -430,7 +430,7 @@ AKADEMIA = {
             "Twoje zdjęcia i informacje o Tobie są chronione – publikujemy je tylko za zgodą rodzica.",
             "Jeśli ktoś sprawia Ci przykrość albo coś Cię niepokoi – w Klubie, w domu czy w internecie – powiedz rodzicowi, trenerowi albo osobie, której ufasz. Pomożemy.",
         ],
-        "osoba_kontaktowa": "ks.volley.kobylka@gmail.com",
+        "osoba_kontaktowa": "kontakt@volleykobylka.pl",
     },
 }
 
@@ -482,8 +482,8 @@ Szkolimy dziewczęta w Akademii Siatkówki Volley i organizujemy obozy sportowe.
 # ---------------------------------------------------------------------
 KONTAKT = {
     "osoby": [
-        {"rola": "Sprawy klubu i sponsorzy", "imie": None, "email": "ks.volley.kobylka@gmail.com"},
-        {"rola": "Zapisy do Akademii", "imie": None, "email": "ks.volley.kobylka@gmail.com"},
+        {"rola": "Sprawy klubu i sponsorzy", "imie": None, "email": "kontakt@volleykobylka.pl"},
+        {"rola": "Zapisy do Akademii", "imie": None, "email": "akademia@volleykobylka.pl"},
     ],
     "formularz_google": None,
 }

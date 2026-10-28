@@ -831,8 +831,8 @@ na nasz serwer – usunięcie posta na Facebooku usuwa go też ze strony przy na
 <li><strong>Hosting strony – GitHub Pages</strong> (GitHub, Inc., USA). Serwer, podobnie jak każdy serwer WWW, zapisuje techniczne logi
 (adres IP, czas wizyty, odwiedzana strona) w celach bezpieczeństwa. GitHub jest objęty programem EU–U.S. Data Privacy Framework
 i stosuje standardowe klauzule umowne. Zasady: <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener" target="_blank">GitHub Privacy Statement</a>.</li>
-<li><strong>Poczta e-mail – Google (Gmail)</strong>. Wiadomości wysłane na adres Klubu są przechowywane na serwerach Google
-(Google Ireland Ltd. / Google LLC, objęta Data Privacy Framework).</li>
+<li><strong>Poczta e-mail – Simply.com</strong> (Simply.com A/S, Dania). Wiadomości wysłane na adresy Klubu w domenie
+volleykobylka.pl są przechowywane na serwerach Simply.com w Unii Europejskiej.</li>
 <li><strong>Formularze Google</strong> – jeśli zgłoszenie odbywa się przez formularz, wczytuje się on dopiero po kliknięciu przycisku.
 Wtedy Google przetwarza dane wpisane w formularzu i może użyć własnych plików cookies (<a href="https://policies.google.com/privacy?hl=pl" rel="noopener" target="_blank">zasady Google</a>).</li>
 <li><strong>Licznik wyświetleń</strong> – przy wejściu na stronę przeglądarka wysyła jedno zapytanie do serwisu Abacus
