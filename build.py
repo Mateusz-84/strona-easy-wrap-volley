@@ -623,7 +623,9 @@ class Budowa:
 {S.plakat_podstrony(p, 'O klubie', C.KLUB['nazwa_prawna'], 'o-klubie')}
 {f'<div class="trofea" aria-label="Sukcesy"><ul class="kontener">{trofea}</ul></div>' if trofea else ''}
 <section class="sekcja"><div class="kontener uklad-2">
-  <div class="artykul__tresc">{S.akapity(O['historia'])}</div>
+  <div class="artykul__tresc">{S.akapity(O['historia'])}
+    <div class="przyciski-cta"><a class="btn btn--zolty" href="{p}druzyny.html">Poznaj kadrę →</a>
+    <a class="btn btn--obrys" href="{p}akademia.html">Akademia Siatkówki →</a></div></div>
   <div>
     {f'<ul class="wartosci">{wartosci}</ul>' if wartosci else ''}
     <dl class="dane-klubu">
@@ -666,7 +668,12 @@ class Budowa:
     def kontakt(self):
         def tresc(p):
             osoby = ""
+            # Osoby z tym samym adresem co klub nie powtarzają e-maila – wystarczy jeden podpis pod adresem
+            wspolne = [o for o in C.KONTAKT["osoby"] if o.get("email") == C.KLUB["email"] and not o.get("imie")]
+            podpis = (f'<p class="kontakt__podpis">{e(" · ".join(o["rola"] for o in wspolne))}</p>' if wspolne else "")
             for o in C.KONTAKT["osoby"]:
+                if o in wspolne:
+                    continue
                 imie = f"<strong>{e(o['imie'])}</strong>" if o.get("imie") else ""
                 osoby += (f'<li><span class="osoba__rola">{e(o["rola"])}</span>{imie}'
                           f'<a href="mailto:{e(o["email"])}">{e(o["email"])}</a></li>')
@@ -678,7 +685,8 @@ class Budowa:
 <section class="sekcja"><div class="kontener uklad-2">
   <div>
     <p class="kontakt__mail"><a href="mailto:{e(C.KLUB['email'])}">{e(C.KLUB['email'])}</a></p>
-    <ul class="kontakt__osoby">{osoby}</ul>
+    {podpis}
+    {f'<ul class="kontakt__osoby">{osoby}</ul>' if osoby else ''}
     {forma}
     <ul class="kontakt__social">{S.social_linki("kontakt", True)}</ul>
   </div>
@@ -707,6 +715,7 @@ class Budowa:
 <ul>
 <li><strong>Google Fonts</strong> – czcionki strony są pobierane z serwerów Google; przeglądarka przekazuje przy tym adres IP.</li>
 <li><strong>Formularze Google</strong> – wczytują się dopiero po kliknięciu przycisku; Google może wtedy zapisać swoje cookies (zasady: policies.google.com).</li>
+<li><strong>Licznik wyświetleń</strong> – przy wejściu na stronę przeglądarka wysyła zapytanie do darmowego serwisu Abacus (abacus.jasoncameron.dev), który zwiększa licznik o 1; serwis widzi adres IP, ale nie zapisuje cookies i nie identyfikuje odwiedzających.</li>
 <li><strong>Facebook, Instagram, YouTube</strong> – na stronie są tylko linki; dane trafiają do tych serwisów dopiero po przejściu na nie.</li>
 <li><strong>Serwer (hosting)</strong> – dostawca serwera może zapisywać standardowe logi (adres IP, czas wizyty) w celach bezpieczeństwa.</li>
 </ul>

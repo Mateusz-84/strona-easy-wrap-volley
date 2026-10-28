@@ -143,6 +143,25 @@ def inicjaly(nazwa):
     return "".join(s[0] for s in slowa[:2]).upper()
 
 
+def skrot_hali(nazwa):
+    """Związek podaje czasem kilka hal w jednym polu („hala A ; Hala dodatkowa: …”) – zostaw pierwszą."""
+    if not nazwa:
+        return ""
+    n = nazwa.split(";")[0].strip()
+    return n[:1].upper() + n[1:]
+
+
+def licznik_html():
+    """Mały licznik wyświetleń w stopce – liczbę wstawia main.js; bez JS/sieci element zostaje ukryty."""
+    L = getattr(C, "LICZNIK", {}) or {}
+    if not L.get("wlaczony"):
+        return ""
+    return (f'<span class="licznik-wysw" data-wyswietlenia="{e(L["przestrzen"])}/{e(L["klucz"])}" hidden>'
+            f'<svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path fill="currentColor" '
+            f'd="M12 5C6.5 5 2.7 9.3 1.5 12c1.2 2.7 5 7 10.5 7s9.3-4.3 10.5-7C21.3 9.3 17.5 5 12 5zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg>'
+            f'<span class="ukryte">Wyświetlenia strony: </span><span data-wyswietlenia-liczba></span></span>')
+
+
 def herb_svg(tekst, kolor, klasa="herb"):
     rozmiar = 22 if len(tekst) <= 2 else 18 if len(tekst) == 3 else 14
     return (f'<svg class="{klasa}" viewBox="0 0 60 70" aria-hidden="true">'
@@ -327,6 +346,7 @@ def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja):
         <li><a href="{p}sponsorzy.html">Zostań sponsorem</a></li></ul></div>
     </div>
     <div class="stopka__dol"><span>© {rok} {e(C.KLUB['nazwa_prawna'])} · {e(C.KLUB['nazwa'])}</span>
+      {licznik_html()}
       <a href="{p}polityka-prywatnosci.html">Polityka prywatności i cookies</a></div>
   </div>
 </footer>
@@ -385,7 +405,7 @@ def hero(p, m):
     d = m["data"]
     godzina = (f'<div class="hero__godzina"><strong>{e(m["godzina"])}</strong>godzina meczu</div>' if m.get("godzina")
                else '<div class="hero__godzina hero__godzina--brak"><strong>Godzina wkrótce</strong>ustala organizator</div>')
-    miejsce = m.get("hala") or ("Hala do potwierdzenia" if wyjazd else C.HALA_DOMOWA["nazwa"])
+    miejsce = skrot_hali(m.get("hala")) or ("Hala do potwierdzenia" if wyjazd else C.HALA_DOMOWA["nazwa"])
     adres = m.get("adres") or ("" if wyjazd else C.HALA_DOMOWA["adres"])
     mapa = ("https://www.google.com/maps/search/?api=1&query=" + "+".join(adres.split())) if adres else None
 
@@ -489,7 +509,7 @@ def karta_meczu(p, m):
                 f'{f"<b>{e(punkty)}</b>" if punkty != "" else ""}</div>')
 
     pary = wiersz(gosp, a) + (wiersz(gosc, b) if gosc else "")
-    miejsce = m.get("hala") or ""
+    miejsce = skrot_hali(m.get("hala"))
     if m.get("adres") and not m["u_siebie"]:
         miejsce = (miejsce + " · " if miejsce else "") + m["adres"].split(",")[-1].strip()
     if not m.get("godzina") and not m.get("wynik") and d >= date.today():
@@ -574,8 +594,11 @@ def tabela_html(p, wiersze, opis_druzyny, podpis):
 def karta_newsa(p, n, duza=False):
     d = date.fromisoformat(n["data"])
     foto = img(p, n.get("zdjecie"), n["tytul"], "news__img")
+    if not foto:  # brak zdjęcia: herb klubu + kategoria zamiast pustego pola
+        foto = (f'<img class="news__herb" src="{p}img/herby/easy-wrap-volley.png" alt="" aria-hidden="true" loading="lazy">'
+                f'<span class="news__znak" aria-hidden="true">{e(n["kategoria"])}</span>')
     return f"""
-<a class="news{' news--duzy' if duza else ''}" href="{p}aktualnosci/{e(n['adres'])}.html">
+<a class="news{' news--duzy' if duza else ''}{'' if n.get('zdjecie') and jest_plik(n.get('zdjecie')) else ' news--bez-foto'}" href="{p}aktualnosci/{e(n['adres'])}.html">
   <span class="news__foto foto-{sum(map(ord, n['adres'])) % 4}">{foto}</span>
   <div class="news__tresc"><span class="news__kat">{e(n['kategoria'])}<time datetime="{d.isoformat()}">{d.strftime('%d.%m.%Y')}</time></span>
   <h3>{e(n['tytul'])}</h3>{f"<p>{e(n['zajawka'])}</p>" if duza and n.get('zajawka') else ''}</div>

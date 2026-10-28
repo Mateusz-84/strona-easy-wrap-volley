@@ -162,6 +162,34 @@
   /* ---------------------------------------------------------------
      FILTRY MECZÓW – działają na wszystkie karty w obszarze [data-filtrowanie]
      --------------------------------------------------------------- */
+  /* ---------------------------------------------------------------
+     LICZNIK WYŚWIETLEŃ (stopka) – każde wczytanie strony dolicza 1.
+     Gdy serwis nie odpowie, licznik po prostu się nie pokazuje.
+     --------------------------------------------------------------- */
+  var wysw = document.querySelector('[data-wyswietlenia]');
+  if (wysw && window.fetch && location.protocol.indexOf('http') === 0) {
+    fetch('https://abacus.jasoncameron.dev/hit/' + wysw.dataset.wyswietlenia)
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (!d || typeof d.value !== 'number') return;
+        wysw.querySelector('[data-wyswietlenia-liczba]').textContent = d.value.toLocaleString('pl-PL');
+        wysw.title = 'Wyświetlenia strony';
+        wysw.hidden = false;
+      })
+      .catch(function () {});
+  }
+
+  /* ---------------------------------------------------------------
+     KARUZELA MECZÓW (telefon): zaczyna od najbliższego meczu,
+     a nie od najstarszego wyniku
+     --------------------------------------------------------------- */
+  document.querySelectorAll('.mecze:not(.mecze--siatka)').forEach(function (rzad) {
+    var cel = rzad.querySelector('.mecz--najblizszy');
+    if (!cel || rzad.scrollWidth <= rzad.clientWidth + 4) return;
+    var start = rzad.children[0].getBoundingClientRect().left;   // gdzie stoi pierwsza karta
+    rzad.scrollLeft = cel.getBoundingClientRect().left - start;
+  });
+
   document.querySelectorAll('.filtry').forEach(function (grupa) {
     var przyciski = grupa.querySelectorAll('[data-klucz]');
     if (!przyciski.length) return;

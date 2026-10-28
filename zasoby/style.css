@@ -154,7 +154,7 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
 .hero__szczegoly strong{font-family:var(--font-naglowki);font-weight:400;font-size:36px;line-height:.95;display:block}
 .hero__godzina--brak strong{font-size:26px;color:var(--zolty)}
 .hero--wyjazd .hero__godzina--brak strong{color:var(--granat)}
-.hero__szczegoly .hero__hala strong{font-size:24px;max-width:22ch}
+.hero__szczegoly .hero__hala strong{font-size:24px;max-width:26ch}
 .hero__przyciski{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px}
 .hero--wyjazd .btn--zolty{background:var(--granat-ciemny);color:#fff}
 .hero__link{display:inline-flex;align-items:center;min-height:48px;font-weight:700;font-size:17px;text-transform:uppercase;letter-spacing:.08em;text-decoration:none;color:inherit;
@@ -757,3 +757,28 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
   .js .pojaw{opacity:1;transform:none}
 }
+
+/* =====================================================================
+   POPRAWKI UX 2026-10
+   ===================================================================== */
+/* Aktualność bez zdjęcia: herb + kategoria zamiast pustego pola */
+.news__herb{position:absolute;right:4%;top:50%;transform:translateY(-50%);height:78%;width:auto;opacity:.2;pointer-events:none}
+.news__znak{position:absolute;left:16px;bottom:10px;font-family:var(--font-naglowki);font-size:30px;line-height:1;color:rgba(255,255,255,.9);letter-spacing:.02em}
+.news--bez-foto:not(.news--duzy) .news__znak{display:none}
+.news--bez-foto:not(.news--duzy) .news__herb{right:50%;transform:translate(50%,-50%);height:62%;opacity:.4}
+.news--duzy.news--bez-foto .news__foto{min-height:180px}
+.news--duzy.news--bez-foto .news__znak{font-size:clamp(56px,9vw,110px);left:24px;bottom:14px;color:rgba(255,255,255,.18)}
+/* Kontakt: jeden adres, role pod spodem */
+.kontakt__podpis{margin:-4px 0 24px;font-weight:700;font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--tekst-szary)}
+/* O klubie: wyraźne następne kroki */
+.przyciski-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.przyciski-cta .btn--obrys{color:var(--granat)}
+@media (min-width:1024px){
+  .news--duzy.news--bez-foto .news__foto{min-height:240px}
+  /* „Ostatni mecz” towarzyszy tabeli przy przewijaniu */
+  .uklad-tabela > :first-child{position:sticky;top:96px;align-self:start}
+}
+/* Licznik wyświetleń – dyskretny, w dolnym pasku stopki */
+.licznik-wysw{display:inline-flex;align-items:center;gap:5px;font-size:12px;letter-spacing:.04em;color:rgba(213,226,242,.45);font-variant-numeric:tabular-nums}
+.licznik-wysw[hidden]{display:none}
+.stopka__dol{align-items:center}
