@@ -592,11 +592,20 @@ def tokeny_stron(konfig=None):
         except Exception as blad:
             print(f"  UWAGA: jeden z tokenów w META_TOKEN nie działa ({blad_meta(blad)})")
             continue
-        nazwa = bez_ogonkow(ja.get("name"))
-        for czesc in ("druzyna", "akademia"):
-            wzor = bez_ogonkow((konfig.get(czesc) or {}).get("strona") or "")
-            if wzor and wzor in nazwa and czesc not in wynik:
-                wynik[czesc] = token
+        kandydaci = [(ja.get("name"), token)]
+        # Token UŻYTKOWNIKA (np. przedłużony token z Access Token Debuggera): tokeny stron
+        # pobieramy z jego listy stron me/accounts – są wieczne, gdy token użytkownika jest długoterminowy
+        try:
+            strony = json.loads(pobierz(f"{API_META}/{WERSJA_API}/me/accounts?fields=name,access_token&limit=100&access_token={token}"))
+            kandydaci += [(s.get("name"), s.get("access_token")) for s in strony.get("data", []) if s.get("access_token")]
+        except Exception:
+            pass   # token strony nie ma listy me/accounts – to normalne
+        for nazwa, tok in kandydaci:
+            nazwa = bez_ogonkow(nazwa)
+            for czesc in ("druzyna", "akademia"):
+                wzor = bez_ogonkow((konfig.get(czesc) or {}).get("strona") or "")
+                if wzor and wzor in nazwa and czesc not in wynik:
+                    wynik[czesc] = tok
     _TOKENY_STRON = wynik
     return wynik
 

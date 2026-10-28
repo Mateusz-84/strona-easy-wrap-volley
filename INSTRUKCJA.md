@@ -362,10 +362,10 @@ na stronie Akademii) biorą się z postów na Facebooku:
 punkty 2–5 z 9a):
 
 - nazwa sekretu: `META_TOKEN`,
-- wartość: **token strony Easy Wrap Volley Kobyłka** i **token strony Akademia
-  Siatkówki Volley** (oba z listy `me/accounts`), oddzielone spacją – kolejność
-  nie ma znaczenia. Można też wkleić cały wynik `me/accounts`: strona sama
-  rozpozna, który token należy do której strony (po nazwie strony).
+- wartość: **przedłużony token z punktu 4** (Access Token Debugger → Extend
+  Access Token – „will never expire”). Strona sama pobierze z niego tokeny obu
+  stron i rozpozna je po nazwach. Działa też wklejenie tokenów stron z `me/accounts`
+  (oddzielonych spacją, w dowolnej kolejności).
 
 Przy generowaniu tokenu zaznacz obie strony. Uprawnienia: `pages_show_list`
 i `pages_read_engagement`. ID stron nie trzeba nigdzie wpisywać. Tokeny stron
