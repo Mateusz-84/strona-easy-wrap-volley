@@ -199,20 +199,7 @@ class Budowa:
             return f"""
 {S.okienko_zapowiedzi(p, self.zapowiedz, C.ZAPOWIEDZ, self.najblizszy)}
 {S.hero(p, self.najblizszy)}
-<section class="sekcja sekcja--odbiorcy" aria-label="Dla kogo">
-  <div class="kontener"><div class="odbiorcy pojaw">
-    <a class="panel panel--seniorki" href="{p}druzyny.html">
-      <span class="panel__nr" aria-hidden="true">01</span>
-      <small>2. liga siatkówki kobiet</small><h2>{e(C.KLUB['nazwa'])}</h2>
-      <p>Terminarz, wyniki, kadra i tabela.</p><span class="panel__strzalka" aria-hidden="true">↗</span></a>
-    <a class="panel panel--akademia" href="{p}akademia.html">
-      <span class="panel__nr" aria-hidden="true">02</span>
-      <small>Trenuj z nami</small><h2>Akademia Siatkówki Volley</h2>
-      <p>{e(C.AKADEMIA['opis'])}</p><span class="panel__strzalka" aria-hidden="true">↗</span></a>
-  </div></div>
-</section>
-
-<section class="sekcja sekcja--bez-gory" aria-labelledby="mecze-tytul">
+<section class="sekcja" aria-labelledby="mecze-tytul">
   <div class="kontener" data-filtrowanie>
     {S.naglowek_sekcji('Mecze', 'i wyniki', p + 'terminarz.html', 'Pełny terminarz', id_='mecze-tytul')}
     {self.filtry_druzyn()}
@@ -255,7 +242,7 @@ class Budowa:
   </div>
 </section>
 {sponsorzy}"""
-        self.strona("index.html", C.KLUB["nazwa"], C.KLUB["opis"], tresc)
+        self.strona(S.START_DRUZYNY, C.KLUB["nazwa"], C.KLUB["opis"], tresc)
 
     def kafle(self, p):
         """Kafelki „Więcej niż mecz” – Galeria i Sklep tylko wtedy, gdy mają treść."""
@@ -266,10 +253,11 @@ class Budowa:
             male.append(("sklep.html", "Sklep", "Barwy klubowe", "foto-0"))
         male += [("o-klubie.html", "O klubie", "Od 2021 w Kobyłce", "foto-2"),
                  ("sponsorzy.html", "Sponsorzy", "Zostań partnerem", "foto-1")]
-        html = (f'<a class="kafel kafel--akademia" href="{p}akademia.html"><span class="kafel__foto foto-0">'
-                f'{S.img(p, C.AKADEMIA.get("zdjecie"), "", "kafel__img")}</span>'
-                f'<small>Akademia Siatkówki Volley</small><span class="kafel__slowo">Dołącz!</span>'
-                f'<small>Treningi dla dziewcząt · bez wpisowego →</small></a>')
+        postac = S.postac_do_plakatu(None)
+        foto = (f'<img class="kafel__postac" src="{p}img/{e(postac["zdjecie"])}" alt="" loading="lazy">' if postac else "")
+        html = (f'<a class="kafel kafel--akademia" href="{p}druzyny.html"><span class="kafel__foto foto-0">{foto}</span>'
+                f'<small>Kadra 2026/27</small><span class="kafel__slowo">Poznaj nas!</span>'
+                f'<small>{sum(1 for z in C.KADRA if z["druzyna"] == GLOWNA)} zawodniczek · 2. liga kobiet →</small></a>')
         html += "".join(f'<a class="kafel" href="{p}{plik}"><span class="kafel__foto {tlo}"></span>'
                         f'<span class="kafel__slowo">{nazwa}</span><small>{opis}</small></a>'
                         for plik, nazwa, opis, tlo in male)
@@ -406,10 +394,6 @@ class Budowa:
                 f'<span class="osoba__rola">{e(s["funkcja"])}</span><strong>{e(s["imie"])} {e(s["nazwisko"])}</strong></li>'
                 for s in C.SZTAB if s["druzyna"] == GLOWNA)
             dg = C.DRUZYNY[GLOWNA]
-            inne = "".join(
-                f'<a class="panel panel--akademia" href="{p}akademia.html"><small>{e(d["liga"])}</small><h2>{e(d["nazwa"])}</h2>'
-                f'<p>{e(d["opis"])}</p><span class="panel__strzalka" aria-hidden="true">↗</span></a>'
-                for k, d in C.DRUZYNY.items() if k != GLOWNA)
             return f"""
 {S.plakat_podstrony(p, dg['nazwa'], dg['liga'], dg.get('zdjecie') or 'druzyny')}
 <section class="sekcja" aria-labelledby="kadra-tytul">
@@ -422,9 +406,7 @@ class Budowa:
 </section>
 {f'''<section class="sekcja sekcja--biala" aria-labelledby="sztab-tytul"><div class="kontener">
   {S.naglowek_sekcji('Sztab', 'szkoleniowy', id_='sztab-tytul')}<ul class="osoby">{sztab}</ul></div></section>''' if sztab else ''}
-<section class="sekcja" aria-labelledby="inne-tytul">
-  <div class="kontener">{S.naglowek_sekcji('Pozostałe', 'drużyny', id_='inne-tytul')}<div class="odbiorcy">{inne}</div></div>
-</section>"""
+"""
         self.strona("druzyny.html", "Drużyny", "Kadra drużyny Easy Wrap Volley Kobyłka – 2. liga kobiet.", tresc)
 
     # --- AKTUALNOŚCI -------------------------------------------------------
@@ -461,96 +443,125 @@ class Budowa:
             self.strona(f"aktualnosci/{n['adres']}.html", n["tytul"], n.get("zajawka") or n["tytul"],
                         artykul, aktywna="aktualnosci.html")
 
-    # --- AKADEMIA ----------------------------------------------------------
+    # --- AKADEMIA (osobna część strony) ------------------------------------
     def akademia(self):
         A = C.AKADEMIA
-
-        def tresc(p):
-            grupy = "".join(
-                f'<article class="grupa"><span class="grupa__wiek">{e(g["wiek"])}</span><h3>{e(g["nazwa"])}</h3><p>{e(g["opis"])}</p></article>'
-                for g in A["grupy"])
-            trenerzy = "".join(
-                f'<li class="osoba">{S.img(p, t.get("zdjecie"), t["imie"] + " " + t["nazwisko"], "osoba__foto") or f"<span class=osoba__inicjaly>{e(t["imie"][0] + t["nazwisko"][0])}</span>"}'
-                f'<strong>{e(t["imie"])} {e(t["nazwisko"])}</strong><span class="osoba__rola">{e(t["opis"])}</span></li>'
-                for t in A["trenerzy"])
-            dni = ["poniedziałek", "wtorek", "środa", "czwartek", "piątek", "sobota", "niedziela"]
-            plan = sorted(A["harmonogram"], key=lambda t: (dni.index(t["dzien"].lower()), t["od"]))
-            harmonogram = "".join(
-                f'<tr><td>{e(t["dzien"].capitalize())}</td><td>{e(t["od"])}–{e(t["do"])}</td><td>{e(t["grupa"])}</td><td>{e(t.get("hala") or "")}</td></tr>'
-                for t in plan)
-            if A.get("formularz_google"):
-                link = A["formularz_google"]
-                osadz = link + ("&" if "?" in link else "?") + "embedded=true"
-                formularz = f"""
+        p = ""
+        grupy = "".join(
+            f'<article class="grupa"><span class="grupa__wiek">{e(g["wiek"])}</span><h3>{e(g["nazwa"])}</h3><p>{e(g["opis"])}</p></article>'
+            for g in A["grupy"])
+        trenerzy = "".join(
+            f'<li class="osoba">{S.img(p, t.get("zdjecie"), t["imie"] + " " + t["nazwisko"], "osoba__foto") or f"<span class=osoba__inicjaly>{e(t["imie"][0] + t["nazwisko"][0])}</span>"}'
+            f'<strong>{e(t["imie"])} {e(t["nazwisko"])}</strong><span class="osoba__rola">{e(t["opis"])}</span></li>'
+            for t in A["trenerzy"])
+        dni = ["poniedziałek", "wtorek", "środa", "czwartek", "piątek", "sobota", "niedziela"]
+        plan = sorted(A["harmonogram"], key=lambda t: (dni.index(t["dzien"].lower()), t["od"]))
+        wiersze_planu = "".join(
+            f'<tr><td>{e(t["dzien"].capitalize())}</td><td>{e(t["od"])}–{e(t["do"])}</td><td>{e(t["grupa"])}</td><td>{e(t.get("hala") or "")}</td></tr>'
+            for t in plan)
+        if wiersze_planu:
+            plan_html = f"""<div class="tabela-ramka"><table class="tabela tabela--harmonogram">
+        <caption class="ukryte">Plan treningów Akademii</caption>
+        <thead><tr><th scope="col">Dzień</th><th scope="col">Godziny</th><th scope="col">Grupa</th><th scope="col">Miejsce</th></tr></thead>
+        <tbody>{wiersze_planu}</tbody></table></div>"""
+        else:
+            plan_html = ('<div class="ak-info"><strong>Plan na sezon 2026/27 – wkrótce</strong>'
+                         '<p>Godziny treningów dopasowujemy do grup po zapisie. Napisz do nas – odpowiemy z wolnymi miejscami i godzinami.</p></div>')
+        temat = quote("Zapis do Akademii Siatkówki Volley")
+        mail = (A.get("koordynator") or {}).get("email") or C.KLUB["email"]
+        if A.get("formularz_google"):
+            link = A["formularz_google"]
+            osadz = link + ("&" if "?" in link else "?") + "embedded=true"
+            formularz = f"""
 <div class="formularz">
-  <a class="btn btn--zolty" href="{e(link)}" rel="noopener" target="_blank">Otwórz formularz zapisu</a>
+  <a class="btn btn--ak" href="{e(link)}" rel="noopener" target="_blank">Wypełnij zgłoszenie</a>
   <button class="btn btn--obrys" data-formularz="{e(osadz)}">Pokaż formularz tutaj</button>
   <p class="formularz__info">Formularz Google wczyta się dopiero po kliknięciu (Google może wtedy zapisać cookies).</p>
 </div>"""
-            else:
-                formularz = (f'<div class="formularz"><a class="btn btn--zolty" href="mailto:{e(C.KLUB["email"])}?subject={quote("Zapis do Akademii")}">'
-                             f'Napisz w sprawie zapisu →</a>'
-                             f'<p class="formularz__info">Odpowiemy z wolnymi miejscami i godzinami treningów. '
-                             f'Umowę uczestnictwa podpisujemy na miejscu, w hali.</p></div>')
-            cennik = ""
-            if A.get("cennik") or A.get("fakty"):
-                wiersze = "".join(f'<li><span>{e(c["co"])}</span><strong>{e(c["cena"])}</strong></li>' for c in A.get("cennik", []))
-                fakty = "".join(f"<li>{e(x)}</li>" for x in A.get("fakty", []))
-                cennik = (f'<aside class="cennik" aria-label="Cennik Akademii"><h2 class="cennik__tytul">Ile to kosztuje</h2>'
-                          f'<ul class="cennik__lista">{wiersze}</ul><ul class="cennik__fakty">{fakty}</ul></aside>')
-            foto_akademii = S.img(p, A.get("zdjecie"), "Trening Akademii Siatkówki Volley", "plakat__img", lazy=False)
-            prawa_kolumna = f'<div class="plakat__foto">{foto_akademii}</div>' if foto_akademii else cennik
-            sekcja_grupy = ""
-            if grupy:
-                sekcja_grupy = f"""
-<section class="sekcja" aria-labelledby="grupy-tytul">
-  <div class="kontener">
-    {S.naglowek_sekcji('Grupy', 'wiekowe', id_='grupy-tytul')}
-    {S.prezentuje('akademia', p)}
-    <div class="grupy pojaw">{grupy}</div>
-  </div>
-</section>"""
-            kolumny = ""
-            if harmonogram:
-                kolumny += f"""
+        else:
+            formularz = (f'<div class="formularz"><a class="btn btn--ak" href="mailto:{e(mail)}?subject={temat}">'
+                         f'Wyślij zgłoszenie e-mailem →</a>'
+                         f'<p class="formularz__info">W wiadomości podaj imię córki, rok urodzenia i telefon do rodzica.</p></div>')
+        cennik = "".join(f'<li class="ak-cena"><span>{e(c["co"])}</span><strong>{e(c["cena"])}</strong></li>' for c in A.get("cennik", []))
+        fakty = "".join(f"<li>{e(x)}</li>" for x in A.get("fakty", []))
+        k = A.get("koordynator") or {}
+        kontakt = ""
+        if k.get("imie"):
+            kontakt += f'<p class="ak-osoba">{e(k["imie"])}</p>'
+        if k.get("telefon"):
+            kontakt += f'<a class="ak-kontakt__duzy" href="tel:{e(k["telefon"].replace(" ", ""))}">{e(k["telefon"])}</a>'
+        if k.get("email"):
+            kontakt += f'<a class="ak-kontakt__mail" href="mailto:{e(k["email"])}">{e(k["email"])}</a>'
+        fb = (f'<a class="btn btn--fb" href="{e(A["facebook"])}" target="_blank" rel="noopener">Akademia na Facebooku ↗</a>'
+              if A.get("facebook") else "")
+        logo = (f'<img class="ak-hero__logo" src="img/{e(A["logo"])}" alt="Logo Akademii Siatkówki Volley" width="320" height="320">'
+                if S.jest_plik(A.get("logo")) else "")
+        om = A["ochrona_maloletnich"]
+        dokument = f'<a class="btn btn--obrys" href="img/{e(om["dokument"])}">Pobierz standardy (PDF)</a>' if S.jest_plik(om.get("dokument")) else ""
+        mapa = C.HALA_DOMOWA.get("mapa")
+        sekcja_grupy = (f'<div class="grupy pojaw">{grupy}</div>' if grupy else "")
+        tresc = f"""
+<section class="ak-hero" id="o-akademii" aria-labelledby="ak-tytul">
+  <div class="kontener ak-hero__uklad">
     <div>
-      {S.naglowek_sekcji('Harmonogram', '', p + 'terminarz.html#kalendarium', 'Kalendarium', id_='harm-tytul')}
-      <div class="tabela-ramka"><table class="tabela tabela--harmonogram">
-        <caption class="ukryte">Harmonogram treningów Akademii</caption>
-        <thead><tr><th scope="col">Dzień</th><th scope="col">Godziny</th><th scope="col">Grupa</th><th scope="col">Miejsce</th></tr></thead>
-        <tbody>{harmonogram}</tbody></table></div>
-    </div>"""
-            if trenerzy:
-                kolumny += f"""
-    <div>
-      {S.naglowek_sekcji('Trenerzy', '', id_='trenerzy-tytul', poziom='h2')}
-      <ul class="osoby osoby--pionowo">{trenerzy}</ul>
-    </div>"""
-            sekcja_harm = (f'<section class="sekcja sekcja--biala" aria-labelledby="harm-tytul">'
-                           f'<div class="kontener uklad-2">{kolumny}</div></section>') if kolumny else ""
-            om = A["ochrona_maloletnich"]
-            dokument = f'<a class="btn btn--obrys" href="{p}img/{e(om["dokument"])}">Pobierz standardy (PDF)</a>' if S.jest_plik(om.get("dokument")) else ""
-            return f"""
-<section class="plakat plakat--akademia">
-  <div class="kontener plakat__uklad">
-    <div>
-      <p class="plakat__nad">Akademia Siatkówki Volley</p>
-      <h1 class="plakat__tytul plakat__tytul--mega">{e(A['haslo'])}</h1>
-      <p class="plakat__opis">{e(A['opis'])}</p>
-      <a class="btn btn--granat" href="#zapisy">Zapisz córkę →</a>
+      <p class="ak-nad">Akademia Siatkówki Volley · Kobyłka</p>
+      <h1 class="ak-tytul" id="ak-tytul">{e(A['haslo'])}</h1>
+      <p class="ak-opis">{e(A['opis'])}</p>
+      <ul class="ak-fakty">{fakty}</ul>
+      <div class="ak-przyciski"><a class="btn btn--ak" href="#zapisy">Zapisz córkę →</a>
+        <a class="btn btn--obrys btn--jasny" href="#cennik">Zobacz cennik</a></div>
     </div>
-    {prawa_kolumna}
+    {logo}
+  </div>
+  {f'<div class="kontener">{sekcja_grupy}</div>' if sekcja_grupy else ''}
+</section>
+
+<section class="sekcja ak-sekcja" id="cennik" aria-labelledby="cennik-tytul">
+  <div class="kontener">
+    <h2 class="ak-h2" id="cennik-tytul">Cennik</h2>
+    <ul class="ak-ceny">{cennik}</ul>
+    <p class="ak-przypis">Opłata miesięczna, umowa na sezon (wrzesień–czerwiec). Bez wpisowego.</p>
   </div>
 </section>
-{sekcja_grupy}
-{sekcja_harm}
-<section class="sekcja" id="zapisy" aria-labelledby="zapisy-tytul">
+
+<section class="sekcja ak-sekcja ak-sekcja--biala" id="plan" aria-labelledby="plan-tytul">
   <div class="kontener">
-    {S.naglowek_sekcji('Zapisy', 'online' if A.get('formularz_google') else 'do Akademii', id_='zapisy-tytul')}
+    <h2 class="ak-h2" id="plan-tytul">Plan treningów</h2>
+    {plan_html}
+    <p class="ak-przypis">Treningi w hali sportowej przy ul. ks. Marcina Załuskiego 57 w Kobyłce. Trening trwa 90 minut.</p>
+    {f'<ul class="osoby osoby--pionowo">{trenerzy}</ul>' if trenerzy else ''}
+  </div>
+</section>
+
+<section class="sekcja ak-sekcja" id="zapisy" aria-labelledby="zapisy-tytul">
+  <div class="kontener">
+    <h2 class="ak-h2" id="zapisy-tytul">Zapisy</h2>
+    <ol class="ak-kroki">
+      <li><strong>Wyślij zgłoszenie</strong><span>Imię córki, rok urodzenia, telefon do rodzica.</span></li>
+      <li><strong>Odpowiemy</strong><span>Podamy grupę, godziny i termin pierwszego treningu.</span></li>
+      <li><strong>Przyjdź na trening</strong><span>Umowę uczestnictwa podpisujemy na miejscu, w hali.</span></li>
+    </ol>
     {formularz}
     <div class="formularz__ramka" data-formularz-ramka></div>
   </div>
 </section>
+
+<section class="sekcja ak-sekcja ak-sekcja--biala" id="kontakt" aria-labelledby="kontakt-tytul">
+  <div class="kontener ak-kontakt">
+    <div>
+      <h2 class="ak-h2" id="kontakt-tytul">Kontakt</h2>
+      <p class="ak-rola">{e(k.get('rola') or 'Koordynator Akademii')}</p>
+      {kontakt}
+      <div class="ak-przyciski">{fb}</div>
+    </div>
+    <div class="ak-karta">
+      <h3>Gdzie trenujemy</h3>
+      <p>Hala sportowa<br>{e(C.KLUB['adres'])}</p>
+      {f'<a class="btn btn--ak" href="{e(mapa)}" rel="noopener" target="_blank">Pokaż na mapie →</a>' if mapa else ''}
+    </div>
+  </div>
+</section>
+
 <section class="sekcja sekcja--ochrona" id="ochrona" aria-labelledby="ochrona-tytul">
   <div class="kontener ochrona">
     <div class="ochrona__ikona" aria-hidden="true">
@@ -564,8 +575,14 @@ class Budowa:
     </div>
   </div>
 </section>"""
-        self.strona("akademia.html", "Akademia Siatkówki Volley",
-                    "Akademia Siatkówki Volley w Kobyłce – treningi siatkówki dla dziewcząt. Cennik i zapisy.", tresc)
+        html = S.uklad_akademii("Akademia Siatkówki Volley – Kobyłka",
+                                "Akademia Siatkówki Volley w Kobyłce – treningi siatkówki dla dziewcząt. Cennik, plan treningów, zapisy i kontakt.",
+                                tresc, p, self.wersja)
+        zapisz("akademia.html", html)
+
+    # --- STRONA WYBORU (volleykobylka.pl) -----------------------------------
+    def wybor(self):
+        zapisz("index.html", S.strona_wyboru("", self.wersja))
 
     # --- GALERIA -----------------------------------------------------------
     def galeria(self):
@@ -816,6 +833,7 @@ def main():
     if os.path.isdir(os.path.join(FOLDER, "img")):
         shutil.copytree(os.path.join(FOLDER, "img"), os.path.join(WYJSCIE, "img"))
 
+    b.wybor()
     b.strona_glowna()
     b.terminarz()
     b.druzyny()

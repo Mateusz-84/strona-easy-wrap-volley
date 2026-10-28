@@ -34,12 +34,14 @@ MIESIACE_DOP = ["stycznia", "lutego", "marca", "kwietnia", "maja", "czerwca",
 #   na_komputerze=False → pozycja jest tylko w menu na telefonie i w stopce,
 #   żeby menu na komputerze miało 6 najważniejszych pozycji.
 #   Galeria i Sklep pokazują się dopiero, gdy mają treść (zdjęcia / produkty).
+# volleykobylka.pl (index.html) to strona wyboru: drużyna albo Akademia.
+# Część drużyny zaczyna się od START_DRUZYNY, Akademia ma własną stronę akademia.html.
+START_DRUZYNY = "easy-wrap-volley.html"
 MENU = [
-    ("index.html", "Start", False),
+    (START_DRUZYNY, "Start", False),
     ("aktualnosci.html", "Aktualności", True),
     ("druzyny.html", "Drużyny", True),
     ("terminarz.html", "Terminarz", True),
-    ("akademia.html", "Akademia", True),
     ("galeria.html", "Galeria", False),
     ("sklep.html", "Sklep", False),
     ("sponsorzy.html", "Sponsorzy", True),
@@ -58,15 +60,16 @@ IKONY_SOCIAL = {
 }
 
 
-def social_linki(klasa, z_lista=False):
-    """Ikony Facebook / Instagram / YouTube z linkami do profili klubu (C.KLUB)."""
+def social_linki(klasa, z_lista=False, zrodlo=None, kto="klubu"):
+    """Ikony Facebook / Instagram / YouTube z linkami do profili (domyślnie drużyny – C.KLUB)."""
+    zrodlo = zrodlo or C.KLUB
     linki = []
     for klucz, (nazwa, ksztalt) in IKONY_SOCIAL.items():
-        adres = C.KLUB.get(klucz)
+        adres = zrodlo.get(klucz)
         if not adres:
             continue
         a = (f'<a class="ikona-social" href="{e(adres)}" target="_blank" rel="noopener" '
-             f'aria-label="{nazwa} – profil klubu" title="{nazwa}">'
+             f'aria-label="{nazwa} – profil {kto}" title="{nazwa}">'
              f'<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">{ksztalt}</svg></a>')
         linki.append(f"<li>{a}</li>" if z_lista else a)
     return "".join(linki)
@@ -290,18 +293,7 @@ def belka(p, kandydaci):
 # ---------------------------------------------------------------------
 # Układ każdej podstrony
 # ---------------------------------------------------------------------
-def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja):
-    menu = ""
-    for plik, nazwa, glowne in menu_pozycje():
-        biezaca = ' aria-current="page"' if plik == aktywna else ""
-        klasa = "" if glowne else ' class="menu__dodatkowe"'
-        menu += f'<li{klasa}><a href="{p}{plik}"{biezaca}>{e(nazwa)}</a></li>'
-    skroty = "".join(f'<li><a href="{p}{plik}">{e(nazwa)}</a></li>'
-                     for plik, nazwa, glowne in menu_pozycje() if not glowne and plik != "index.html")
-    pelny_tytul = C.KLUB["nazwa"] if aktywna == "index.html" else f"{tytul} – {C.KLUB['nazwa']}"
-    logo = (f'<img src="{p}img/{e(C.KLUB["herb"])}" alt="" height="48">'
-            if jest_plik(C.KLUB["herb"]) else herb_nasz_svg())
-    rok = date.today().year
+def glowa(pelny_tytul, opis, p, wersja, kolor="#002F6C", ikona="img/favicon.svg"):
     return f"""<!doctype html>
 <html lang="pl">
 <head>
@@ -309,24 +301,43 @@ def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja):
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{e(pelny_tytul)}</title>
 <meta name="description" content="{e(opis)}">
-<meta name="theme-color" content="#002F6C">
+<meta name="theme-color" content="{kolor}">
 <meta property="og:title" content="{e(pelny_tytul)}">
 <meta property="og:description" content="{e(opis)}">
 <meta property="og:locale" content="pl_PL">
-<link rel="icon" href="{p}img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="{p}{ikona}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{p}zasoby/style.css?v={wersja}">
 <script>document.documentElement.classList.add('js')</script>
 <script src="{p}zasoby/main.js?v={wersja}" defer></script>
-</head>
-<body>
+</head>"""
+
+
+def logo_druzyny(p, wysokosc=48):
+    return (f'<img src="{p}img/{e(C.KLUB["herb"])}" alt="" height="{wysokosc}">'
+            if jest_plik(C.KLUB["herb"]) else herb_nasz_svg())
+
+
+def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja):
+    """Część DRUŻYNY (Easy Wrap Volley Kobyłka): własne logo, menu i FB/IG/YT."""
+    menu = ""
+    for plik, nazwa, glowne in menu_pozycje():
+        biezaca = ' aria-current="page"' if plik == aktywna else ""
+        klasa = "" if glowne else ' class="menu__dodatkowe"'
+        menu += f'<li{klasa}><a href="{p}{plik}"{biezaca}>{e(nazwa)}</a></li>'
+    skroty = "".join(f'<li><a href="{p}{plik}">{e(nazwa)}</a></li>'
+                     for plik, nazwa, glowne in menu_pozycje() if not glowne and plik != START_DRUZYNY)
+    pelny_tytul = C.KLUB["nazwa"] if aktywna == START_DRUZYNY else f"{tytul} – {C.KLUB['nazwa']}"
+    rok = date.today().year
+    return f"""{glowa(pelny_tytul, opis, p, wersja)}
+<body class="strefa-druzyna">
 <a class="przeskocz" href="#tresc">Przejdź do treści</a>
 {belka_html}
 <header class="naglowek">
   <div class="kontener">
-    <a class="logo" href="{p}index.html">{logo}<span class="logo__tekst">{e(C.KLUB['nazwa_krotka'])}<small>Kobyłka</small></span></a>
+    <a class="logo" href="{p}{START_DRUZYNY}">{logo_druzyny(p)}<span class="logo__tekst">{e(C.KLUB['nazwa_krotka'])}<small>Kobyłka</small></span></a>
     <button class="menu-przycisk" aria-expanded="false" aria-controls="menu"><span></span><span></span><span></span><span class="ukryte">Menu</span></button>
     <nav class="menu" id="menu" aria-label="Menu główne"><ul>{menu}</ul></nav>
   </div>
@@ -337,19 +348,105 @@ def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja):
 <footer class="stopka">
   <div class="kontener">
     <div class="stopka__kolumny">
-      <div><h2>Klub</h2><p>{e(C.KLUB['nazwa_prawna'])}<br>{e(C.KLUB['adres'])}</p></div>
+      <div><h2>{e(C.KLUB['nazwa'])}</h2><p>{e(C.KLUB['nazwa_prawna'])}<br>{e(C.KLUB['adres'])}</p></div>
       <div><h2>Kontakt</h2><p><a href="mailto:{e(C.KLUB['email'])}">{e(C.KLUB['email'])}</a>{f"<br>{e(C.KLUB['telefon'])}" if C.KLUB.get('telefon') else ''}</p></div>
       <div><h2>Obserwuj</h2><ul class="stopka__social">{social_linki("stopka", True)}</ul></div>
       <div><h2>Na skróty</h2><ul>
         {skroty}
-        <li><a href="{p}akademia.html#ochrona">Standardy ochrony małoletnich</a></li>
-        <li><a href="{p}sponsorzy.html">Zostań sponsorem</a></li></ul></div>
+        <li><a href="{p}sponsorzy.html">Zostań sponsorem</a></li>
+        <li><a href="{p}akademia.html">Akademia Siatkówki Volley →</a></li></ul></div>
     </div>
-    <div class="stopka__dol"><span>© {rok} {e(C.KLUB['nazwa_prawna'])} · {e(C.KLUB['nazwa'])}</span>
+    <div class="stopka__dol"><span>© {rok} {e(C.KLUB['nazwa_prawna'])} · <a href="{p}index.html">volleykobylka.pl</a></span>
       {licznik_html()}
       <a href="{p}polityka-prywatnosci.html">Polityka prywatności i cookies</a></div>
   </div>
 </footer>
+</body>
+</html>
+"""
+
+
+# Menu Akademii – jedna strona, przewijanie do sekcji
+MENU_AKADEMII = [("o-akademii", "O Akademii"), ("cennik", "Cennik"), ("plan", "Plan treningów"),
+                 ("zapisy", "Zapisy"), ("kontakt", "Kontakt")]
+
+
+def uklad_akademii(tytul, opis, tresc, p, wersja):
+    """Część AKADEMII SIATKÓWKI VOLLEY: własne logo, menu, stopka i tylko Facebook."""
+    A = C.AKADEMIA
+    menu = "".join(f'<li><a href="#{k}">{e(n)}</a></li>' for k, n in MENU_AKADEMII)
+    logo = (f'<img src="{p}img/{e(A["logo"])}" alt="" width="52" height="52">' if jest_plik(A.get("logo")) else "")
+    k = A.get("koordynator") or {}
+    kontakt = "<br>".join(x for x in [
+        e(k.get("imie") or ""),
+        f'<a href="tel:{e((k.get("telefon") or "").replace(" ", ""))}">{e(k["telefon"])}</a>' if k.get("telefon") else "",
+        f'<a href="mailto:{e(k["email"])}">{e(k["email"])}</a>' if k.get("email") else ""] if x)
+    rok = date.today().year
+    return f"""{glowa(f"{tytul}", opis, p, wersja, kolor="#1C6FD1", ikona=A.get("logo") and "img/" + A["logo"] or "img/favicon.svg")}
+<body class="strefa-akademia">
+<a class="przeskocz" href="#tresc">Przejdź do treści</a>
+<div class="belka belka--akademia"><div class="kontener">
+  <a class="belka__wroc" href="{p}index.html">← volleykobylka.pl</a>
+  <a class="belka__druga" href="{p}{START_DRUZYNY}">Easy Wrap Volley Kobyłka – 2. liga ↗</a>
+</div></div>
+<header class="naglowek naglowek--akademia">
+  <div class="kontener">
+    <a class="logo" href="#tresc">{logo}<span class="logo__tekst">Akademia Siatkówki<small>Volley · Kobyłka</small></span></a>
+    <button class="menu-przycisk" aria-expanded="false" aria-controls="menu"><span></span><span></span><span></span><span class="ukryte">Menu</span></button>
+    <nav class="menu" id="menu" aria-label="Menu Akademii"><ul>{menu}</ul></nav>
+  </div>
+</header>
+<main id="tresc">
+{tresc}
+</main>
+<footer class="stopka stopka--akademia">
+  <div class="kontener">
+    <div class="stopka__kolumny">
+      <div><h2>{e(A['nazwa'])}</h2><p>Hala sportowa<br>{e(C.KLUB['adres'])}</p></div>
+      <div><h2>Kontakt</h2><p>{kontakt}</p></div>
+      <div><h2>Obserwuj</h2><ul class="stopka__social">{social_linki("stopka", True, {"facebook": A.get("facebook")}, "Akademii")}</ul></div>
+      <div><h2>Na skróty</h2><ul>
+        <li><a href="#zapisy">Zapisy</a></li>
+        <li><a href="#ochrona">Bezpieczeństwo dzieci</a></li>
+        <li><a href="{p}{START_DRUZYNY}">Easy Wrap Volley Kobyłka →</a></li></ul></div>
+    </div>
+    <div class="stopka__dol"><span>© {rok} {e(C.KLUB['nazwa_prawna'])} · <a href="{p}index.html">volleykobylka.pl</a></span>
+      {licznik_html()}
+      <a href="{p}polityka-prywatnosci.html">Polityka prywatności i cookies</a></div>
+  </div>
+</footer>
+</body>
+</html>
+"""
+
+
+def strona_wyboru(p, wersja):
+    """volleykobylka.pl – tylko wybór: drużyna albo Akademia. Bez innych informacji."""
+    A = C.AKADEMIA
+    logo_ak = (f'<img class="wybor__logo wybor__logo--okragle" src="{p}img/{e(A["logo"])}" alt="" width="220" height="220">'
+               if jest_plik(A.get("logo")) else "")
+    logo_dr = (f'<img class="wybor__logo" src="{p}img/{e(C.KLUB["herb"])}" alt="" height="220">'
+               if jest_plik(C.KLUB["herb"]) else herb_nasz_svg("wybor__logo"))
+    rok = date.today().year
+    return f"""{glowa("volleykobylka.pl – Easy Wrap Volley Kobyłka i Akademia Siatkówki Volley",
+                 "Wybierz: drużyna Easy Wrap Volley Kobyłka (2. liga kobiet) albo Akademia Siatkówki Volley.", p, wersja)}
+<body class="strefa-wybor">
+<main class="wybor" id="tresc">
+  <h1 class="ukryte">Co Cię interesuje?</h1>
+  <a class="wybor__pole wybor__pole--druzyna" href="{p}{START_DRUZYNY}">
+    {logo_dr}
+    <span class="wybor__nazwa">Easy Wrap Volley<small>Kobyłka</small></span>
+    <span class="wybor__opis">2. liga siatkówki kobiet</span>
+    <span class="wybor__strzalka" aria-hidden="true">→</span>
+  </a>
+  <a class="wybor__pole wybor__pole--akademia" href="{p}akademia.html">
+    {logo_ak}
+    <span class="wybor__nazwa">Akademia Siatkówki<small>Volley</small></span>
+    <span class="wybor__opis">Treningi dla dziewcząt</span>
+    <span class="wybor__strzalka" aria-hidden="true">→</span>
+  </a>
+  <p class="wybor__dol"><span>© {rok} {e(C.KLUB['nazwa_prawna'])}</span>{licznik_html()}<a href="{p}polityka-prywatnosci.html">Polityka prywatności</a></p>
+</main>
 </body>
 </html>
 """

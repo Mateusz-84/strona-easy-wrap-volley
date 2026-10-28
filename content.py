@@ -378,6 +378,13 @@ WYDARZENIA = [
 # 10. AKADEMIA SIATKÓWKI VOLLEY
 # ---------------------------------------------------------------------
 AKADEMIA = {
+    # Akademia ma na stronie własną część (akademia.html): własne logo, menu i stopkę – tylko Facebook.
+    "nazwa": "Akademia Siatkówki Volley",
+    "logo": "akademia/logo.webp",               # logo z profilu Akademii na Facebooku
+    "facebook": "https://www.facebook.com/profile.php?id=100087224682607",
+    # Koordynator projektu – kontakt w sekcji „Kontakt”. Puste pola się nie pokazują.
+    "koordynator": {"imie": None, "rola": "Koordynator Akademii", "telefon": None,
+                    "email": "ks.volley.kobylka@gmail.com"},
     "haslo": "Dołącz do nas!",
     "opis": "Treningi siatkówki dla dziewcząt w hali przy ul. Załuskiego 57 w Kobyłce. Bez wpisowego.",
     # Cennik i najważniejsze zasady – pokazują się w pierwszym ekranie strony Akademii
