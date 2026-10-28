@@ -836,7 +836,8 @@ i stosuje standardowe klauzule umowne. Zasady: <a href="https://docs.github.com/
 <li><strong>Formularze Google</strong> – jeśli zgłoszenie odbywa się przez formularz, wczytuje się on dopiero po kliknięciu przycisku.
 Wtedy Google przetwarza dane wpisane w formularzu i może użyć własnych plików cookies (<a href="https://policies.google.com/privacy?hl=pl" rel="noopener" target="_blank">zasady Google</a>).</li>
 <li><strong>Licznik wyświetleń</strong> – przy wejściu na stronę przeglądarka wysyła jedno zapytanie do serwisu Abacus
-(abacus.jasoncameron.dev), który zwiększa ogólny licznik o 1. Serwis technicznie widzi adres IP, ale nie zapisuje cookies,
+(abacus.jasoncameron.dev), który zwiększa ogólny licznik o 1 (tylko przy wejściu na stronę – przejścia między podstronami
+tylko odczytują licznik). Serwis technicznie widzi adres IP, ale nie zapisuje cookies,
 nie identyfikuje odwiedzających i nie zbiera statystyk o konkretnych osobach. Podstawa: art. 6 ust. 1 lit. f RODO
 (informacja o popularności strony). Serwer licznika może znajdować się poza Europejskim Obszarem Gospodarczym.</li>
 <li><strong>Organy i instytucje</strong> (np. urząd skarbowy, związki sportowe) – tylko gdy wymagają tego przepisy.</li>

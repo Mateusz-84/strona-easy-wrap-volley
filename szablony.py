@@ -162,7 +162,7 @@ def licznik_html():
     return (f'<span class="licznik-wysw" data-wyswietlenia="{e(L["przestrzen"])}/{e(L["klucz"])}" hidden>'
             f'<svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path fill="currentColor" '
             f'd="M12 5C6.5 5 2.7 9.3 1.5 12c1.2 2.7 5 7 10.5 7s9.3-4.3 10.5-7C21.3 9.3 17.5 5 12 5zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg>'
-            f'<span class="ukryte">Wyświetlenia strony: </span><span data-wyswietlenia-liczba></span></span>')
+            f'<span class="ukryte">Odwiedziny strony: </span><span data-wyswietlenia-liczba></span></span>')
 
 
 def herb_svg(tekst, kolor, klasa="herb"):

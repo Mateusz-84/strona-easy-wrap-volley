@@ -168,12 +168,16 @@
      --------------------------------------------------------------- */
   var wysw = document.querySelector('[data-wyswietlenia]');
   if (wysw && window.fetch && location.protocol.indexOf('http') === 0) {
-    fetch('https://abacus.jasoncameron.dev/hit/' + wysw.dataset.wyswietlenia)
+    // Liczymy tylko WEJŚCIE na stronę: przejście z podstrony na podstronę (ten sam adres w „skąd”)
+    // tylko odczytuje licznik, bez zwiększania. Nic nie zapisujemy w przeglądarce.
+    var wewnetrzne = false;
+    try { wewnetrzne = !!document.referrer && new URL(document.referrer).host === location.host; } catch (e) {}
+    fetch('https://abacus.jasoncameron.dev/' + (wewnetrzne ? 'get/' : 'hit/') + wysw.dataset.wyswietlenia)
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (d) {
         if (!d || typeof d.value !== 'number') return;
         wysw.querySelector('[data-wyswietlenia-liczba]').textContent = d.value.toLocaleString('pl-PL');
-        wysw.title = 'Wyświetlenia strony';
+        wysw.title = 'Odwiedziny strony';
         wysw.hidden = false;
       })
       .catch(function () {});
