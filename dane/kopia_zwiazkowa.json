@@ -24,10 +24,15 @@
    "adres": "Kobyłka, ul. ks. Marcina Załuskiego 57",
    "godzina": null,
    "hala": "Hala Sportowa przy PSP nr 3 w Kobyłce"
+  },
+  "/system/mecz/198/": {
+   "adres": "ul. Sportowa 30, 05-090 Raszyn",
+   "godzina": null,
+   "hala": null
   }
  },
  "seniorki": {
-  "pobrano": "2026-10-28T23:44",
+  "pobrano": "2026-10-29T05:51",
   "pzps_lista": [
    {
     "data": "2026-09-26",
