@@ -205,6 +205,12 @@ class Budowa:
             return f"""
 {S.okienko_zapowiedzi(p, self.zapowiedz, C.ZAPOWIEDZ, self.najblizszy)}
 {S.hero(p, self.najblizszy)}
+<section class="sekcja sekcja--po-hero" aria-labelledby="news-tytul">
+  <div class="kontener">
+    {S.naglowek_sekcji('Aktualności', '', p + 'aktualnosci.html', 'Wszystkie', id_='news-tytul')}
+    <div class="newsy pojaw">{''.join(S.karta_newsa(p, n, i == 0) for i, n in enumerate(newsy))}</div>
+  </div>
+</section>
 <section class="sekcja" aria-labelledby="mecze-tytul">
   <div class="kontener" data-filtrowanie>
     {S.naglowek_sekcji('Mecze', 'i wyniki', p + 'terminarz.html', 'Pełny terminarz', id_='mecze-tytul')}
@@ -241,12 +247,6 @@ class Budowa:
   </div>
 </section>
 
-<section class="sekcja sekcja--bez-gory" aria-labelledby="news-tytul">
-  <div class="kontener">
-    {S.naglowek_sekcji('Aktualności', '', p + 'aktualnosci.html', 'Wszystkie', id_='news-tytul')}
-    <div class="newsy pojaw">{''.join(S.karta_newsa(p, n, i == 0) for i, n in enumerate(newsy))}</div>
-  </div>
-</section>
 {sponsorzy}"""
         self.strona(S.START_DRUZYNY, C.KLUB["nazwa"], C.KLUB["opis"], tresc)
 

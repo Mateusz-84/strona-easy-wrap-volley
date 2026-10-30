@@ -910,3 +910,20 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
 /* Strona główna – „Nasza kadra”: zawsze 3 losowe karty */
 .kadra--losowa > :nth-child(n+4){display:none}
 @media (min-width:1024px){.kadra.kadra--losowa{grid-template-columns:repeat(3,1fr)}}
+
+/* Strona główna: niższa plansza najbliższego meczu (herby i napisy bez zmian – mniej pustego miejsca) */
+.hero{padding:16px 0 32px}
+.hero__druzyny{margin:14px 0 8px}
+.hero__szczegoly{margin:10px 0 14px}
+.hero__sponsor{margin-top:12px;padding-top:10px}
+.sekcja--po-hero{padding-top:40px}
+@media (min-width:1024px){
+  .hero{padding:28px 0 40px;min-height:0}
+  /* herby i data obok siebie – plansza niższa, rozmiary bez zmian */
+  .hero__tresc{max-width:780px;display:grid;grid-template-columns:auto 1fr;column-gap:56px;align-items:end}
+  .hero__gora,.hero__szczegoly,.hero__przyciski,.hero__sponsor{grid-column:1 / -1}
+  .hero__druzyny{margin:18px 0 0}
+  .hero__data{margin-bottom:4px}
+  .hero__szczegoly{margin:22px 0 18px}
+  .hero__postac{width:430px;height:100%}
+}
