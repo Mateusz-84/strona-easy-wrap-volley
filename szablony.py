@@ -581,6 +581,16 @@ def okienko_zapowiedzi(p, z, konfig, mecz):
 # ---------------------------------------------------------------------
 # Karta meczu – „plakat” z wielką datą
 # ---------------------------------------------------------------------
+def nazwa_druzyny(strona, tekst=None):
+    """Nazwa drużyny – z linkiem do strony klubu, jeśli jest w RYWALE ("strona")."""
+    tekst = e(tekst if tekst is not None else strona["krotko"])
+    url = (strona.get("rywal") or {}).get("strona")
+    if not url:
+        return tekst
+    return (f'<a class="link-druzyny" href="{e(url)}" target="_blank" rel="noopener" '
+            f'title="Strona klubu {e(strona["nazwa"])} (nowa karta)">{tekst}</a>')
+
+
 def karta_meczu(p, m):
     gosp, gosc = m["strony"]
     d = m["data"]
@@ -608,7 +618,7 @@ def karta_meczu(p, m):
         a = b = ""
 
     def wiersz(strona, punkty):
-        return (f'<div class="mecz__para">{herb(p, strona)}<span>{e(strona["krotko"])}</span>'
+        return (f'<div class="mecz__para">{herb(p, strona)}<span>{nazwa_druzyny(strona)}</span>'
                 f'{f"<b>{e(punkty)}</b>" if punkty != "" else ""}</div>')
 
     pary = wiersz(gosp, a) + (wiersz(gosc, b) if gosc else "")
@@ -679,7 +689,7 @@ def tabela_html(p, wiersze, opis_druzyny, podpis):
         d = opis_druzyny(w["nazwa"])
         tr.append(
             f'<tr{" class=nasz" if w["nasz"] else ""}><td>{w["lp"]}</td>'
-            f'<td><span class="tabela__druzyna">{herb(p, d, "tabela__herb")}{e(d["krotko"])}</span></td>'
+            f'<td><span class="tabela__druzyna">{herb(p, d, "tabela__herb")}{nazwa_druzyny(d)}</span></td>'
             f'<td>{w["mecze"]}</td><td class="ukryj-mobile">{w["zwyciestwa"]}</td>'
             f'<td class="ukryj-mobile">{w["sety_plus"]}:{w["sety_minus"]}</td><td class="pkt">{w["pkt"]}</td></tr>')
     return f"""
