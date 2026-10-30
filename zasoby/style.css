@@ -932,17 +932,19 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
 .link-druzyny{color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;text-decoration-color:color-mix(in srgb,currentColor 35%,transparent)}
 .link-druzyny:hover,.link-druzyny:focus-visible{text-decoration-color:var(--zolty);text-decoration-thickness:2px}
 
-/* Strona wyboru: po kliknięciu plansze rozjeżdżają się na boki, a spod nich wyłania się wybrana strona */
-.wybor-przejscie{position:fixed;inset:0;z-index:0;display:grid;place-items:center;margin:0!important;clip-path:none!important;pointer-events:none}
-.wybor-przejscie .wybor__logo{animation:wybor-logo .6s cubic-bezier(.2,.8,.2,1) both}
-.wybor--wyjscie .wybor__pole{position:relative;z-index:1;transition:transform .6s cubic-bezier(.7,0,.25,1),opacity .6s}
-.wybor--wyjscie .wybor__pole--druzyna{transform:translateY(-105%)}
-.wybor--wyjscie .wybor__pole--akademia{transform:translateY(105%)}
-.wybor--wyjscie .wybor__dol{opacity:0;transition:opacity .2s}
-.strefa-wybor.w-przejsciu{overflow:hidden}
+/* Strona wyboru: po kliknięciu plansze rozjeżdżają się na boki i od razu widać wybraną stronę
+   (przejście między stronami – View Transitions; przeglądarki bez tej funkcji po prostu otwierają stronę) */
+@view-transition{navigation:auto}
+::view-transition-old(root),::view-transition-new(root){animation:none}
+.wybor__pole--druzyna{view-transition-name:wybor-lewy}
+.wybor__pole--akademia{view-transition-name:wybor-prawy}
+::view-transition-group(wybor-lewy),::view-transition-group(wybor-prawy){animation:none}
+::view-transition-old(wybor-lewy){animation:wybor-gora .65s cubic-bezier(.7,0,.25,1) both}
+::view-transition-old(wybor-prawy){animation:wybor-dol .65s cubic-bezier(.7,0,.25,1) both}
+@keyframes wybor-gora{to{transform:translateY(-105%)}}
+@keyframes wybor-dol{to{transform:translateY(105%)}}
 @media (min-width:900px){
-  .wybor--wyjscie .wybor__pole--druzyna{transform:translateX(-105%)}
-  .wybor--wyjscie .wybor__pole--akademia{transform:translateX(105%)}
+  @keyframes wybor-gora{to{transform:translateX(-105%)}}
+  @keyframes wybor-dol{to{transform:translateX(105%)}}
 }
-@keyframes wybor-logo{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
-@media (prefers-reduced-motion:reduce){.wybor--wyjscie .wybor__pole{transition:none}}
+@media (prefers-reduced-motion:reduce){::view-transition-old(wybor-lewy),::view-transition-old(wybor-prawy){animation:none;opacity:0}}
