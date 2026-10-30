@@ -416,3 +416,32 @@
   if (!window.matchMedia || !matchMedia('(hover: none) and (pointer: coarse)').matches) return;
   document.querySelectorAll('a[data-telefon]').forEach(function (a) { a.href = a.getAttribute('data-telefon'); });
 })();
+
+/* Strona wyboru: plansze rozjeżdżają się na boki, pod spodem kolor i herb wybranej strony, potem przejście */
+(function () {
+  var wybor = document.querySelector('.wybor');
+  if (!wybor) return;
+  var spokojnie = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  wybor.querySelectorAll('.wybor__pole').forEach(function (pole) {
+    pole.addEventListener('click', function (ev) {
+      if (spokojnie || ev.button !== 0 || ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.altKey) return;
+      ev.preventDefault();
+      if (wybor.classList.contains('wybor--wyjscie')) return;
+      var tlo = document.createElement('div');
+      tlo.className = 'wybor-przejscie ' + (pole.classList.contains('wybor__pole--akademia') ? 'wybor__pole--akademia' : 'wybor__pole--druzyna');
+      var logo = pole.querySelector('.wybor__logo');
+      if (logo) tlo.appendChild(logo.cloneNode(true));
+      document.body.appendChild(tlo);
+      document.body.classList.add('w-przejsciu');
+      requestAnimationFrame(function () { wybor.classList.add('wybor--wyjscie'); });
+      setTimeout(function () { location.href = pole.href; }, 650);
+    });
+  });
+  // Powrót przyciskiem „wstecz” – plansze z powrotem na miejscu
+  window.addEventListener('pageshow', function (e) {
+    if (!e.persisted) return;
+    wybor.classList.remove('wybor--wyjscie');
+    document.body.classList.remove('w-przejsciu');
+    document.querySelectorAll('.wybor-przejscie').forEach(function (t) { t.remove(); });
+  });
+})();

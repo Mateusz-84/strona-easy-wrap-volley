@@ -931,3 +931,18 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
 /* Nazwy rywali w tabeli i terminarzu – linki do stron klubów */
 .link-druzyny{color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;text-decoration-color:color-mix(in srgb,currentColor 35%,transparent)}
 .link-druzyny:hover,.link-druzyny:focus-visible{text-decoration-color:var(--zolty);text-decoration-thickness:2px}
+
+/* Strona wyboru: po kliknięciu plansze rozjeżdżają się na boki, a spod nich wyłania się wybrana strona */
+.wybor-przejscie{position:fixed;inset:0;z-index:0;display:grid;place-items:center;margin:0!important;clip-path:none!important;pointer-events:none}
+.wybor-przejscie .wybor__logo{animation:wybor-logo .6s cubic-bezier(.2,.8,.2,1) both}
+.wybor--wyjscie .wybor__pole{position:relative;z-index:1;transition:transform .6s cubic-bezier(.7,0,.25,1),opacity .6s}
+.wybor--wyjscie .wybor__pole--druzyna{transform:translateY(-105%)}
+.wybor--wyjscie .wybor__pole--akademia{transform:translateY(105%)}
+.wybor--wyjscie .wybor__dol{opacity:0;transition:opacity .2s}
+.strefa-wybor.w-przejsciu{overflow:hidden}
+@media (min-width:900px){
+  .wybor--wyjscie .wybor__pole--druzyna{transform:translateX(-105%)}
+  .wybor--wyjscie .wybor__pole--akademia{transform:translateX(105%)}
+}
+@keyframes wybor-logo{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){.wybor--wyjscie .wybor__pole{transition:none}}
