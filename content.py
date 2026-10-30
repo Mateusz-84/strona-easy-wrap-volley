@@ -80,14 +80,14 @@ META = {
 }
 
 # AKTUALNOŚCI Z FACEBOOKA – same się dodają, osobno dla drużyny i dla Akademii.
-#   Strona sprawdza nowe posty 2 razy dziennie (o godzinach z listy "godziny").
+#   Strona sprawdza nowe posty 9 razy na dobę (o godzinach z listy "godziny", czas polski).
 #   Z opisu posta znika część z oznaczeniami sponsorów (wszystko pod kreską „_________”),
 #   dopiski typu @obserwujący i hashtagi na końcu. Zdjęcie posta zapisuje się na naszym serwerze.
 #   Wymaga tokenów stron FB w sekrecie GitHuba META_TOKEN (oba tokeny, kolejność dowolna) – patrz INSTRUKCJA.md.
 #   Bez tokenu strona pokazuje ostatnio zapisane posty (dane/aktualnosci_fb_*.json).
 POSTY_FB = {
     "wlaczone": True,
-    "godziny": [7, 19],                 # o której (mniej więcej) sprawdzać nowe posty
+    "godziny": [2, 4, 7, 9, 12, 14, 16, 18, 22],  # o której sprawdzać nowe posty (czas polski)
     "ile": 12,                          # ile ostatnich postów pokazywać
     "usun_hashtagi": True,              # hashtagi na końcu opisu nie trafiają na stronę
     # "strona" = fragment nazwy strony na Facebooku – po nim strona rozpoznaje, który token jest czyj
