@@ -584,11 +584,18 @@ def okienko_zapowiedzi(p, z, konfig, mecz):
 def nazwa_druzyny(strona, tekst=None):
     """Nazwa drużyny – z linkiem do strony klubu, jeśli jest w RYWALE ("strona")."""
     tekst = e(tekst if tekst is not None else strona["krotko"])
-    url = (strona.get("rywal") or {}).get("strona")
-    if not url:
-        return tekst
-    return (f'<a class="link-druzyny" href="{e(url)}" target="_blank" rel="noopener" '
-            f'title="Strona klubu {e(strona["nazwa"])} (nowa karta)">{tekst}</a>')
+    r = strona.get("rywal") or {}
+    url = r.get("strona")
+    if url:
+        tel = f' data-telefon="{e(r["strona_telefon"])}"' if r.get("strona_telefon") else ""
+        tekst = (f'<a class="link-druzyny" href="{e(url)}"{tel} target="_blank" rel="noopener" '
+                 f'title="{e(strona["nazwa"])} (nowa karta)">{tekst}</a>')
+    vb = strona.get("volleybox")
+    if vb:
+        tekst += (f' <a class="link-vb" href="{e(vb)}" target="_blank" rel="noopener" '
+                  f'title="{e(strona["nazwa"])} – profil na Volleybox (nowa karta)" '
+                  f'aria-label="{e(strona["krotko"])} na Volleybox">VB</a>')
+    return tekst
 
 
 def karta_meczu(p, m):

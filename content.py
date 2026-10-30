@@ -24,6 +24,7 @@
 KLUB = {
     "nazwa": "Easy Wrap Volley Kobyłka",
     "nazwa_krotka": "Easy Wrap Volley",
+    "volleybox": "https://women.volleybox.net/pl/klub-sportowy-volley-kobylka-t18343",  # profil drużyny na Volleybox
     "nazwa_prawna": "Klub Sportowy Volley",
     "adres": "ul. ks. Marcina Załuskiego 57, 05-230 Kobyłka",
     "email": "kontakt@volleykobylka.pl",
@@ -33,7 +34,7 @@ KLUB = {
     "herb": "herby/easy-wrap-volley.svg",    # oficjalny herb z księgi znaku – gdy wrzucisz ten plik, ma pierwszeństwo
     # Dopóki nie ma pliku powyżej, herb pobiera się z VolleyStation (raz, potem leży w img/herby/)
     "herb_volleystation": "https://assets.volleystation.com/website/teams/2248406/badge.png",
-    "facebook": "https://facebook.com/easywrapvolley",
+    "facebook": "https://www.facebook.com/101162122310332",   # strona Easy Wrap Volley (adres po ID strony)
     "instagram": "https://instagram.com/easy_wrap_volley_kobylka",
     "youtube": "https://youtube.com/@ks_Volley",
     "adres_strony": "https://volleykobylka.pl/",
@@ -197,53 +198,66 @@ ZRODLA_ZWIAZKOWE = [
 #   • bez obu – tarcza z inicjałami w kolorze "kolor".
 #   STRONA: "strona" – adres strony klubu (albo jego profilu na FB). Nazwa drużyny
 #   w tabeli i terminarzu staje się wtedy linkiem. None = zwykły tekst.
+#   VOLLEYBOX: "volleybox" – profil drużyny na women.volleybox.net (mała plakietka „VB” obok nazwy).
 #   Nowy rywal, którego tu nie ma, też się wyświetli (pełną nazwą).
 # ---------------------------------------------------------------------
-VS = "https://assets.volleystation.com/website/teams/"   # skrót do adresów logo
+VS = "https://assets.volleystation.com/website/teams/"
+VB_PROFIL = "https://women.volleybox.net/pl/"           # skrót do profili drużyn na Volleybox   # skrót do adresów logo
 
 RYWALE = {
     "varsovia":    {"skrot": "AZS AWF Varsovia", "herb": None, "strona": "https://azsawf.com/sekcje-wyczynowe/pilka-siatkowa-kobiet/",
+                    "volleybox": VB_PROFIL + "azs-awf-warszawa-t5635",
                     "kolor": "#7A1F2B",
                     "herb_volleystation": VS + "2248407/badge.jpg",
                     "nazwy_w_zwiazkach": ["AZS AWF Varsovia", "AZS AWF Warszawa"]},
     "aleksandrow": {"skrot": "Libero Aleksandrów Ł.", "herb": None, "strona": "https://www.facebook.com/liberovip/",
+                    "volleybox": VB_PROFIL + "libero-vip-gwarant-aleksandrow-lodzki-t2015",
                     "kolor": "#C8102E",
                     "herb_volleystation": VS + "2248408/badge.png",
                     "nazwy_w_zwiazkach": ["Libero VIP Gwarant Aleksandrów Łódzki",
                                           "Libero VIP Biesiadowo Aleksandrów Łódzki"]},
     "mos-wola":    {"skrot": "MOS Wola AZS", "herb": None, "strona": "https://www.facebook.com/SiatkarkiAZSWarszawa/",
+                    "volleybox": VB_PROFIL + "azs-warszawa-t16855",
                     "kolor": "#1B5E20",
                     "herb_volleystation": VS + "2248410/badge.png",
                     "nazwy_w_zwiazkach": ["MOS Wola AZS Warszawa", "AZS Warszawa"]},
-    "bielsk":      {"skrot": "TPS Bielsk Podlaski", "herb": None, "strona": "https://women.volleybox.net/pl/tps-bielsk-podlaski-t28872",
+    "bielsk":      {"skrot": "TPS Bielsk Podlaski", "herb": None, "strona": None,
+                    "volleybox": VB_PROFIL + "tps-bielsk-podlaski-t28872",
                     "kolor": "#0D47A1",
                     "herb_volleystation": VS + "2248412/badge.jpg",
                     "nazwy_w_zwiazkach": ["TPS Bielsk Podlaski", "Towarzystwo Piłki Siatkowej Bielsk Podlaski"]},
     "lks-lodz":    {"skrot": "ŁKS AZS UMED Łódź", "herb": None, "strona": "https://siatkalks.pl/",
+                    "volleybox": VB_PROFIL + "lks-lodz-ii-t12781",
                     "kolor": "#B71C1C",
                     "herb_volleystation": VS + "2248414/badge.png",
                     "nazwy_w_zwiazkach": ["ŁKS AZS UMED Łódź"]},
     "kalisz":      {"skrot": "MKS Kalisz II", "herb": None, "strona": "https://mks-kalisz.pl/",
+                    "volleybox": VB_PROFIL + "energa-mks-kalisz-ii-t14031",
                     "kolor": "#E65100",
                     "herb_volleystation": VS + "2248416/badge.png",
                     "nazwy_w_zwiazkach": ["MKS Kalisz II", "Energa MKS Kalisz II"]},
     "krotka":      {"skrot": "MUKS Krótka", "herb": None, "strona": "https://www.facebook.com/MuksKrotka/",
+                    "volleybox": VB_PROFIL + "muks-krotka-mysiadlo-t19526",
                     "kolor": "#4A148C",
                     "herb_volleystation": VS + "2248417/badge.png",
                     "nazwy_w_zwiazkach": ["MUKS Krótka", "MUKS Krótka Mysiadło"]},
     "barycz":      {"skrot": "Barycz Janków P.", "herb": None, "strona": "https://www.facebook.com/glksbarycz/",
+                    "volleybox": VB_PROFIL + "glks-barycz-jankow-przygodzki-t20015",
                     "kolor": "#00695C",
                     "herb_volleystation": VS + "2248415/badge.jpeg",
                     "nazwy_w_zwiazkach": ["MAPEI BARYCZ Janków Przygodzki", "GLKS Barycz Janków Przygodzki"]},
     "lask":        {"skrot": "Łaskovia Łask", "herb": None, "strona": "https://laskovia.pl/",
+                    "volleybox": VB_PROFIL + "sms-ostrow-laskovia-lask-t22245",
                     "kolor": "#283593",
                     "herb_volleystation": VS + "2248413/badge.png",
                     "nazwy_w_zwiazkach": ["SMS Ostrów Łaskovia Łask", "ŁMLKS Łaskovia Łask"]},
     "legionovia":  {"skrot": "Legionovia II", "herb": None, "strona": "https://lts.legionovia.pl/",
+                    "volleybox": VB_PROFIL + "pge-lts-legionovia-legionowo-t17345",
                     "kolor": "#AD1457",
                     "herb_volleystation": VS + "2248411/badge.png",
                     "nazwy_w_zwiazkach": ["PGE LTS Legionovia Legionowo II", "PGE LTS Legionovia Legionowo 2"]},
     "raszyn":      {"skrot": "Orlęta Raszyn", "herb": None, "strona": "http://uksorleta-raszyn.pl/",
+                    "volleybox": VB_PROFIL + "uks-orleta-raszyn-t28575",
                     "kolor": "#2E7D32",
                     "herb_volleystation": VS + "2248409/badge.png",
                     "nazwy_w_zwiazkach": ["GKS Orlęta Raszyn", "UKS Orlęta Raszyn"]},
