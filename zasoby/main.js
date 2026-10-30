@@ -410,3 +410,9 @@
   }
 })();
 
+
+/* Nazwa naszej drużyny (tabela, mecze): na komputerze Facebook, na telefonie Instagram */
+(function () {
+  if (!window.matchMedia || !matchMedia('(hover: none) and (pointer: coarse)').matches) return;
+  document.querySelectorAll('a[data-telefon]').forEach(function (a) { a.href = a.getAttribute('data-telefon'); });
+})();

@@ -582,8 +582,13 @@ def okienko_zapowiedzi(p, z, konfig, mecz):
 # Karta meczu – „plakat” z wielką datą
 # ---------------------------------------------------------------------
 def nazwa_druzyny(strona, tekst=None):
-    """Nazwa drużyny – link do jej profilu na Volleybox (jeśli jest w content.py)."""
+    """Nazwa drużyny jako link: nasza → Facebook (na telefonie main.js podmienia na Instagram),
+    rywale → profil na Volleybox (jeśli jest w content.py)."""
     tekst = e(tekst if tekst is not None else strona["krotko"])
+    if strona.get("nasza") and C.KLUB.get("facebook"):
+        ig = f' data-telefon="{e(C.KLUB["instagram"])}"' if C.KLUB.get("instagram") else ""
+        return (f'<a class="link-druzyny" href="{e(C.KLUB["facebook"])}"{ig} target="_blank" rel="noopener" '
+                f'title="{e(C.KLUB["nazwa"])} na Facebooku / Instagramie (nowa karta)">{tekst}</a>')
     vb = strona.get("volleybox")
     if not vb:
         return tekst
