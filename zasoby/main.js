@@ -410,8 +410,3 @@
   }
 })();
 
-/* Nazwa naszej drużyny w tabeli/terminarzu: na komputerze Facebook, na telefonie Instagram */
-(function () {
-  if (!window.matchMedia || !matchMedia('(hover: none) and (pointer: coarse)').matches) return;
-  document.querySelectorAll('a[data-telefon]').forEach(function (a) { a.href = a.getAttribute('data-telefon'); });
-})();

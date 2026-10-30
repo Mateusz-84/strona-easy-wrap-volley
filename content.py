@@ -196,7 +196,7 @@ ZRODLA_ZWIAZKOWE = [
 #     logo drużyny → „Kopiuj adres obrazu”.
 #   • "herb" – własny plik w img/herby/ (ma pierwszeństwo przed VolleyStation).
 #   • bez obu – tarcza z inicjałami w kolorze "kolor".
-#   VOLLEYBOX: "volleybox" – profil drużyny na women.volleybox.net (mała plakietka „VB” obok nazwy).
+#   VOLLEYBOX: "volleybox" – profil drużyny na women.volleybox.net (nazwa drużyny w tabeli i przy meczach staje się linkiem).
 #   Nowy rywal, którego tu nie ma, też się wyświetli (pełną nazwą).
 # ---------------------------------------------------------------------
 VS = "https://assets.volleystation.com/website/teams/"

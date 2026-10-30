@@ -525,7 +525,7 @@ def hero(p, m):
     if mapa:
         przyciski.append(f'<a class="hero__link" href="{e(mapa)}" rel="noopener">Dojazd ↗</a>')
 
-    druzyna_gosc = (f'<span class="hero__vs">vs</span><div class="hero__druzyna">{herb(p, gosc)}<span class="nazwa">{e(gosc["krotko"])}</span></div>'
+    druzyna_gosc = (f'<span class="hero__vs">vs</span><div class="hero__druzyna">{herb(p, gosc)}<span class="nazwa">{nazwa_druzyny(gosc)}</span></div>'
                     if gosc else "")
     return f"""
 <section class="{' '.join(klasy)}" id="hero" aria-labelledby="hero-tytul">
@@ -534,8 +534,8 @@ def hero(p, m):
     <div class="hero__gora"><span class="hero__etykieta">{'Mecz wyjazdowy' if wyjazd else 'Mecz u siebie'}</span>
     <span class="hero__liga">{e(m['liga'])}</span></div>
     <h1 class="ukryte" id="hero-tytul">Najbliższy mecz: {e(gosp['nazwa'])} – {e(gosc['nazwa'] if gosc else '')}, {e(data_pl(d))}</h1>
-    <div class="hero__druzyny" aria-hidden="true">
-      <div class="hero__druzyna">{herb(p, gosp)}<span class="nazwa">{e(gosp['krotko'])}</span></div>
+    <div class="hero__druzyny">
+      <div class="hero__druzyna">{herb(p, gosp)}<span class="nazwa">{nazwa_druzyny(gosp)}</span></div>
       {druzyna_gosc}
     </div>
     <div class="hero__data">
@@ -582,20 +582,13 @@ def okienko_zapowiedzi(p, z, konfig, mecz):
 # Karta meczu – „plakat” z wielką datą
 # ---------------------------------------------------------------------
 def nazwa_druzyny(strona, tekst=None):
-    """Nazwa drużyny – z linkiem do strony klubu, jeśli jest w RYWALE ("strona")."""
+    """Nazwa drużyny – link do jej profilu na Volleybox (jeśli jest w content.py)."""
     tekst = e(tekst if tekst is not None else strona["krotko"])
-    r = strona.get("rywal") or {}
-    url = r.get("strona")
-    if url:
-        tel = f' data-telefon="{e(r["strona_telefon"])}"' if r.get("strona_telefon") else ""
-        tekst = (f'<a class="link-druzyny" href="{e(url)}"{tel} target="_blank" rel="noopener" '
-                 f'title="{e(strona["nazwa"])} (nowa karta)">{tekst}</a>')
     vb = strona.get("volleybox")
-    if vb:
-        tekst += (f' <a class="link-vb" href="{e(vb)}" target="_blank" rel="noopener" '
-                  f'title="{e(strona["nazwa"])} – profil na Volleybox (nowa karta)" '
-                  f'aria-label="{e(strona["krotko"])} na Volleybox">VB</a>')
-    return tekst
+    if not vb:
+        return tekst
+    return (f'<a class="link-druzyny" href="{e(vb)}" target="_blank" rel="noopener" '
+            f'title="{e(strona["nazwa"])} – profil na Volleybox (nowa karta)">{tekst}</a>')
 
 
 def karta_meczu(p, m):

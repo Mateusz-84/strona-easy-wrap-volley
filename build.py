@@ -49,9 +49,7 @@ def opis_druzyny(nazwa):
     n = zrodla.norm(nazwa)
     if n in NASZE_NAZWY:
         return {"nazwa": C.KLUB["nazwa"], "krotko": C.KLUB["nazwa_krotka"], "nasza": True,
-                "volleybox": C.KLUB.get("volleybox"),
-                # nasza nazwa → profil FB (na telefonie main.js podmienia na Instagram)
-                "rywal": {"strona": C.KLUB.get("facebook"), "strona_telefon": C.KLUB.get("instagram")}}
+                "volleybox": C.KLUB.get("volleybox")}
     for r in C.RYWALE.values():
         warianty = {zrodla.norm(x) for x in r.get("nazwy_w_zwiazkach", [])} | {zrodla.norm(r["skrot"])}
         if n in warianty:
