@@ -19,7 +19,7 @@ name: Aktualizacja strony
 
 on:
   schedule:
-    - cron: "15 4-22/2 * * *"     # czas UTC = 6:15, 8:15 … 0:15 czasu polskiego (latem)
+    - cron: "3 0-8,10-18,20-22 * * *"   # UTC; obejmuje FB o 2,4,7,9,12,14,16,18,22 czasu PL (zima i lato)
   push:
     branches: [main]
     paths-ignore: ["dane/**", "img/herby/**", "img/zapowiedz/**", "img/wyniki/**", "**.md"]
