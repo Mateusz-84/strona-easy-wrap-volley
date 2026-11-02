@@ -490,7 +490,7 @@ def hero(p, m):
         if z:
             foto_html = (f'<div class="hero__postac" aria-hidden="true">'
                          f'<img class="hero__postac-img" src="{p}img/{e(z["zdjecie"])}" alt="" fetchpriority="high">'
-                         f'<span class="hero__postac-podpis"><small>Zaprasza</small>#{e(z["numer"])} {e(z["imie"])} {e(z["nazwisko"])}</span></div>')
+                         f'<span class="hero__postac-podpis"><small>Zapraszam</small>#{e(z["numer"])} {e(z["imie"])} {e(z["nazwisko"])}</span></div>')
             klasy.append("hero--z-postacia")
         else:
             foto_html = ""
