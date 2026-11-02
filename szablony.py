@@ -45,6 +45,7 @@ MENU = [
     ("galeria.html", "Galeria", False),
     ("sklep.html", "Sklep", False),
     ("sponsorzy.html", "Sponsorzy", True),
+    ("wspolpraca.html", "Dla sponsorów", False),
     ("o-klubie.html", "O klubie", False),
     ("kontakt.html", "Kontakt", True),
 ]
@@ -310,6 +311,8 @@ def glowa(pelny_tytul, opis, p, wersja, kolor="#002F6C", ikona=None):
 <link rel="apple-touch-icon" href="{p}img/apple-touch-icon.png">
 <link rel="manifest" href="{p}site.webmanifest">
 <link rel="preload" href="{p}zasoby/fonty/bebas-neue-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{p}zasoby/fonty/bebas-neue-latin-ext-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{p}zasoby/fonty/barlow-condensed-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{p}zasoby/fonty.css?v={wersja}">
 <link rel="stylesheet" href="{p}zasoby/style.css?v={wersja}">
 <script>document.documentElement.classList.add('js')</script>
@@ -331,7 +334,7 @@ def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja):
         menu += f'<li{klasa}><a href="{p}{plik}"{biezaca}>{e(nazwa)}</a></li>'
     skroty = "".join(f'<li><a href="{p}{plik}">{e(nazwa)}</a></li>'
                      for plik, nazwa, glowne in menu_pozycje() if not glowne and plik != START_DRUZYNY)
-    pelny_tytul = C.KLUB["nazwa"] if aktywna == START_DRUZYNY else f"{tytul} – {C.KLUB['nazwa']}"
+    pelny_tytul = C.KLUB.get("tytul_glowny", C.KLUB["nazwa"]) if aktywna == START_DRUZYNY else f"{tytul} – {C.KLUB['nazwa']}"
     rok = date.today().year
     return f"""{glowa(pelny_tytul, opis, p, wersja)}
 <body class="strefa-druzyna">
@@ -355,7 +358,7 @@ def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja):
       <div><h2>Obserwuj</h2><ul class="stopka__social">{social_linki("stopka", True)}</ul></div>
       <div><h2>Na skróty</h2><ul>
         {skroty}
-        <li><a href="{p}sponsorzy.html">Zostań sponsorem</a></li>
+        <li><a href="{p}wspolpraca.html">Zostań sponsorem</a></li>
         <li><a href="{p}akademia.html">Akademia Siatkówki Volley →</a></li>
         <li><a href="{p}akademia.html#ochrona">Ochrona małoletnich</a></li></ul></div>
     </div>
@@ -434,11 +437,12 @@ def strona_wyboru(p, wersja):
     logo_dr = (f'<img class="wybor__logo" src="{p}img/{e(C.KLUB["herb"])}" alt="" height="220">'
                if jest_plik(C.KLUB["herb"]) else herb_nasz_svg("wybor__logo"))
     rok = date.today().year
-    return f"""{glowa("volleykobylka.pl – Easy Wrap Volley Kobyłka i Akademia Siatkówki Volley",
-                 "Wybierz: drużyna Easy Wrap Volley Kobyłka (2. liga kobiet) albo Akademia Siatkówki Volley.", p, wersja)}
+    return f"""{glowa("Siatkówka w Kobyłce – Easy Wrap Volley i Akademia Siatkówki Volley",
+                 "Klub Sportowy Volley z Kobyłki: drużyna siatkówki kobiet Easy Wrap Volley (2. liga) "
+                 "i Akademia Siatkówki Volley – treningi siatkówki dla dziewcząt.", p, wersja)}
 <body class="strefa-wybor">
 <main class="wybor" id="tresc">
-  <h1 class="ukryte">Co Cię interesuje?</h1>
+  <h1 class="ukryte">Siatkówka w Kobyłce – Easy Wrap Volley i Akademia Siatkówki Volley</h1>
   <a class="wybor__pole wybor__pole--druzyna" href="{p}{START_DRUZYNY}">
     {logo_dr}
     <span class="wybor__nazwa">Easy Wrap Volley<small>Kobyłka</small></span>
@@ -451,6 +455,8 @@ def strona_wyboru(p, wersja):
     <span class="wybor__opis">Treningi dla dziewcząt</span>
     <span class="wybor__strzalka" aria-hidden="true">→</span>
   </a>
+  <p class="wybor__seo">{e(C.KLUB['nazwa_prawna'])} z Kobyłki – drużyna siatkówki kobiet Easy Wrap Volley w 2. lidze
+    oraz Akademia Siatkówki Volley: treningi siatkówki dla dziewcząt w hali przy ul. Załuskiego 57 w Kobyłce.</p>
   <p class="wybor__dol"><span>© {rok} {e(C.KLUB['nazwa_prawna'])}</span>{licznik_html()}<a href="{p}polityka-prywatnosci.html">Polityka prywatności</a></p>
 </main>
 </body>
@@ -525,10 +531,19 @@ def hero(p, m):
     if mapa:
         przyciski.append(f'<a class="hero__link" href="{e(mapa)}" rel="noopener">Dojazd ↗</a>')
 
+    # W trakcie meczu (od godziny rozpoczęcia przez ok. 2,5 h) main.js pokazuje pasek „Na żywo”
+    na_zywo_attr = na_zywo = ""
+    if m.get("godzina"):
+        na_zywo_attr = f' data-start="{d.isoformat()}T{e(m["godzina"])}"'
+        guziki = []
+        if C.KLUB.get("wyniki_na_zywo"):
+            guziki.append(f'<a class="btn btn--zolty" href="{e(C.KLUB["wyniki_na_zywo"])}" target="_blank" rel="noopener">Wynik na żywo ↗</a>')
+        na_zywo = (f'<div class="hero__na-zywo" hidden><span class="hero__kropka" aria-hidden="true"></span>'
+                   f'<strong data-na-zywo-tekst>Mecz trwa</strong>{"".join(guziki)}</div>')
     druzyna_gosc = (f'<span class="hero__vs">vs</span><div class="hero__druzyna">{herb(p, gosc)}<span class="nazwa">{nazwa_druzyny(gosc)}</span></div>'
                     if gosc else "")
     return f"""
-<section class="{' '.join(klasy)}" id="hero" aria-labelledby="hero-tytul">
+<section class="{' '.join(klasy)}" id="hero" aria-labelledby="hero-tytul"{na_zywo_attr}>
   {foto_html}
   <div class="kontener"><div class="hero__tresc">
     <div class="hero__gora"><span class="hero__etykieta">{'Mecz wyjazdowy' if wyjazd else 'Mecz u siebie'}</span>
@@ -546,6 +561,7 @@ def hero(p, m):
       {godzina}
       <div class="hero__hala"><strong>{e(miejsce)}</strong>{e(adres)}</div>
     </div>
+    {na_zywo}
     <div class="hero__przyciski">{''.join(przyciski)}</div>
     {sponsor}
   </div></div>
@@ -643,6 +659,9 @@ def karta_meczu(p, m):
         dodatki += f'<div class="mecz__mvp">MVP: <strong>{e(m["mvp"])}</strong></div>'
     if m.get("relacja"):
         dodatki += f'<a class="mecz__link" href="{p}aktualnosci/{e(m["relacja"])}.html">Relacja →</a>'
+    if m.get("grafika_wyniku") and jest_plik(m["grafika_wyniku"]):
+        dodatki += (f'<a class="mecz__link" href="{p}img/{e(m["grafika_wyniku"])}" target="_blank" '
+                    f'download>Grafika wyniku ↓</a>')
 
     return f"""
 <article class="{' '.join(klasy)}" data-druzyna="{e(m['druzyna'])}" data-stan="{'rozegrany' if m.get('wynik') else 'nadchodzacy'}">

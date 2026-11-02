@@ -298,7 +298,7 @@
       tytul.textContent = MIESIACE[widok.getMonth()] + ' ' + widok.getFullYear();
 
       var html = ['Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'Sb', 'Nd'].map(function (d) {
-        return '<div class="kal__dzien-tyg" role="columnheader">' + d + '</div>';
+        return '<div class="kal__dzien-tyg" aria-hidden="true">' + d + '</div>';
       }).join('');
       var przesuniecie = (widok.getDay() + 6) % 7;
       for (var i = 0; i < przesuniecie; i++) html += '<div class="kal__dzien kal__dzien--pusty"></div>';
@@ -430,4 +430,117 @@
       el.textContent = adres;
     }
   });
+})();
+
+/* Statystyki odwiedzin (bez ciasteczek, nic nie zapisujemy w przeglądarce):
+   liczniki na serwisie Abacus – wyświetlenia każdej podstrony, wejścia, źródła i urządzenia w danym miesiącu.
+   Podgląd: volleykobylka.pl/statystyki.html */
+(function () {
+  if (!window.fetch || location.protocol.indexOf('http') !== 0 || navigator.webdriver) return;
+  var strona = location.pathname.replace(/^\/+|\.html$/g, '') || 'start';
+  if (strona === 'statystyki') return;
+  var ns = 'volleykobylka-pl';
+  var d = new Date(), mies = d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2);
+  var klucz = strona.toLowerCase().replace(/[^a-z0-9-]+/g, '_').slice(0, 44);
+  var hity = ['s-' + klucz + '-' + mies, 'wszystko-' + mies];
+  var skad = '', wewn = false;
+  try { var r = new URL(document.referrer); wewn = r.host === location.host; skad = r.host.toLowerCase(); } catch (e) {}
+  if (!wewn) {
+    var zrodlo = !skad ? 'bezposrednio'
+      : /google\./.test(skad) ? 'google'
+      : /(facebook|fb)\.(com|me)|messenger/.test(skad) ? 'facebook'
+      : /instagram/.test(skad) ? 'instagram'
+      : /bing\.|duckduckgo|yahoo|ecosia|brave/.test(skad) ? 'inne-wyszukiwarki'
+      : 'inne-strony';
+    var tel = window.matchMedia && matchMedia('(pointer: coarse)').matches;
+    hity.push('wejscia-' + mies, 'zrodlo-' + zrodlo + '-' + mies, 'urz-' + (tel ? 'telefon' : 'komputer') + '-' + mies);
+  }
+  hity.forEach(function (k) {
+    fetch('https://abacus.jasoncameron.dev/hit/' + ns + '/' + k, { keepalive: true }).catch(function () {});
+  });
+})();
+
+/* Strona statystyk – odczyt liczników (tylko „get”, nic nie dolicza) */
+(function () {
+  var box = document.querySelector('[data-statystyki]');
+  if (!box || !window.fetch) return;
+  var strony = JSON.parse(box.getAttribute('data-statystyki'));
+  var ns = 'volleykobylka-pl', sel = box.querySelector('[data-st-miesiac]');
+  var nazwyMies = ['styczeń','luty','marzec','kwiecień','maj','czerwiec','lipiec','sierpień','wrzesień','październik','listopad','grudzień'];
+  var d = new Date();
+  for (var i = 0; i < 12; i++) {
+    var m = new Date(d.getFullYear(), d.getMonth() - i, 1);
+    if (m < new Date(2026, 10, 1)) break;
+    var o = document.createElement('option');
+    o.value = m.getFullYear() + ('0' + (m.getMonth() + 1)).slice(-2);
+    o.textContent = nazwyMies[m.getMonth()] + ' ' + m.getFullYear();
+    sel.appendChild(o);
+  }
+  function get(k) {
+    return fetch('https://abacus.jasoncameron.dev/get/' + ns + '/' + k)
+      .then(function (r) { return r.ok ? r.json() : { value: 0 }; })
+      .then(function (j) { return j.value || 0; }).catch(function () { return 0; });
+  }
+  function lista(el, wiersze) {
+    var max = Math.max.apply(null, wiersze.map(function (w) { return w[1]; }).concat([1]));
+    el.innerHTML = wiersze.filter(function (w) { return w[1] > 0; }).sort(function (a, b) { return b[1] - a[1]; })
+      .map(function (w) {
+        return '<div class="st-wiersz"><span class="st-nazwa">' + w[0] + '</span><span class="st-pasek"><i style="width:' +
+          Math.round(w[1] / max * 100) + '%"></i></span><b>' + w[1].toLocaleString('pl-PL') + '</b></div>';
+      }).join('') || '<p class="pusto">Brak danych w tym miesiącu.</p>';
+  }
+  function wczytaj() {
+    var mies = sel.value;
+    ['wszystko', 'wejscia'].forEach(function (k) {
+      get(k + '-' + mies).then(function (v) { box.querySelector('[data-st=' + k + ']').textContent = v.toLocaleString('pl-PL'); });
+    });
+    ['telefon', 'komputer'].forEach(function (k) {
+      get('urz-' + k + '-' + mies).then(function (v) { box.querySelector('[data-st=' + k + ']').textContent = v.toLocaleString('pl-PL'); });
+    });
+    var zr = [['Google', 'google'], ['Facebook', 'facebook'], ['Instagram', 'instagram'], ['Wpisany adres / zakładka', 'bezposrednio'],
+              ['Inne wyszukiwarki', 'inne-wyszukiwarki'], ['Inne strony', 'inne-strony']];
+    Promise.all(zr.map(function (z) { return get('zrodlo-' + z[1] + '-' + mies).then(function (v) { return [z[0], v]; }); }))
+      .then(function (w) { lista(box.querySelector('[data-st-zrodla]'), w); });
+    Promise.all(strony.map(function (s) { return get('s-' + s[1] + '-' + mies).then(function (v) { return [s[0] === 'index.html' ? 'Strona wyboru' : s[0].replace(/\.html$/, ''), v]; }); }))
+      .then(function (w) { lista(box.querySelector('[data-st-strony]'), w); });
+  }
+  sel.addEventListener('change', wczytaj);
+  wczytaj();
+})();
+
+/* Plansza meczu: w trakcie meczu pasek „Na żywo” z wynikiem na żywo i transmisją;
+   po meczu (do czasu aktualizacji strony) informacja, że wynik pojawi się wkrótce */
+(function () {
+  var hero = document.querySelector('.hero[data-start]');
+  if (!hero) return;
+  var start = new Date(hero.getAttribute('data-start'));
+  if (isNaN(start)) return;
+  var pasek = hero.querySelector('.hero__na-zywo'), tekst = pasek && pasek.querySelector('[data-na-zywo-tekst]');
+  var etykieta = hero.querySelector('.hero__etykieta'), pierwotna = etykieta ? etykieta.textContent : '';
+  function stan() {
+    var min = (Date.now() - start.getTime()) / 60000;
+    var trwa = min >= -5 && min < 150, po = min >= 150 && min < 360;
+    hero.classList.toggle('hero--na-zywo', trwa);
+    if (pasek) {
+      pasek.hidden = !(trwa || po);
+      tekst.textContent = trwa ? 'Mecz trwa – na żywo' : 'Mecz zakończony – wynik pojawi się tu wkrótce';
+      pasek.querySelectorAll('a').forEach(function (a) { a.hidden = !trwa; });
+    }
+    if (etykieta) etykieta.textContent = trwa ? '● Na żywo' : pierwotna;
+  }
+  stan();
+  setInterval(stan, 30000);
+})();
+
+/* Strona „Dla sponsorów”: aktualna liczba odwiedzin strony (odczyt licznika, bez doliczania) */
+(function () {
+  var li = document.querySelector('[data-wsp-odwiedziny]');
+  if (!li || !window.fetch || location.protocol.indexOf('http') !== 0) return;
+  fetch('https://abacus.jasoncameron.dev/get/volleykobylka-pl/odwiedziny')
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (d) {
+      if (!d || !(d.value > 50)) return;
+      li.querySelector('strong').textContent = d.value.toLocaleString('pl-PL');
+      li.hidden = false;
+    }).catch(function () {});
 })();

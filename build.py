@@ -158,9 +158,71 @@ def ukryj_maile(html):
     return "".join(c if c.startswith("<") else _MAIL.sub(tekst, c) for c in czesci)
 
 
+# ---- SEO: adres kanoniczny, podgląd przy udostępnianiu, dane strukturalne, mapa strony ----
+STRONY_HTML = []          # wszystkie zapisane strony – z nich powstaje sitemap.xml
+
+
+def adres_pelny(sciezka):
+    baza = C.KLUB["adres_strony"].rstrip("/") + "/"
+    return baza if sciezka == "index.html" else baza + sciezka
+
+
+def dane_strukturalne(sciezka):
+    """JSON-LD dla Google: klub (strona wyboru, drużyna, kontakt, o klubie) albo Akademia."""
+    baza = C.KLUB["adres_strony"].rstrip("/") + "/"
+    adres = {"@type": "PostalAddress", "streetAddress": "ul. ks. Marcina Załuskiego 57",
+             "postalCode": "05-230", "addressLocality": "Kobyłka", "addressRegion": "mazowieckie",
+             "addressCountry": "PL"}
+    klub = {"@context": "https://schema.org", "@type": "SportsOrganization", "@id": baza + "#klub",
+            "name": C.KLUB["nazwa_prawna"] + " Kobyłka", "alternateName": [C.KLUB["nazwa"], "KS Volley Kobyłka"],
+            "url": baza, "logo": baza + "img/favicon-512.png", "sport": "Siatkówka",
+            "address": adres, "areaServed": "Kobyłka",
+            "sameAs": [x for x in [C.KLUB.get("facebook"), C.KLUB.get("instagram"), C.KLUB.get("youtube"),
+                                   C.KLUB.get("volleybox")] if x]}
+    if sciezka in ("index.html", S.START_DRUZYNY, "kontakt.html", "o-klubie.html"):
+        druzyna = {"@context": "https://schema.org", "@type": "SportsTeam", "name": C.KLUB["nazwa"],
+                   "url": baza + S.START_DRUZYNY, "sport": "Siatkówka", "gender": "Female",
+                   "memberOf": {"@type": "SportsOrganization", "name": "2. liga kobiet"},
+                   "parentOrganization": {"@id": baza + "#klub"}, "location": adres}
+        return [klub, druzyna]
+    if sciezka == "akademia.html":
+        A = C.AKADEMIA
+        return [{"@context": "https://schema.org", "@type": "SportsOrganization",
+                 "name": A["nazwa"] + " Kobyłka", "url": baza + "akademia.html",
+                 "logo": baza + "img/" + A["logo"] if A.get("logo") else None, "sport": "Siatkówka",
+                 "description": A.get("opis"), "address": adres, "areaServed": "Kobyłka",
+                 "parentOrganization": {"@type": "SportsOrganization", "name": C.KLUB["nazwa_prawna"] + " Kobyłka", "url": baza},
+                 "sameAs": [x for x in [A.get("facebook")] if x]}]
+    return []
+
+
+def seo_glowa(sciezka, html):
+    if "</head>" not in html:
+        return html
+    akademia = sciezka.startswith("akademia")
+    baza = C.KLUB["adres_strony"].rstrip("/") + "/"
+    obraz = baza + ("img/og-akademia.jpg" if akademia else "img/og-klub.jpg")
+    if sciezka in ("404.html", "statystyki.html"):
+        dodatki = '<meta name="robots" content="noindex">'
+    else:
+        url = adres_pelny(sciezka)
+        dodatki = (f'<link rel="canonical" href="{url}">\n<meta property="og:url" content="{url}">\n'
+                   f'<meta property="og:type" content="website">\n'
+                   f'<meta property="og:site_name" content="{"Akademia Siatkówki Volley" if akademia else C.KLUB["nazwa"]}">\n'
+                   f'<meta property="og:image" content="{obraz}">\n<meta property="og:image:width" content="1200">\n'
+                   f'<meta property="og:image:height" content="630">\n<meta name="twitter:card" content="summary_large_image">')
+        for d in dane_strukturalne(sciezka):
+            d = {k: v for k, v in d.items() if v is not None}
+            dodatki += ('\n<script type="application/ld+json">' +
+                        json.dumps(d, ensure_ascii=False).replace("</", "<\\/") + "</script>")
+    return html.replace("</head>", dodatki + "\n</head>", 1)
+
+
 def zapisz(sciezka, tekst):
     if sciezka.endswith(".html"):
-        tekst = ukryj_maile(tekst)
+        tekst = ukryj_maile(seo_glowa(sciezka, tekst))
+        if sciezka != "404.html":
+            STRONY_HTML.append(sciezka)
     pelna = os.path.join(WYJSCIE, sciezka)
     os.makedirs(os.path.dirname(pelna), exist_ok=True)
     with open(pelna, "w", encoding="utf-8", newline="\n") as f:
@@ -390,7 +452,7 @@ class Budowa:
         <button class="filtr filtr--trening" aria-pressed="true" data-typ="trening">Treningi Akademii</button>
         <button class="filtr filtr--wydarzenie" aria-pressed="true" data-typ="wydarzenie">Wydarzenia</button>
       </div>
-      <div class="kal__siatka" role="grid" aria-label="Kalendarz miesiąca"></div>
+      <div class="kal__siatka" role="group" aria-label="Kalendarz miesiąca"></div>
       <ol class="kal__lista"></ol>
       <noscript><p>Kalendarium wymaga JavaScriptu. Wszystkie mecze są w spisie powyżej.</p></noscript>
     </div>
@@ -648,8 +710,9 @@ class Budowa:
     </div>
   </div>
 </section>"""
-        html = S.uklad_akademii("Akademia Siatkówki Volley – Kobyłka",
-                                "Akademia Siatkówki Volley w Kobyłce – treningi siatkówki dla dziewcząt. Cennik, plan treningów, zapisy i kontakt.",
+        html = S.uklad_akademii("Akademia Siatkówki Volley Kobyłka – treningi siatkówki dla dziewcząt",
+                                "Akademia Siatkówki Volley w Kobyłce – treningi siatkówki dla dziewcząt i dzieci, "
+                                "hala przy ul. Załuskiego 57. Bez wpisowego. Cennik, plan treningów i zapisy.",
                                 tresc, p, self.wersja, aktualnosci=bool(na))
         zapisz("akademia.html", html)
 
@@ -684,6 +747,32 @@ class Budowa:
     # --- STRONA WYBORU (volleykobylka.pl) -----------------------------------
     def wybor(self):
         zapisz("index.html", S.strona_wyboru("", self.wersja))
+
+    # --- STATYSTYKI (ukryta strona, bez linku w menu) --------------------------
+    def statystyki(self, strony):
+        klucze = []
+        for s in strony:
+            k = "start" if s == "index.html" else s[:-5]
+            k = re.sub(r"[^a-z0-9-]+", "_", k.lower())[:44]
+            klucze.append((s, k))
+        def tresc(p):
+            return f"""
+{S.plakat_podstrony(p, 'Statystyki', 'Odwiedziny strony – bez ciasteczek', 'kontakt')}
+<section class="sekcja"><div class="kontener statystyki" data-statystyki='{e(json.dumps(klucze, ensure_ascii=False))}'>
+  <label class="statystyki__miesiac">Miesiąc: <select data-st-miesiac></select></label>
+  <div class="statystyki__kafle">
+    <div class="statystyki__kafel"><span data-st="wszystko">–</span>wyświetleń podstron</div>
+    <div class="statystyki__kafel"><span data-st="wejscia">–</span>wejść na stronę</div>
+    <div class="statystyki__kafel"><span data-st="telefon">–</span>wejść z telefonu</div>
+    <div class="statystyki__kafel"><span data-st="komputer">–</span>wejść z komputera</div>
+  </div>
+  <h2 class="statystyki__h">Skąd przychodzą</h2><div class="statystyki__lista" data-st-zrodla></div>
+  <h2 class="statystyki__h">Najczęściej oglądane</h2><div class="statystyki__lista" data-st-strony></div>
+  <p class="statystyki__przypis">Liczone od 3 listopada 2026. Bez ciasteczek i bez zapisywania danych osobowych –
+  każde wejście dolicza 1 do licznika. Wejście = przyjście na stronę z zewnątrz (Google, Facebook, link, wpisany adres).
+  Ta strona nie jest widoczna w menu ani w Google.</p>
+</div></section>"""
+        self.strona("statystyki.html", "Statystyki", "Statystyki odwiedzin strony.", tresc, aktywna="")
 
     # --- GALERIA -----------------------------------------------------------
     def galeria(self):
@@ -725,9 +814,66 @@ class Budowa:
 <section class="sekcja"><div class="kontener cta">
   <h2 class="sekcja__tytul">Zostań <span>sponsorem</span></h2>
   <p>{e(C.SPONSORZY_TEKST)}</p>
-  <a class="btn btn--zolty" href="mailto:{e(C.KLUB['email'])}?subject={quote('Współpraca sponsorska')}">Napisz do nas →</a>
+  <div class="przyciski-cta"><a class="btn btn--zolty" href="{p}wspolpraca.html">Pakiety sponsorskie →</a>
+  <a class="btn btn--obrys" href="mailto:{e(C.KLUB['email'])}?subject={quote('Współpraca sponsorska')}">Napisz do nas</a></div>
 </div></section>"""
         self.strona("sponsorzy.html", "Sponsorzy", "Sponsorzy i partnerzy klubu Easy Wrap Volley Kobyłka.", tresc)
+
+    # --- DLA SPONSORÓW --------------------------------------------------------
+    def wspolpraca(self):
+        W = getattr(C, "WSPOLPRACA", None)
+        if not W:
+            return
+        ceny = W.get("pokaz_ceny")
+        temat = quote("Współpraca sponsorska – pakiet")
+
+        def karta(pk, klasa="wsp-pakiet"):
+            lista = "".join(f"<li>{e(x)}</li>" for x in pk["swiadczenia"])
+            cena = (f'<p class="wsp-cena">{e(pk["cena"])}</p>' if ceny and pk.get("cena")
+                    else '<p class="wsp-cena wsp-cena--zapytaj">Cena w ofercie</p>')
+            wyr = f'<span class="wsp-wyr">{e(pk["wyroznienie"])}</span>' if pk.get("wyroznienie") else ""
+            return (f'<article class="{klasa}">{wyr}<h3>{e(pk["nazwa"])}</h3>{cena}<ul>{lista}</ul>'
+                    f'<a class="btn btn--zolty" href="mailto:{e(C.KLUB["email"])}?subject={temat}%20{quote(pk["nazwa"])}">'
+                    f'{"Wybieram" if ceny else "Zapytaj o ofertę"} →</a></article>')
+
+        def tresc(p):
+            liczby = "".join(f'<li><strong>{e(x["liczba"])}</strong><span>{e(x["opis"])}</span></li>' for x in W["liczby"])
+            liczby += ('<li data-wsp-odwiedziny hidden><strong>–</strong><span>odwiedzin volleykobylka.pl '
+                       'od 28 października 2026</span></li>')
+            ekspo = "".join(f'<li><h3>{e(x["tytul"])}</h3><p>{e(x["opis"])}</p></li>' for x in W["ekspozycja"])
+            pakiety = "".join(karta(x) for x in W["pakiety"])
+            jedno = "".join(karta(x, "wsp-pakiet wsp-pakiet--maly") for x in W["jednorazowe"])
+            loga = self.sponsorzy_html(p)
+            return f"""
+{S.plakat_podstrony(p, 'Dla sponsorów', 'Twoja marka w centrum siatkarskich emocji', 'sponsorzy')}
+<section class="sekcja"><div class="kontener">
+  <p class="wsp-wstep">{e(W['wstep'])}</p>
+  <ul class="wsp-liczby pojaw">{liczby}</ul>
+</div></section>
+<section class="sekcja sekcja--biala"><div class="kontener">
+  {S.naglowek_sekcji('Gdzie zobaczą', 'Twoją markę')}
+  <ul class="wsp-ekspo pojaw">{ekspo}</ul>
+</div></section>
+<section class="sekcja"><div class="kontener">
+  {S.naglowek_sekcji('Pakiety', 'sponsorskie')}
+  <div class="wsp-pakiety pojaw">{pakiety}</div>
+  <h3 class="wsp-h3">Na próbę – bez rocznego zobowiązania</h3>
+  <div class="wsp-pakiety wsp-pakiety--2 pojaw">{jedno}</div>
+  <p class="wsp-przypis">{e(W.get('przypis_pakiety', ''))}</p>
+</div></section>
+<section class="sekcja sekcja--biala"><div class="kontener wsp-ulga">
+  <h2 class="sekcja__tytul">Ulga <span>na sport</span></h2>
+  <p>{e(W['ulga'])}</p>
+</div></section>
+{loga}
+<section class="sekcja"><div class="kontener cta">
+  <h2 class="sekcja__tytul">Porozmawiajmy <span>o współpracy</span></h2>
+  <p>Umówmy krótką rozmowę i dobierzmy pakiet dla Twojej firmy. Prześlemy pełną ofertę w PDF.</p>
+  <a class="btn btn--zolty" href="mailto:{e(C.KLUB['email'])}?subject={quote('Współpraca sponsorska')}">Napisz do nas →</a>
+</div></section>"""
+        self.strona("wspolpraca.html", "Dla sponsorów",
+                    "Sponsoring Easy Wrap Volley Kobyłka – pakiety sponsorskie, zasięgi, ekspozycja marki na meczach "
+                    "2. ligi kobiet, w transmisjach i social media. Ulga na sport.", tresc)
 
     # --- O KLUBIE ----------------------------------------------------------
     def o_klubie(self):
@@ -816,7 +962,7 @@ class Budowa:
     <a class="btn btn--zolty" href="{e(mapa)}" rel="noopener">Pokaż na mapie →</a>
   </div>
 </div></section>"""
-        self.strona("kontakt.html", "Kontakt", "Kontakt z klubem Easy Wrap Volley Kobyłka.", tresc)
+        self.strona("kontakt.html", "Kontakt", "Kontakt z klubem Easy Wrap Volley Kobyłka i Akademią Siatkówki Volley – e-mail, adres hali (ul. Załuskiego 57, Kobyłka), media społecznościowe.", tresc)
 
     # --- POLITYKA PRYWATNOŚCI ---------------------------------------------
     def polityka(self):
@@ -1042,6 +1188,13 @@ def main():
                     klucz, m["data"], posty, C.ZDJECIA_WYGRANYCH)
             except Exception as blad:
                 print(f"  UWAGA: zdjęcie wygranej {klucz}: {type(blad).__name__} – pomijam")
+    # Grafika „Wynik meczu” dla każdego rozegranego meczu seniorek (powstaje raz, potem leży w img/grafiki/)
+    try:
+        import grafika
+        grafika.zapisz_grafiki_wynikow(b.rozegrane, os.path.join(FOLDER, "img"), C.DRUZYNY[GLOWNA]["liga"],
+                                        S.DNI, S.MIESIACE_DOP, C.KLUB.get("dopisek_grafiki"), S.inicjaly)
+    except Exception as blad:
+        print(f"  UWAGA: grafiki wyników: {type(blad).__name__}: {blad} – pomijam")
     try:
         b.zapowiedz = zrodla.pobierz_zapowiedz(C.ZAPOWIEDZ, posty, mecz_do_zapowiedzi(b.najblizszy))
     except Exception as blad:
@@ -1062,13 +1215,28 @@ def main():
     b.akademia()
     b.galeria()
     b.sponsorzy()
+    b.wspolpraca()
     b.o_klubie()
     b.sklep()
     b.kontakt()
     b.polityka()
     b.nie_znaleziono()
     b.kalendarze()
-    zapisz("robots.txt", "User-agent: *\nAllow: /\n")
+    baza = C.KLUB["adres_strony"].rstrip("/") + "/"
+    zapisz("robots.txt", f"User-agent: *\nAllow: /\n\nSitemap: {baza}sitemap.xml\n")
+    # Mapa strony dla Google (Search Console) – wszystkie podstrony, najważniejsze na początku
+    waga = {"index.html": "1.0", S.START_DRUZYNY: "0.9", "akademia.html": "0.9", "terminarz.html": "0.8",
+            "druzyny.html": "0.7", "aktualnosci.html": "0.7", "kontakt.html": "0.6"}
+    puste = set()
+    if not S.galeria_ma_zdjecia():
+        puste.add("galeria.html")
+    if not S.sklep_ma_produkty():
+        puste.add("sklep.html")
+    wpisy = "".join(f"  <url><loc>{adres_pelny(s)}</loc><priority>{waga.get(s, '0.5')}</priority></url>\n"
+                    for s in sorted(set(STRONY_HTML) - puste, key=lambda s: (-float(waga.get(s, '0.5')), s)))
+    zapisz("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n'
+           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + wpisy + "</urlset>\n")
+    b.statystyki(sorted(set(STRONY_HTML)))   # po mapie strony – statystyki nie trafiają do Google
     # Ikona strony: favicon.ico w katalogu głównym (przeglądarki i Google szukają jej tam) + manifest
     if os.path.isfile(os.path.join(FOLDER, "img", "favicon.ico")):
         shutil.copy(os.path.join(FOLDER, "img", "favicon.ico"), os.path.join(WYJSCIE, "favicon.ico"))

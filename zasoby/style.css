@@ -833,7 +833,7 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
 .strefa-akademia .menu a:hover{color:var(--ak-zolty)}
 .btn--ak{background:var(--ak-zolty);color:var(--ak-ciemny)}
 .btn--jasny{color:#fff}
-.btn--fb{background:#1877F2;color:#fff}
+.btn--fb{background:#0B5FCC;color:#fff}
 .ak-hero{background:radial-gradient(60% 70% at 85% 20%,rgba(255,214,90,.28) 0,transparent 60%),linear-gradient(160deg,#3F9BFF 0%,var(--ak) 55%,var(--ak-ciemny) 100%);color:#fff;padding:40px 0 48px;border-radius:0 0 var(--r-l) var(--r-l);position:relative;overflow:hidden}
 .ak-hero::before{content:"";position:absolute;inset:0;background:var(--paski);pointer-events:none}
 .ak-hero .kontener{position:relative}
@@ -989,3 +989,53 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
   .js .ak-hero .ak-przyciski>*+*{animation-delay:1.42s}
   .js .ak-hero .ak-hero__logo{animation:we-skok .7s .5s both}
 }
+.wybor__seo{grid-column:1/-1;margin:0;padding:14px 20px 0;background:var(--granat-ciemny);color:rgba(213,226,242,.7);font-size:13px;line-height:1.5;text-align:center;max-width:none}
+
+/* Strona statystyk (ukryta) */
+.statystyki__miesiac{display:inline-flex;gap:10px;align-items:center;font-weight:700}
+.statystyki__miesiac select{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid #c9d6e6}
+.statystyki__kafle{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:22px 0 34px}
+.statystyki__kafel{background:var(--tlo-granat);color:#fff;border-radius:var(--r-l,18px);padding:18px;font-size:14px;letter-spacing:.06em;text-transform:uppercase}
+.statystyki__kafel span{display:block;font-family:var(--font-naglowki);font-size:52px;line-height:1;letter-spacing:0}
+.statystyki__h{font-family:var(--font-naglowki);font-weight:400;font-size:34px;margin:26px 0 10px}
+.st-wiersz{display:grid;grid-template-columns:minmax(120px,240px) 1fr auto;gap:12px;align-items:center;padding:6px 0;border-bottom:1px solid #e3eaf3}
+.st-nazwa{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.st-pasek{height:10px;background:#e3eaf3;border-radius:6px;overflow:hidden}.st-pasek i{display:block;height:100%;background:var(--blekit,#069DDF)}
+.statystyki__przypis{margin-top:28px;font-size:14px;opacity:.75}
+
+/* Plansza meczu – stan „na żywo” */
+.hero__na-zywo{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin:0 0 18px;padding:12px 16px;border-radius:14px;background:rgba(220,38,38,.16);border:1px solid rgba(255,90,90,.45);font-size:16px}
+.hero__na-zywo[hidden]{display:none}
+.hero__tresc .hero__na-zywo{grid-column:1/-1;justify-self:start}
+.hero__na-zywo .btn{min-height:44px;padding:10px 22px}
+.hero__na-zywo strong{font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.hero__kropka{width:12px;height:12px;border-radius:50%;background:#ff3b3b;box-shadow:0 0 0 0 rgba(255,59,59,.7);animation:kropka 1.4s infinite}
+.hero--na-zywo .hero__etykieta{background:#e11d2e;color:#fff;animation:kropka-tlo 1.4s infinite}
+@keyframes kropka{0%{box-shadow:0 0 0 0 rgba(255,59,59,.7)}70%{box-shadow:0 0 0 12px rgba(255,59,59,0)}100%{box-shadow:0 0 0 0 rgba(255,59,59,0)}}
+@keyframes kropka-tlo{50%{filter:brightness(1.25)}}
+.hero--wyjazd .hero__na-zywo{background:rgba(255,255,255,.35);border-color:rgba(0,26,63,.25)}
+
+/* Strona „Dla sponsorów” */
+.wsp-wstep{font-size:22px;line-height:1.45;max-width:760px;margin:0 0 30px}
+.wsp-liczby{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.wsp-liczby li{background:var(--tlo-granat);color:#fff;border-radius:var(--r-l,18px);padding:22px 20px}
+.wsp-liczby li[hidden]{display:none}
+.wsp-liczby strong{display:block;font-family:var(--font-naglowki);font-weight:400;font-size:60px;line-height:1;color:var(--zolty)}
+.wsp-liczby span{font-size:15px;letter-spacing:.04em}
+.wsp-ekspo{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.wsp-ekspo li{border:1px solid #dbe5f1;border-radius:var(--r-l,18px);padding:20px;background:#fff}
+.wsp-ekspo h3{font-family:var(--font-naglowki);font-weight:400;font-size:30px;margin:0 0 6px;color:var(--granat)}
+.wsp-ekspo p{margin:0;line-height:1.45}
+.wsp-pakiety{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;align-items:stretch}
+.wsp-pakiety--2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.wsp-pakiet{position:relative;display:flex;flex-direction:column;gap:10px;background:#fff;border:1px solid #dbe5f1;border-radius:var(--r-l,18px);padding:24px 22px}
+.wsp-pakiet:first-child:not(.wsp-pakiet--maly){background:var(--tlo-granat);color:#fff;border-color:transparent}
+.wsp-pakiet h3{font-family:var(--font-naglowki);font-weight:400;font-size:36px;line-height:1;margin:0}
+.wsp-pakiet ul{margin:0 0 6px;padding-left:18px;line-height:1.45;flex:1}
+.wsp-pakiet .btn{align-self:flex-start}
+.wsp-wyr{align-self:flex-start;background:var(--zolty);color:var(--granat-ciemny);font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:var(--r-pill,999px)}
+.wsp-cena{margin:0;font-weight:700;font-size:20px}
+.wsp-cena--zapytaj{font-weight:600;font-size:16px;opacity:.75}
+.wsp-h3{font-family:var(--font-naglowki);font-weight:400;font-size:34px;margin:40px 0 14px}
+.wsp-przypis{font-size:14px;opacity:.75;margin-top:16px}
+.wsp-ulga p{font-size:19px;line-height:1.55;max-width:820px}
