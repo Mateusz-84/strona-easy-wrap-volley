@@ -416,3 +416,18 @@
   if (!window.matchMedia || !matchMedia('(hover: none) and (pointer: coarse)').matches) return;
   document.querySelectorAll('a[data-telefon]').forEach(function (a) { a.href = a.getAttribute('data-telefon'); });
 })();
+
+/* Adresy e-mail: w kodzie strony są zakodowane (ochrona przed botami) – tu składamy prawdziwe */
+(function () {
+  function dekoduj(s) { try { return atob(s).split('').reverse().join(''); } catch (e) { return ''; } }
+  document.querySelectorAll('[data-mail]').forEach(function (el) {
+    var adres = dekoduj(el.getAttribute('data-mail'));
+    if (!adres) return;
+    if (el.tagName === 'A') {
+      var q = el.getAttribute('data-mail-q');
+      el.href = 'mailto:' + adres + (q ? '?' + q : '');
+    } else {
+      el.textContent = adres;
+    }
+  });
+})();

@@ -130,7 +130,37 @@ def przygotuj_herby(bez_internetu):
 # =====================================================================
 # 2. ZAPIS PLIKÓW
 # =====================================================================
+# Ochrona adresów e-mail przed botami zbierającymi adresy:
+# w gotowym HTML nie ma żadnego adresu ani „mailto:” – są zakodowane (odwrócone + base64),
+# a prawdziwy adres i link składa dopiero main.js w przeglądarce. Bez JavaScriptu widać
+# „kontakt (małpa) volleykobylka.pl”, więc człowiek i tak odczyta adres.
+_MAIL = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
+
+
+def _koduj_mail(adres):
+    import base64
+    return base64.b64encode(adres[::-1].encode("utf-8")).decode("ascii")
+
+
+def ukryj_maile(html):
+    def link(m):
+        adres, zapytanie = m.group(1), m.group(2) or ""
+        q = f' data-mail-q="{zapytanie[1:]}"' if zapytanie else ""
+        return f'href="#" data-mail="{_koduj_mail(adres)}"{q} rel="nofollow"'
+    html = re.sub(r'href="mailto:([^"?]+)(\?[^"]*)?"', link, html)
+
+    def tekst(m):
+        a = m.group(0)
+        nazwa, domena = a.split("@", 1)
+        return (f'<span class="mail" data-mail="{_koduj_mail(a)}">{nazwa} (małpa) {domena}</span>')
+    # tylko w tekście między znacznikami (nie w atrybutach, skryptach ani stylach)
+    czesci = re.split(r"(<script\b.*?</script>|<style\b.*?</style>|<[^>]+>)", html, flags=re.S)
+    return "".join(c if c.startswith("<") else _MAIL.sub(tekst, c) for c in czesci)
+
+
 def zapisz(sciezka, tekst):
+    if sciezka.endswith(".html"):
+        tekst = ukryj_maile(tekst)
     pelna = os.path.join(WYJSCIE, sciezka)
     os.makedirs(os.path.dirname(pelna), exist_ok=True)
     with open(pelna, "w", encoding="utf-8", newline="\n") as f:
