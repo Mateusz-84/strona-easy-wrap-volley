@@ -32,7 +32,7 @@
   }
  },
  "seniorki": {
-  "pobrano": "2026-11-02T16:58",
+  "pobrano": "2026-11-02T18:00",
   "pzps_lista": [
    {
     "data": "2026-09-26",
@@ -99,8 +99,8 @@
    },
    {
     "data": "2026-11-07",
-    "godzina": null,
-    "godzina_pewna": false,
+    "godzina": "19:00",
+    "godzina_pewna": true,
     "gosc": "MAPEI BARYCZ Janków Przygodzki",
     "gospodarz": "EASY WRAP Volley Kobyłka",
     "id": "/system/mecz/177/",
