@@ -1014,3 +1014,12 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
 @keyframes kropka{0%{box-shadow:0 0 0 0 rgba(255,59,59,.7)}70%{box-shadow:0 0 0 12px rgba(255,59,59,0)}100%{box-shadow:0 0 0 0 rgba(255,59,59,0)}}
 @keyframes kropka-tlo{50%{filter:brightness(1.25)}}
 .hero--wyjazd .hero__na-zywo{background:rgba(255,255,255,.35);border-color:rgba(0,26,63,.25)}
+
+/* Plansza meczu: „Zaprasza” nad numerem i nazwiskiem zawodniczki ze zdjęcia */
+.hero__postac-podpis{display:block;position:absolute;right:40px;bottom:-6px;white-space:nowrap;background:rgba(0,26,63,.82);color:#fff;font-weight:700;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px 5px;border-radius:12px;line-height:1.2;text-align:center;backdrop-filter:blur(4px)}
+.hero__postac-podpis small{display:block;font-family:var(--font-naglowki);font-weight:400;font-size:17px;letter-spacing:.06em;color:var(--zolty);line-height:1}
+@media (min-width:768px){.hero__postac-podpis{right:44px;bottom:0;font-size:12px}}
+@media (min-width:1024px){
+  .hero__postac-podpis{right:28px;bottom:36px;font-size:15px;padding:8px 18px 9px;border-radius:18px}
+  .hero__postac-podpis small{font-size:28px}
+}
