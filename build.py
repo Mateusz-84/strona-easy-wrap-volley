@@ -814,66 +814,9 @@ class Budowa:
 <section class="sekcja"><div class="kontener cta">
   <h2 class="sekcja__tytul">Zostań <span>sponsorem</span></h2>
   <p>{e(C.SPONSORZY_TEKST)}</p>
-  <div class="przyciski-cta"><a class="btn btn--zolty" href="{p}wspolpraca.html">Pakiety sponsorskie →</a>
-  <a class="btn btn--obrys" href="mailto:{e(C.KLUB['email'])}?subject={quote('Współpraca sponsorska')}">Napisz do nas</a></div>
-</div></section>"""
-        self.strona("sponsorzy.html", "Sponsorzy", "Sponsorzy i partnerzy klubu Easy Wrap Volley Kobyłka.", tresc)
-
-    # --- DLA SPONSORÓW --------------------------------------------------------
-    def wspolpraca(self):
-        W = getattr(C, "WSPOLPRACA", None)
-        if not W:
-            return
-        ceny = W.get("pokaz_ceny")
-        temat = quote("Współpraca sponsorska – pakiet")
-
-        def karta(pk, klasa="wsp-pakiet"):
-            lista = "".join(f"<li>{e(x)}</li>" for x in pk["swiadczenia"])
-            cena = (f'<p class="wsp-cena">{e(pk["cena"])}</p>' if ceny and pk.get("cena")
-                    else '<p class="wsp-cena wsp-cena--zapytaj">Cena w ofercie</p>')
-            wyr = f'<span class="wsp-wyr">{e(pk["wyroznienie"])}</span>' if pk.get("wyroznienie") else ""
-            return (f'<article class="{klasa}">{wyr}<h3>{e(pk["nazwa"])}</h3>{cena}<ul>{lista}</ul>'
-                    f'<a class="btn btn--zolty" href="mailto:{e(C.KLUB["email"])}?subject={temat}%20{quote(pk["nazwa"])}">'
-                    f'{"Wybieram" if ceny else "Zapytaj o ofertę"} →</a></article>')
-
-        def tresc(p):
-            liczby = "".join(f'<li><strong>{e(x["liczba"])}</strong><span>{e(x["opis"])}</span></li>' for x in W["liczby"])
-            liczby += ('<li data-wsp-odwiedziny hidden><strong>–</strong><span>odwiedzin volleykobylka.pl '
-                       'od 28 października 2026</span></li>')
-            ekspo = "".join(f'<li><h3>{e(x["tytul"])}</h3><p>{e(x["opis"])}</p></li>' for x in W["ekspozycja"])
-            pakiety = "".join(karta(x) for x in W["pakiety"])
-            jedno = "".join(karta(x, "wsp-pakiet wsp-pakiet--maly") for x in W["jednorazowe"])
-            loga = self.sponsorzy_html(p)
-            return f"""
-{S.plakat_podstrony(p, 'Dla sponsorów', 'Twoja marka w centrum siatkarskich emocji', 'sponsorzy')}
-<section class="sekcja"><div class="kontener">
-  <p class="wsp-wstep">{e(W['wstep'])}</p>
-  <ul class="wsp-liczby pojaw">{liczby}</ul>
-</div></section>
-<section class="sekcja sekcja--biala"><div class="kontener">
-  {S.naglowek_sekcji('Gdzie zobaczą', 'Twoją markę')}
-  <ul class="wsp-ekspo pojaw">{ekspo}</ul>
-</div></section>
-<section class="sekcja"><div class="kontener">
-  {S.naglowek_sekcji('Pakiety', 'sponsorskie')}
-  <div class="wsp-pakiety pojaw">{pakiety}</div>
-  <h3 class="wsp-h3">Na próbę – bez rocznego zobowiązania</h3>
-  <div class="wsp-pakiety wsp-pakiety--2 pojaw">{jedno}</div>
-  <p class="wsp-przypis">{e(W.get('przypis_pakiety', ''))}</p>
-</div></section>
-<section class="sekcja sekcja--biala"><div class="kontener wsp-ulga">
-  <h2 class="sekcja__tytul">Ulga <span>na sport</span></h2>
-  <p>{e(W['ulga'])}</p>
-</div></section>
-{loga}
-<section class="sekcja"><div class="kontener cta">
-  <h2 class="sekcja__tytul">Porozmawiajmy <span>o współpracy</span></h2>
-  <p>Umówmy krótką rozmowę i dobierzmy pakiet dla Twojej firmy. Prześlemy pełną ofertę w PDF.</p>
   <a class="btn btn--zolty" href="mailto:{e(C.KLUB['email'])}?subject={quote('Współpraca sponsorska')}">Napisz do nas →</a>
 </div></section>"""
-        self.strona("wspolpraca.html", "Dla sponsorów",
-                    "Sponsoring Easy Wrap Volley Kobyłka – pakiety sponsorskie, zasięgi, ekspozycja marki na meczach "
-                    "2. ligi kobiet, w transmisjach i social media. Ulga na sport.", tresc)
+        self.strona("sponsorzy.html", "Sponsorzy", "Sponsorzy i partnerzy klubu Easy Wrap Volley Kobyłka.", tresc)
 
     # --- O KLUBIE ----------------------------------------------------------
     def o_klubie(self):
@@ -1215,7 +1158,6 @@ def main():
     b.akademia()
     b.galeria()
     b.sponsorzy()
-    b.wspolpraca()
     b.o_klubie()
     b.sklep()
     b.kontakt()

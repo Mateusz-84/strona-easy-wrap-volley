@@ -45,7 +45,6 @@ MENU = [
     ("galeria.html", "Galeria", False),
     ("sklep.html", "Sklep", False),
     ("sponsorzy.html", "Sponsorzy", True),
-    ("wspolpraca.html", "Dla sponsorów", False),
     ("o-klubie.html", "O klubie", False),
     ("kontakt.html", "Kontakt", True),
 ]
@@ -358,7 +357,7 @@ def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja):
       <div><h2>Obserwuj</h2><ul class="stopka__social">{social_linki("stopka", True)}</ul></div>
       <div><h2>Na skróty</h2><ul>
         {skroty}
-        <li><a href="{p}wspolpraca.html">Zostań sponsorem</a></li>
+        <li><a href="{p}sponsorzy.html">Zostań sponsorem</a></li>
         <li><a href="{p}akademia.html">Akademia Siatkówki Volley →</a></li>
         <li><a href="{p}akademia.html#ochrona">Ochrona małoletnich</a></li></ul></div>
     </div>

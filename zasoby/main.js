@@ -532,15 +532,3 @@
   setInterval(stan, 30000);
 })();
 
-/* Strona „Dla sponsorów”: aktualna liczba odwiedzin strony (odczyt licznika, bez doliczania) */
-(function () {
-  var li = document.querySelector('[data-wsp-odwiedziny]');
-  if (!li || !window.fetch || location.protocol.indexOf('http') !== 0) return;
-  fetch('https://abacus.jasoncameron.dev/get/volleykobylka-pl/odwiedziny')
-    .then(function (r) { return r.ok ? r.json() : null; })
-    .then(function (d) {
-      if (!d || !(d.value > 50)) return;
-      li.querySelector('strong').textContent = d.value.toLocaleString('pl-PL');
-      li.hidden = false;
-    }).catch(function () {});
-})();
