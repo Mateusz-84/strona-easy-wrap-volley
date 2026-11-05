@@ -29,10 +29,15 @@
    "adres": "ul. Sportowa 30, 05-090 Raszyn",
    "godzina": null,
    "hala": null
+  },
+  "/system/mecz/199/": {
+   "adres": "ul. Marymoncka 34, Warszawa",
+   "godzina": null,
+   "hala": "Hala Lekkoatletyczna AWF;"
   }
  },
  "seniorki": {
-  "pobrano": "2026-11-04T22:48",
+  "pobrano": "2026-11-05T01:59",
   "pzps_lista": [
    {
     "data": "2026-09-26",
