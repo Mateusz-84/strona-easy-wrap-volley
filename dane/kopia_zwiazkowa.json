@@ -37,7 +37,7 @@
   }
  },
  "seniorki": {
-  "pobrano": "2026-11-07T18:35",
+  "pobrano": "2026-11-07T21:37",
   "pzps_lista": [
    {
     "data": "2026-09-26",
@@ -242,51 +242,51 @@
    "tabela": [
     {
      "lp": 1,
-     "male_minus": 478,
-     "male_plus": 594,
-     "mecze": 7,
+     "male_minus": 526,
+     "male_plus": 669,
+     "mecze": 8,
      "nasz": true,
      "nazwa": "EASY WRAP Volley Kobyłka",
-     "pkt": 18,
+     "pkt": 21,
      "sety_minus": 6,
+     "sety_plus": 23,
+     "zwyciestwa": 7
+    },
+    {
+     "lp": 2,
+     "male_minus": 561,
+     "male_plus": 660,
+     "mecze": 8,
+     "nasz": false,
+     "nazwa": "GKS Orlęta Raszyn",
+     "pkt": 18,
+     "sety_minus": 8,
      "sety_plus": 20,
      "zwyciestwa": 6
     },
     {
-     "lp": 2,
-     "male_minus": 540,
-     "male_plus": 627,
-     "mecze": 7,
+     "lp": 3,
+     "male_minus": 641,
+     "male_plus": 712,
+     "mecze": 8,
      "nasz": false,
      "nazwa": "SMS Ostrów Łaskovia Łask",
      "pkt": 18,
-     "sety_minus": 7,
-     "sety_plus": 19,
+     "sety_minus": 10,
+     "sety_plus": 20,
      "zwyciestwa": 6
     },
     {
-     "lp": 3,
-     "male_minus": 476,
-     "male_plus": 559,
-     "mecze": 7,
-     "nasz": false,
-     "nazwa": "GKS Orlęta Raszyn",
-     "pkt": 15,
-     "sety_minus": 7,
-     "sety_plus": 17,
-     "zwyciestwa": 5
-    },
-    {
      "lp": 4,
-     "male_minus": 624,
-     "male_plus": 618,
-     "mecze": 7,
+     "male_minus": 697,
+     "male_plus": 716,
+     "mecze": 8,
      "nasz": false,
      "nazwa": "TPS Bielsk Podlaski",
-     "pkt": 13,
-     "sety_minus": 12,
-     "sety_plus": 16,
-     "zwyciestwa": 5
+     "pkt": 16,
+     "sety_minus": 13,
+     "sety_plus": 19,
+     "zwyciestwa": 6
     },
     {
      "lp": 5,
@@ -326,39 +326,39 @@
     },
     {
      "lp": 8,
-     "male_minus": 580,
-     "male_plus": 599,
-     "mecze": 7,
+     "male_minus": 698,
+     "male_plus": 681,
+     "mecze": 8,
      "nasz": false,
-     "nazwa": "MAPEI BARYCZ Janków Przygodzki",
+     "nazwa": "MOS Wola AZS Warszawa",
      "pkt": 9,
-     "sety_minus": 15,
-     "sety_plus": 13,
+     "sety_minus": 19,
+     "sety_plus": 14,
      "zwyciestwa": 3
     },
     {
      "lp": 9,
-     "male_minus": 576,
-     "male_plus": 531,
-     "mecze": 7,
+     "male_minus": 655,
+     "male_plus": 647,
+     "mecze": 8,
      "nasz": false,
-     "nazwa": "ŁKS AZS UMED Łódź",
-     "pkt": 8,
-     "sety_minus": 15,
-     "sety_plus": 11,
+     "nazwa": "MAPEI BARYCZ Janków Przygodzki",
+     "pkt": 9,
+     "sety_minus": 18,
+     "sety_plus": 13,
      "zwyciestwa": 3
     },
     {
      "lp": 10,
-     "male_minus": 664,
-     "male_plus": 606,
-     "mecze": 7,
+     "male_minus": 674,
+     "male_plus": 604,
+     "mecze": 8,
      "nasz": false,
-     "nazwa": "MOS Wola AZS Warszawa",
-     "pkt": 6,
-     "sety_minus": 19,
-     "sety_plus": 11,
-     "zwyciestwa": 2
+     "nazwa": "ŁKS AZS UMED Łódź",
+     "pkt": 8,
+     "sety_minus": 18,
+     "sety_plus": 12,
+     "zwyciestwa": 3
     },
     {
      "lp": 11,
@@ -374,13 +374,13 @@
     },
     {
      "lp": 12,
-     "male_minus": 567,
-     "male_plus": 426,
-     "mecze": 7,
+     "male_minus": 642,
+     "male_plus": 460,
+     "mecze": 8,
      "nasz": false,
      "nazwa": "MKS Kalisz II",
      "pkt": 0,
-     "sety_minus": 21,
+     "sety_minus": 24,
      "sety_plus": 2,
      "zwyciestwa": 0
     }
@@ -453,6 +453,15 @@
       "19:25"
      ],
      "wynik": "0:3"
+    },
+    "/system/mecz/177/": {
+     "data": "2026-11-07",
+     "sety": [
+      "25:14",
+      "25:19",
+      "25:15"
+     ],
+     "wynik": "3:0"
     }
    }
   },
