@@ -37,7 +37,7 @@
   }
  },
  "seniorki": {
-  "pobrano": "2026-11-07T16:37",
+  "pobrano": "2026-11-07T18:35",
   "pzps_lista": [
    {
     "data": "2026-09-26",
@@ -290,6 +290,18 @@
     },
     {
      "lp": 5,
+     "male_minus": 747,
+     "male_plus": 754,
+     "mecze": 8,
+     "nasz": false,
+     "nazwa": "AZS AWF Varsovia",
+     "pkt": 13,
+     "sety_minus": 16,
+     "sety_plus": 19,
+     "zwyciestwa": 4
+    },
+    {
+     "lp": 6,
      "male_minus": 566,
      "male_plus": 584,
      "mecze": 7,
@@ -301,28 +313,16 @@
      "zwyciestwa": 4
     },
     {
-     "lp": 6,
-     "male_minus": 617,
-     "male_plus": 631,
-     "mecze": 7,
+     "lp": 7,
+     "male_minus": 692,
+     "male_plus": 681,
+     "mecze": 8,
      "nasz": false,
      "nazwa": "PGE LTS Legionovia Legionowo II",
      "pkt": 12,
-     "sety_minus": 13,
+     "sety_minus": 16,
      "sety_plus": 15,
      "zwyciestwa": 4
-    },
-    {
-     "lp": 7,
-     "male_minus": 697,
-     "male_plus": 679,
-     "mecze": 7,
-     "nasz": false,
-     "nazwa": "AZS AWF Varsovia",
-     "pkt": 10,
-     "sety_minus": 16,
-     "sety_plus": 16,
-     "zwyciestwa": 3
     },
     {
      "lp": 8,
