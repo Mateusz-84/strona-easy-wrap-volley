@@ -37,7 +37,7 @@
   }
  },
  "seniorki": {
-  "pobrano": "2026-11-08T16:36",
+  "pobrano": "2026-11-08T18:35",
   "pzps_lista": [
    {
     "data": "2026-09-26",
@@ -302,18 +302,6 @@
     },
     {
      "lp": 6,
-     "male_minus": 566,
-     "male_plus": 584,
-     "mecze": 7,
-     "nasz": false,
-     "nazwa": "Libero VIP Gwarant Aleksandrów Łódzki",
-     "pkt": 12,
-     "sety_minus": 12,
-     "sety_plus": 14,
-     "zwyciestwa": 4
-    },
-    {
-     "lp": 7,
      "male_minus": 692,
      "male_plus": 681,
      "mecze": 8,
@@ -322,6 +310,18 @@
      "pkt": 12,
      "sety_minus": 16,
      "sety_plus": 15,
+     "zwyciestwa": 4
+    },
+    {
+     "lp": 7,
+     "male_minus": 644,
+     "male_plus": 648,
+     "mecze": 8,
+     "nasz": false,
+     "nazwa": "Libero VIP Gwarant Aleksandrów Łódzki",
+     "pkt": 12,
+     "sety_minus": 15,
+     "sety_plus": 14,
      "zwyciestwa": 4
     },
     {
@@ -362,15 +362,15 @@
     },
     {
      "lp": 11,
-     "male_minus": 584,
-     "male_plus": 515,
-     "mecze": 7,
+     "male_minus": 648,
+     "male_plus": 593,
+     "mecze": 8,
      "nasz": false,
      "nazwa": "MUKS Krótka",
-     "pkt": 5,
+     "pkt": 8,
      "sety_minus": 18,
-     "sety_plus": 7,
-     "zwyciestwa": 1
+     "sety_plus": 10,
+     "zwyciestwa": 2
     },
     {
      "lp": 12,
