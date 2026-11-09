@@ -34,10 +34,15 @@
    "adres": "ul. Marymoncka 34, Warszawa",
    "godzina": null,
    "hala": "Hala Lekkoatletyczna AWF;"
+  },
+  "/system/mecz/210/": {
+   "adres": "ul. M.C. Skłodowskiej 5, Aleksandrów Łódzki",
+   "godzina": null,
+   "hala": "Hala Sportowa przy Zespole Licealno-Sportowym"
   }
  },
  "seniorki": {
-  "pobrano": "2026-11-08T22:36",
+  "pobrano": "2026-11-09T02:01",
   "pzps_lista": [
    {
     "data": "2026-09-26",
