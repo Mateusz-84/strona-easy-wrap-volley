@@ -42,7 +42,7 @@
   }
  },
  "seniorki": {
-  "pobrano": "2026-11-10T04:49",
+  "pobrano": "2026-11-10T08:04",
   "pzps_lista": [
    {
     "data": "2026-09-26",
@@ -118,8 +118,8 @@
    },
    {
     "data": "2026-11-14",
-    "godzina": null,
-    "godzina_pewna": false,
+    "godzina": "18:00",
+    "godzina_pewna": true,
     "gosc": "EASY WRAP Volley Kobyłka",
     "gospodarz": "SMS Ostrów Łaskovia Łask",
     "id": "/system/mecz/185/",
