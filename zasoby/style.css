@@ -174,7 +174,6 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
   -webkit-mask-image:linear-gradient(180deg,#000 72%,transparent);mask-image:linear-gradient(180deg,#000 72%,transparent)}
 .hero__postac-nr{position:absolute;right:6px;top:-18px;font-family:var(--font-naglowki);font-size:190px;line-height:.8;color:transparent;-webkit-text-stroke:2px rgba(255,255,255,.2)}
 .hero--wyjazd .hero__postac-nr{-webkit-text-stroke-color:rgba(0,26,63,.18)}
-.hero__postac-podpis{display:none}
 
 @media (max-width:767px){
   .hero__przyciski .btn--zolty{flex:1 1 100%;justify-content:center}
@@ -1015,11 +1014,29 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
 @keyframes kropka-tlo{50%{filter:brightness(1.25)}}
 .hero--wyjazd .hero__na-zywo{background:rgba(255,255,255,.35);border-color:rgba(0,26,63,.25)}
 
-/* Plansza meczu: „Zaprasza” nad numerem i nazwiskiem zawodniczki ze zdjęcia */
-.hero__postac-podpis{display:block;position:absolute;right:40px;bottom:-6px;white-space:nowrap;background:rgba(0,26,63,.82);color:#fff;font-weight:700;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px 5px;border-radius:12px;line-height:1.2;text-align:center;backdrop-filter:blur(4px)}
-.hero__postac-podpis small{display:block;font-family:var(--font-naglowki);font-weight:400;font-size:17px;letter-spacing:.06em;color:var(--zolty);line-height:1}
-@media (min-width:768px){.hero__postac-podpis{right:44px;bottom:0;font-size:12px}}
+/* Plansza meczu: karta „Zapraszam!” – numer, imię i nazwisko zawodniczki ze zdjęcia.
+   Komputer: na zdjęciu (prawy dół). Telefon: w treści nad przyciskami – nic jej nie zasłania. */
+.zapr{position:relative;display:inline-flex;align-items:center;gap:12px;padding:14px 18px 12px 12px;
+  background:linear-gradient(135deg,#0b3474 0%,#001a3f 100%);border:2px solid var(--zolty);border-radius:18px;
+  box-shadow:0 16px 34px rgba(0,10,30,.45);color:#fff;transform:rotate(-3deg);transform-origin:left center}
+.zapr__tytul{position:absolute;top:-15px;left:14px;background:var(--zolty);color:var(--granat-ciemny);
+  font-family:var(--font-naglowki);font-size:21px;line-height:1;letter-spacing:.06em;padding:5px 12px 4px;border-radius:8px;
+  transform:rotate(-2deg);box-shadow:0 4px 10px rgba(0,0,0,.25)}
+.zapr__nr{display:flex;align-items:center;justify-content:center;flex:none;width:60px;height:60px;padding-top:3px;box-sizing:border-box;
+  border-radius:50%;box-shadow:inset 0 0 0 3px rgba(0,26,63,.15);background:var(--zolty);color:var(--granat-ciemny);font-family:var(--font-naglowki);font-size:36px;line-height:1}
+.zapr__nr small{font-size:.45em;align-self:flex-start;margin:8px 1px 0 0}
+.zapr__osoba{display:flex;flex-direction:column;line-height:1}
+.zapr__imie{font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#cfe3ff}
+.zapr__nazwisko{font-family:var(--font-naglowki);font-size:32px;letter-spacing:.02em;text-transform:uppercase}
+.zapr--foto{display:none}
+.zapr--tel{margin:22px 0 22px 4px}
 @media (min-width:1024px){
-  .hero__postac-podpis{right:28px;bottom:36px;font-size:15px;padding:8px 18px 9px;border-radius:18px}
-  .hero__postac-podpis small{font-size:28px}
+  .zapr--tel{display:none}
+  .zapr--foto{display:inline-flex;position:absolute;right:26px;bottom:34px;z-index:2}
+  .zapr--foto .zapr__nr{width:68px;height:68px;font-size:42px}
+  .zapr--foto .zapr__nazwisko{font-size:36px}
 }
+@media (prefers-reduced-motion:no-preference){
+  .js .hero .zapr{animation:we-zapr .6s 2.2s cubic-bezier(.2,.9,.3,1.3) both}
+}
+@keyframes we-zapr{0%{opacity:0;transform:rotate(-14deg) scale(.6)}100%{opacity:1;transform:rotate(-3deg)}}

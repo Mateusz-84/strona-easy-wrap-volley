@@ -476,11 +476,21 @@ def postac_do_plakatu(m):
     return kandydatki[klucz % len(kandydatki)]
 
 
+def karta_zaproszenia(z, klasa):
+    """Karta „Zapraszam!” z numerem, imieniem i nazwiskiem zawodniczki ze zdjęcia na planszy meczu."""
+    return (f'<div class="zapr {klasa}">'
+            f'<span class="zapr__tytul">Zapraszam!</span>'
+            f'<span class="zapr__nr"><small>#</small>{e(z["numer"])}</span>'
+            f'<span class="zapr__osoba"><span class="zapr__imie">{e(z["imie"])}</span>'
+            f'<span class="zapr__nazwisko">{e(z["nazwisko"])}</span></span></div>')
+
+
 def hero(p, m):
     # 1) własne zdjęcie meczu ("zdjecie_plakatu") albo domyślne z ZDJECIA_NAGLOWKOW → zdjęcie w ramce
     foto = img(p, (m or {}).get("zdjecie_plakatu"), "", "hero__foto", lazy=False) \
         or img(p, C.ZDJECIA_NAGLOWKOW.get("plakat_meczu"), "", "hero__foto", lazy=False)
     klasy = ["hero"]
+    zaproszenie = ""
     if foto:
         foto_html = f'<div class="hero__zdjecie hero__zdjecie--foto" aria-hidden="true">{foto}</div>'
         klasy.append("hero--z-foto")
@@ -490,7 +500,9 @@ def hero(p, m):
         if z:
             foto_html = (f'<div class="hero__postac" aria-hidden="true">'
                          f'<img class="hero__postac-img" src="{p}img/{e(z["zdjecie"])}" alt="" fetchpriority="high">'
-                         f'<span class="hero__postac-podpis"><small>Zapraszam</small>#{e(z["numer"])} {e(z["imie"])} {e(z["nazwisko"])}</span></div>')
+                         f'{karta_zaproszenia(z, "zapr--foto")}</div>')
+            # na telefonie ta sama karta stoi pod szczegółami meczu (zdjęcie nie zasłania jej ani przyciski)
+            zaproszenie = karta_zaproszenia(z, "zapr--tel")
             klasy.append("hero--z-postacia")
         else:
             foto_html = ""
@@ -561,6 +573,7 @@ def hero(p, m):
       <div class="hero__hala"><strong>{e(miejsce)}</strong>{e(adres)}</div>
     </div>
     {na_zywo}
+    {zaproszenie}
     <div class="hero__przyciski">{''.join(przyciski)}</div>
     {sponsor}
   </div></div>
