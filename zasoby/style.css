@@ -1029,7 +1029,7 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
 .zapr__imie{font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#cfe3ff}
 .zapr__nazwisko{font-family:var(--font-naglowki);font-size:32px;letter-spacing:.02em;text-transform:uppercase}
 .zapr--foto{display:none}
-.zapr--tel{margin:22px 0 22px 4px}
+.zapr--tel{display:flex;width:max-content;max-width:calc(100% - 8px);margin:18px 6px 22px auto;transform-origin:right center}
 @media (min-width:1024px){
   .zapr--tel{display:none}
   .zapr--foto{display:inline-flex;position:absolute;right:26px;bottom:34px;z-index:2}
