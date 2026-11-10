@@ -1052,3 +1052,33 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
 @media (min-width:900px){.kal-sub{grid-template-columns:1fr auto}}
 .kal-sub-link{margin:-6px 0 16px}
 .kal-sub-link a{font-weight:700;color:var(--granat);text-underline-offset:3px}
+
+/* „Poznaj mnie” – strona zawodniczki */
+.zawodniczka__poznaj{display:inline-block;margin-top:8px;font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--zolty);text-decoration:none;position:relative;z-index:2}
+.zawodniczka__poznaj:hover{text-decoration:underline;text-underline-offset:3px}
+.pm{background:var(--tlo-granat);color:#fff;padding:32px 0 56px;overflow:hidden}
+.pm__siatka{display:grid;gap:28px}
+.pm__zdjecie{position:relative;max-width:420px;margin:0 auto}
+.pm__foto{display:block;width:100%;height:auto;position:relative;z-index:1;filter:drop-shadow(0 22px 40px rgba(0,0,0,.4))}
+.pm__nr{position:absolute;right:-6%;top:4%;font-family:var(--font-naglowki);font-size:min(52vw,300px);line-height:.8;color:transparent;-webkit-text-stroke:2px rgba(255,199,44,.55)}
+.pm__nad{margin:0 0 6px;font-weight:700;font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:var(--zolty)}
+.pm__imie{font-family:var(--font-naglowki);font-weight:400;font-size:clamp(54px,9vw,104px);line-height:.88;margin:0 0 24px;text-transform:uppercase}
+.pm__imie span{display:block;font-size:.45em;color:#cfe3ff}
+.pm__lista{margin:0;display:grid;gap:12px}
+.pm__qa{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:14px 18px}
+.pm__qa dt{font-weight:700;font-size:14px;letter-spacing:.04em;color:var(--zolty);margin-bottom:4px}
+.pm__qa dd{margin:0;font-size:19px;line-height:1.45}
+.pm__wroc{margin:26px 0 0}
+.pm__nawig{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-weight:700}
+.pm__nawig a{color:var(--granat);text-underline-offset:3px}
+@media (min-width:900px){.pm__siatka{grid-template-columns:5fr 7fr;align-items:start}.pm__lewa{position:sticky;top:90px}}
+
+/* „Poznaj nas” – losowa odpowiedź na stronie głównej */
+.ciek{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;align-items:center;margin:26px 0 0;padding:18px 20px;border-radius:var(--r-l,18px);background:var(--tlo-granat);color:#fff;position:relative}
+.ciek__foto{width:96px;height:120px;object-fit:cover;object-position:top;border-radius:14px;background:rgba(255,255,255,.08)}
+.ciek__nad{margin:0;font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--zolty)}
+.ciek__q{margin:2px 0 6px;font-weight:700;color:#cfe3ff}
+.ciek__a{margin:0 0 8px;font-family:var(--font-naglowki);font-size:30px;line-height:1.05}
+.ciek__kto{font-weight:700;color:#fff;text-underline-offset:3px}
+.ciek__inne{grid-column:1/-1;justify-self:end;font:inherit;font-weight:700;font-size:14px;background:none;border:0;color:var(--zolty);cursor:pointer;min-height:44px;padding:0 4px}
+@media (min-width:900px){.ciek{grid-template-columns:auto 1fr auto}.ciek__inne{grid-column:3;grid-row:1;align-self:center}.ciek__a{font-size:38px}}

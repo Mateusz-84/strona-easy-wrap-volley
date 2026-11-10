@@ -332,6 +332,7 @@ class Budowa:
     {S.prezentuje('kadra', p)}
     <div class="kadra kadra--losowa pojaw" data-losowa-kadra>{''.join(S.karta_zawodniczki(p, z) for z in kadra)}</div>
     <p class="przesun" aria-hidden="true">Przesuń</p>
+    {self.ciekawostka(p, kadra)}
   </div>
 </section>
 
@@ -356,7 +357,7 @@ class Budowa:
                  ("sponsorzy.html", "Sponsorzy", "Zostań partnerem", "foto-1")]
         postac = S.postac_do_plakatu(None)
         # Przy każdym wejściu main.js losuje inną zawodniczkę z listy (bez JS zostaje ta z dnia)
-        wszystkie = [f"{p}img/{z['zdjecie']}" for z in C.KADRA
+        wszystkie = [S.src_img(p, z['zdjecie']) for z in C.KADRA
                      if z["druzyna"] == GLOWNA and S.jest_plik(z.get("zdjecie"))]
         foto = (f'<img class="kafel__postac" src="{p}img/{e(postac["zdjecie"])}" alt="" '
                 f'data-losowe=\'{e(json.dumps(wszystkie))}\'>' if postac else "")
@@ -749,6 +750,61 @@ class Budowa:
     # --- STRONA WYBORU (volleykobylka.pl) -----------------------------------
     def wybor(self):
         zapisz("index.html", S.strona_wyboru("", self.wersja))
+
+    # --- POZNAJ MNIE (strona każdej zawodniczki z odpowiedziami na pytania) ---------
+    def ciekawostka(self, p, kadra):
+        """Losowa odpowiedź zawodniczki na stronie głównej („Poznaj nas”) – przy każdej wizycie inna."""
+        wpisy = []
+        for z in kadra:
+            if not S.adres_profilu(z):
+                continue
+            for q, a in zip(C.PYTANIA, C.POZNAJ.get(f"{z['imie']} {z['nazwisko']}", [])):
+                if str(a).strip():
+                    wpisy.append({"q": q, "a": a, "k": f"#{z['numer']} {z['imie']} {z['nazwisko']}",
+                                  "u": p + S.adres_profilu(z), "f": S.src_img(p, z["zdjecie"]) if z.get("zdjecie") else ""})
+        if not wpisy:
+            return ""
+        w = wpisy[0]
+        return (f'<aside class="ciek" data-ciekawostki="{e(json.dumps(wpisy, ensure_ascii=False))}">'
+                f'<img class="ciek__foto" src="{e(w["f"])}" alt="" loading="lazy">'
+                f'<div class="ciek__tresc"><p class="ciek__nad">Poznaj nas</p><p class="ciek__q">{e(w["q"])}</p>'
+                f'<blockquote class="ciek__a">„{e(w["a"])}”</blockquote>'
+                f'<a class="ciek__kto" href="{e(w["u"])}">{e(w["k"])} – poznaj ją →</a></div>'
+                f'<button class="ciek__inne" type="button">Inne pytanie ↻</button></aside>')
+
+    def profile(self):
+        kadra = sorted([z for z in C.KADRA if z["druzyna"] == GLOWNA and S.adres_profilu(z)], key=lambda z: z["numer"])
+        for i, z in enumerate(kadra):
+            odp = C.POZNAJ.get(f"{z['imie']} {z['nazwisko']}", [])
+            poprz, nast = kadra[i - 1], kadra[(i + 1) % len(kadra)]
+
+            def tresc(p, z=z, odp=odp, poprz=poprz, nast=nast):
+                qa = "".join(f'<div class="pm__qa"><dt>{e(q)}</dt><dd>{e(a)}</dd></div>'
+                             for q, a in zip(C.PYTANIA, odp) if str(a).strip())
+                foto = S.img(p, z.get("zdjecie"), f"{z['imie']} {z['nazwisko']}", "pm__foto", lazy=False)
+                kapitan = ' · Kapitan' if z.get("kapitan") else ""
+                nawig = ""
+                if len(kadra) > 1:
+                    nawig = (f'<nav class="pm__nawig" aria-label="Inne zawodniczki">'
+                             f'<a href="{p}{S.adres_profilu(poprz)}">← #{e(poprz["numer"])} {e(poprz["imie"])} {e(poprz["nazwisko"])}</a>'
+                             f'<a href="{p}{S.adres_profilu(nast)}">#{e(nast["numer"])} {e(nast["imie"])} {e(nast["nazwisko"])} →</a></nav>')
+                return f"""
+<section class="pm"><div class="kontener pm__siatka">
+  <div class="pm__lewa">
+    <div class="pm__zdjecie">{foto}<span class="pm__nr" aria-hidden="true">{e(z['numer'])}</span></div>
+  </div>
+  <div class="pm__prawa">
+    <p class="pm__nad">Poznaj mnie · {e(z['pozycja'])} · #{e(z['numer'])}{kapitan}</p>
+    <h1 class="pm__imie"><span>{e(z['imie'])}</span>{e(z['nazwisko'])}</h1>
+    <dl class="pm__lista">{qa}</dl>
+    <p class="pm__wroc"><a class="btn btn--zolty" href="{p}druzyny.html">Cała kadra →</a></p>
+  </div>
+</div></section>
+<section class="sekcja sekcja--biala"><div class="kontener">{nawig}</div></section>"""
+            self.strona(S.adres_profilu(z), f"{z['imie']} {z['nazwisko']} – poznaj mnie",
+                        f"{z['imie']} {z['nazwisko']}, {z['pozycja'].lower()} Easy Wrap Volley Kobyłka (#{z['numer']}) – "
+                        f"odpowiedzi na 10 pytań: rytuały, ulubione zagrania, muzyka przed meczem.", tresc,
+                        aktywna="druzyny.html")
 
     # --- STATYSTYKI (ukryta strona, bez linku w menu) --------------------------
     def statystyki(self, strony):
@@ -1202,6 +1258,7 @@ def main():
     b.akademia()
     b.galeria()
     b.sponsorzy()
+    b.profile()
     b.o_klubie()
     b.sklep()
     b.kontakt()

@@ -11,6 +11,7 @@
 #  linki do CSS, zdjęć i innych stron działają z każdego miejsca.
 # =====================================================================
 
+import re
 import os
 from datetime import date, datetime, timedelta, timezone
 from html import escape
@@ -129,12 +130,33 @@ def jest_plik(sciezka):
     return bool(sciezka) and os.path.isfile(os.path.join(FOLDER, "img", sciezka))
 
 
+_WERSJE = {}
+
+
+def wersja_pliku(sciezka):
+    """Krótki skrót zawartości pliku z img/ – dopisywany do adresu (?v=…), żeby po podmianie zdjęcia
+    przeglądarki i serwer od razu pokazały nowe, a nie stare z pamięci podręcznej."""
+    if sciezka not in _WERSJE:
+        import hashlib
+        try:
+            with open(os.path.join(FOLDER, "img", sciezka), "rb") as f:
+                _WERSJE[sciezka] = hashlib.md5(f.read()).hexdigest()[:8]
+        except OSError:
+            _WERSJE[sciezka] = ""
+    return _WERSJE[sciezka]
+
+
+def src_img(p, sciezka):
+    v = wersja_pliku(sciezka)
+    return f"{p}img/{sciezka}" + (f"?v={v}" if v else "")
+
+
 def img(p, sciezka, alt, klasa="", lazy=True):
     """Znacznik <img> albo pusty tekst, gdy pliku nie ma (wtedy CSS pokaże grafikę zastępczą)."""
     if not jest_plik(sciezka):
         return ""
     ladowanie = ' loading="lazy" decoding="async"' if lazy else ' fetchpriority="high"'
-    return f'<img class="{klasa}" src="{p}img/{e(sciezka)}" alt="{e(alt)}"{ladowanie}>'
+    return f'<img class="{klasa}" src="{e(src_img(p, sciezka))}" alt="{e(alt)}"{ladowanie}>'
 
 
 def inicjaly(nazwa):
@@ -522,7 +544,7 @@ def hero(p, m):
         z = postac_do_plakatu(m)
         if z:
             foto_html = (f'<div class="hero__postac" aria-hidden="true">'
-                         f'<img class="hero__postac-img" src="{p}img/{e(z["zdjecie"])}" alt="" fetchpriority="high">'
+                         f'<img class="hero__postac-img" src="{e(src_img(p, z["zdjecie"]))}" alt="" fetchpriority="high">'
                          f'{karta_zaproszenia(z, "zapr--foto")}</div>')
             # na telefonie ta sama karta stoi pod szczegółami meczu (zdjęcie nie zasłania jej ani przyciski)
             zaproszenie = karta_zaproszenia(z, "zapr--tel")
@@ -711,6 +733,17 @@ def karta_meczu(p, m):
 # ---------------------------------------------------------------------
 # Karta zawodniczki – gigantyczny numer, zdjęcie albo inicjały
 # ---------------------------------------------------------------------
+def adres_profilu(z):
+    """Ścieżka strony „Poznaj mnie” zawodniczki albo None (gdy ma mniej niż 3 odpowiedzi)."""
+    odp = [o for o in (getattr(C, "POZNAJ", {}) or {}).get(f"{z['imie']} {z['nazwisko']}", []) if str(o).strip()]
+    if len(odp) < 3:
+        return None
+    import unicodedata
+    t = unicodedata.normalize("NFKD", f"{z['imie']}-{z['nazwisko']}".replace("ł", "l").replace("Ł", "L"))
+    t = "".join(ch for ch in t if not unicodedata.combining(ch)).lower()
+    return "zawodniczki/" + re.sub(r"[^a-z0-9]+", "-", t).strip("-") + ".html"
+
+
 def karta_zawodniczki(p, z):
     zdjecie = img(p, z.get("zdjecie"), f"{z['imie']} {z['nazwisko']}", "zawodniczka__foto")
     if not zdjecie:  # NIGDY szara sylwetka – inicjały w barwach klubu
@@ -733,6 +766,7 @@ def karta_zawodniczki(p, z):
     <span class="zawodniczka__poz">{e(z['pozycja'])} · #{e(z['numer'])}{kapitan}</span>
     <h3><span>{e(z['imie'])}</span>{e(z['nazwisko'])}</h3>
     {wiecej}
+    {f'<a class="zawodniczka__poznaj" href="{p}{adres_profilu(z)}">Poznaj mnie →</a>' if adres_profilu(z) else ''}
   </div>
 </article>"""
 

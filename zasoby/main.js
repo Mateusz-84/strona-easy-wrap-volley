@@ -544,3 +544,21 @@
     });
   });
 })();
+
+/* „Poznaj nas” na stronie głównej: losowa odpowiedź zawodniczki (inna przy każdej wizycie i po kliknięciu) */
+(function () {
+  var box = document.querySelector('[data-ciekawostki]');
+  if (!box) return;
+  var w = JSON.parse(box.getAttribute('data-ciekawostki')), ost = -1;
+  function pokaz() {
+    if (!w.length) return;
+    var i; do { i = Math.floor(Math.random() * w.length); } while (w.length > 1 && i === ost);
+    ost = i; var x = w[i];
+    box.querySelector('.ciek__q').textContent = x.q;
+    box.querySelector('.ciek__a').textContent = '„' + x.a + '”';
+    var k = box.querySelector('.ciek__kto'); k.textContent = x.k + ' – poznaj ją →'; k.href = x.u;
+    var f = box.querySelector('.ciek__foto'); if (x.f) { f.src = x.f; f.hidden = false; } else f.hidden = true;
+  }
+  pokaz();
+  box.querySelector('.ciek__inne').addEventListener('click', pokaz);
+})();
