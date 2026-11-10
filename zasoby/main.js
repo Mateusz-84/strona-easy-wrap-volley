@@ -532,3 +532,15 @@
   setInterval(stan, 30000);
 })();
 
+
+/* „Skopiuj adres kalendarza” (subskrypcja terminarza) */
+(function () {
+  document.querySelectorAll('[data-kopiuj]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var t = b.getAttribute('data-kopiuj'), stary = b.textContent;
+      function ok() { b.textContent = 'Skopiowano ✓'; setTimeout(function () { b.textContent = stary; }, 2000); }
+      if (navigator.clipboard) navigator.clipboard.writeText(t).then(ok, function () { prompt('Adres kalendarza:', t); });
+      else prompt('Adres kalendarza:', t);
+    });
+  });
+})();

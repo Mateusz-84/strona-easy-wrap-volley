@@ -476,6 +476,29 @@ def postac_do_plakatu(m):
     return kandydatki[klucz % len(kandydatki)]
 
 
+def subskrypcja_kalendarza(p, druzyna):
+    """Blok „Terminarz w telefonie”: subskrypcja kalendarza sezonu – mecze, godziny i wyniki aktualizują się same."""
+    from urllib.parse import quote
+    baza = C.KLUB["adres_strony"].rstrip("/") + "/"
+    https = f"{baza}kalendarz/{druzyna}-caly-sezon.ics"
+    webcal = "webcal://" + https.split("://", 1)[1]
+    google = "https://calendar.google.com/calendar/r?cid=" + quote(webcal, safe="")
+    outlook = ("https://outlook.live.com/calendar/0/addfromweb?url=" + quote(https, safe="") +
+               "&name=" + quote("Easy Wrap Volley – mecze"))
+    return f"""<div class="kal-sub" id="w-telefonie">
+  <div class="kal-sub__tekst"><h3>Terminarz w telefonie</h3>
+  <p>Dodaj raz – wszystkie mecze pojawią się w Twoim kalendarzu, a zmiany godzin i wyniki zaktualizują się same.</p></div>
+  <div class="kal-sub__przyciski">
+    <a class="btn btn--zolty" href="{e(webcal)}">iPhone / iPad / Mac</a>
+    <a class="btn btn--obrys" href="{e(google)}" target="_blank" rel="noopener">Google / Android</a>
+    <a class="btn btn--obrys" href="{e(outlook)}" target="_blank" rel="noopener">Outlook</a>
+    <button class="kal-sub__kopiuj" type="button" data-kopiuj="{e(https)}">Skopiuj adres kalendarza</button>
+  </div>
+  <p class="kal-sub__przypis">Android: przycisk otwiera Kalendarz Google – potwierdź „Dodaj”. Kalendarz pojawi się w telefonie
+  po synchronizacji (w aplikacji Kalendarz Google włącz go w ustawieniach, jeśli nie widać meczów).</p>
+</div>"""
+
+
 def karta_zaproszenia(z, klasa):
     """Karta „Zapraszam!” z numerem, imieniem i nazwiskiem zawodniczki ze zdjęcia na planszy meczu."""
     return (f'<div class="zapr {klasa}">'

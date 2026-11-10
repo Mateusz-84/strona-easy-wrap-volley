@@ -308,6 +308,7 @@ class Budowa:
 <section class="sekcja" aria-labelledby="mecze-tytul">
   <div class="kontener" data-filtrowanie>
     {S.naglowek_sekcji('Mecze', 'i wyniki', p + 'terminarz.html', 'Pełny terminarz', id_='mecze-tytul')}
+    <p class="kal-sub-link"><a href="{p}terminarz.html#w-telefonie">📅 Terminarz w telefonie – aktualizuje się sam →</a></p>
     {self.filtry_druzyn()}
     <div class="mecze pojaw">{karty}</div>
     <p class="przesun" aria-hidden="true">Przesuń</p>
@@ -426,6 +427,7 @@ class Budowa:
     {S.prezentuje('terminarz', p)}
     {self.filtry_druzyn()}
     <div class="mecze mecze--siatka">{karty_przed}</div>
+    {S.subskrypcja_kalendarza(p, GLOWNA)}
     <h2 class="sekcja__tytul sekcja__tytul--drugi" id="wyniki">Wyniki</h2>
     <div class="mecze mecze--siatka">{karty_po}</div>
     {info}
@@ -1012,30 +1014,72 @@ Krótka wersja dla dzieci jest na stronie <a href="{p}akademia.html#ochrona">Aka
 
     # --- PLIKI KALENDARZA (.ics) ------------------------------------------
     def kalendarze(self):
+        """Pliki .ics: pojedyncze mecze (przycisk „Dodaj do kalendarza”) oraz cały sezon do SUBSKRYPCJI –
+        telefon sam pobiera zmiany (nowe godziny, wyniki) co kilka godzin."""
+        baza = C.KLUB["adres_strony"].rstrip("/") + "/"
+        teraz = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+
+        def ics(t):
+            return str(t).replace("\\", "\\\\").replace(",", "\\,").replace(";", "\\;").replace("\n", "\\n")
+
+        def zawin(linia):
+            # RFC 5545: linie maks. 75 bajtów, kontynuacja od spacji
+            b_ = linia.encode("utf-8")
+            if len(b_) <= 75:
+                return linia
+            czesci, ak = [], b""
+            for znak in linia:
+                z = znak.encode("utf-8")
+                if len(ak) + len(z) > (75 if not czesci else 74):
+                    czesci.append(ak.decode("utf-8"))
+                    ak = b""
+                ak += z
+            czesci.append(ak.decode("utf-8"))
+            return "\r\n ".join(czesci)
+
         def wydarzenie(m):
             g, h = m["strony"]
             tytul = f"{g['krotko']} – {h['krotko']}" if h else g["krotko"]
+            if m.get("wynik"):
+                tytul += f" {m['wynik']}"
+            elif not m.get("godzina"):
+                tytul += " (godzina wkrótce)"
             miejsce = ", ".join(x for x in (m.get("hala"), m.get("adres")) if x)
             if m.get("godzina"):
                 gg, mm = (int(x) for x in m["godzina"].split(":"))
                 start = datetime(m["data"].year, m["data"].month, m["data"].day, gg, mm) - timedelta(hours=S.przesuniecie_pl(m["data"]))
-                czas = f"DTSTART:{start:%Y%m%dT%H%M00Z}\r\nDTEND:{start + timedelta(hours=2):%Y%m%dT%H%M00Z}"
+                czas = [f"DTSTART:{start:%Y%m%dT%H%M00Z}", f"DTEND:{start + timedelta(hours=2):%Y%m%dT%H%M00Z}"]
             else:
-                czas = f"DTSTART;VALUE=DATE:{m['data']:%Y%m%d}\r\nDTEND;VALUE=DATE:{m['data'] + timedelta(days=1):%Y%m%d}"
-            def ics(t):
-                return str(t).replace("\\", "\\\\").replace(",", "\\,").replace(";", "\\;")
-            return (f"BEGIN:VEVENT\r\nUID:{m['druzyna']}-{m['data']:%Y%m%d}@easywrapvolley\r\n"
-                    f"DTSTAMP:{m['data']:%Y%m%d}T000000Z\r\n{czas}\r\nSUMMARY:{ics(tytul)}\r\n"
-                    f"LOCATION:{ics(miejsce)}\r\nEND:VEVENT\r\n")
+                czas = [f"DTSTART;VALUE=DATE:{m['data']:%Y%m%d}", f"DTEND;VALUE=DATE:{m['data'] + timedelta(days=1):%Y%m%d}"]
+            opis = [C.DRUZYNY.get(m["druzyna"], {}).get("liga", "")]
+            if m.get("wynik"):
+                opis.append(f"Wynik: {m['wynik']}" + (f" ({', '.join(m['sety'])})" if m.get("sety") else ""))
+            if m.get("mvp"):
+                opis.append(f"MVP: {m['mvp']}")
+            if m.get("transmisja"):
+                opis.append(f"Transmisja: {m['transmisja']}")
+            opis.append(f"Terminarz: {baza}terminarz.html")
+            linie = ["BEGIN:VEVENT", f"UID:{m['druzyna']}-{m['data']:%Y%m%d}@easywrapvolley", f"DTSTAMP:{teraz}",
+                     *czas, f"SUMMARY:{ics(tytul)}", f"DESCRIPTION:{ics(chr(10).join(x for x in opis if x))}",
+                     f"URL:{baza}terminarz.html", "TRANSP:TRANSPARENT"]
+            if miejsce:
+                linie.append(f"LOCATION:{ics(miejsce)}")
+            linie.append("END:VEVENT")
+            return "".join(zawin(x) + "\r\n" for x in linie)
 
-        def plik(wydarzenia):
-            return ("BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Easy Wrap Volley Kobylka//PL\r\n"
-                    "CALSCALE:GREGORIAN\r\n" + "".join(wydarzenia) + "END:VCALENDAR\r\n")
+        def plik(wydarzenia, nazwa=None):
+            nag = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Easy Wrap Volley Kobylka//PL", "CALSCALE:GREGORIAN",
+                   "METHOD:PUBLISH"]
+            if nazwa:
+                nag += [f"X-WR-CALNAME:{nazwa}", "X-WR-TIMEZONE:Europe/Warsaw",
+                        f"X-WR-CALDESC:Mecze Easy Wrap Volley Kobyłka – aktualizuje się samo ({baza})",
+                        "REFRESH-INTERVAL;VALUE=DURATION:PT3H", "X-PUBLISHED-TTL:PT3H"]
+            return "".join(zawin(x) + "\r\n" for x in nag) + "".join(wydarzenia) + "END:VCALENDAR\r\n"
 
         for m in self.mecze:
             zapisz(f"kalendarz/{m['plik_ics']}", plik([wydarzenie(m)]))
         zapisz(f"kalendarz/{GLOWNA}-caly-sezon.ics",
-               plik([wydarzenie(m) for m in self.mecze if m["druzyna"] == GLOWNA]))
+               plik([wydarzenie(m) for m in self.mecze if m["druzyna"] == GLOWNA], "Easy Wrap Volley – mecze"))
 
 
 # =====================================================================
