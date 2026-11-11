@@ -504,7 +504,7 @@ def subskrypcja_kalendarza(p, druzyna):
     baza = C.KLUB["adres_strony"].rstrip("/") + "/"
     https = f"{baza}kalendarz/{druzyna}-caly-sezon.ics"
     webcal = "webcal://" + https.split("://", 1)[1]
-    google = "https://calendar.google.com/calendar/r?cid=" + quote(webcal, safe="")
+    google = "https://calendar.google.com/calendar/r?cid=" + quote(https, safe="")  # adres https – Google pobiera go bez przekierowań
     outlook = ("https://outlook.live.com/calendar/0/addfromweb?url=" + quote(https, safe="") +
                "&name=" + quote("Easy Wrap Volley – mecze"))
     return f"""<div class="kal-sub" id="w-telefonie">
@@ -516,8 +516,8 @@ def subskrypcja_kalendarza(p, druzyna):
     <a class="btn btn--obrys" href="{e(outlook)}" target="_blank" rel="noopener">Outlook</a>
     <button class="kal-sub__kopiuj" type="button" data-kopiuj="{e(https)}">Skopiuj adres kalendarza</button>
   </div>
-  <p class="kal-sub__przypis">Android: przycisk otwiera Kalendarz Google – potwierdź „Dodaj”. Kalendarz pojawi się w telefonie
-  po synchronizacji (w aplikacji Kalendarz Google włącz go w ustawieniach, jeśli nie widać meczów).</p>
+  <p class="kal-sub__przypis">Android: przycisk otwiera Kalendarz Google – potwierdź „Dodaj”. Jeśli meczów nie widać w telefonie:
+  w aplikacji Kalendarz Google ☰ → Ustawienia → „Easy Wrap Volley – mecze” → włącz „Synchronizacja”.</p>
 </div>"""
 
 
