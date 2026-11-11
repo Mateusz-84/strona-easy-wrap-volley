@@ -562,3 +562,179 @@
   pokaz();
   box.querySelector('.ciek__inne').addEventListener('click', pokaz);
 })();
+
+/* =====================================================================
+   ŚWIĄTECZNE LOGO – w czasie świąt herb KS Volley i logo Akademii
+   dostają tematyczny dodatek (czapka Mikołaja, kotylion, znicz,
+   czapeczka sylwestrowa z fajerwerkami, pisanki).
+   Data liczona wg czasu polskiego, Wielkanoc wyliczana co roku sama.
+   Podgląd dowolnego święta: dopisz do adresu ?swieto=bn | nowyrok |
+   wielkanoc | zaduszki | niepodleglosc  (albo ?swieto=brak).
+   ===================================================================== */
+(function () {
+  'use strict';
+
+  function dzisWarszawa() {
+    try {
+      var s = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Warsaw', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+      var c = s.split('-'); return new Date(+c[0], +c[1] - 1, +c[2]);
+    } catch (e) { var d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+  }
+  function wielkanoc(r) {            // algorytm Meeusa/Jonesa/Butchera
+    var a = r % 19, b = Math.floor(r / 100), c = r % 100, d = Math.floor(b / 4), e = b % 4,
+      f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30,
+      i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451),
+      mies = Math.floor((h + l - 7 * m + 114) / 31), dz = ((h + l - 7 * m + 114) % 31) + 1;
+    return new Date(r, mies - 1, dz);
+  }
+  function wZakresie(d, od, doo) { return d >= od && d <= doo; }
+
+  function ktoreSwieto(d) {
+    var r = d.getFullYear(), D = function (m, dz, rr) { return new Date(rr || r, m - 1, dz); };
+    var w = wielkanoc(r), wOd = new Date(w), wDo = new Date(w);
+    wOd.setDate(w.getDate() - 3); wDo.setDate(w.getDate() + 1);
+    if (wZakresie(d, D(12, 20), D(12, 27))) return 'bn';
+    if (wZakresie(d, D(12, 31), D(12, 31)) || wZakresie(d, D(1, 1), D(1, 2))) return 'nowyrok';
+    if (wZakresie(d, wOd, wDo)) return 'wielkanoc';
+    if (wZakresie(d, D(11, 1), D(11, 2))) return 'zaduszki';
+    if (wZakresie(d, D(11, 10), D(11, 12))) return 'niepodleglosc';
+    return null;
+  }
+
+  var dzis = dzisWarszawa();
+  var swieto = ktoreSwieto(dzis);
+  var wymuszone = (location.search.match(/[?&]swieto=([a-z]+)/) || [])[1];
+  if (wymuszone) swieto = wymuszone === 'brak' ? null : wymuszone;
+  if (!swieto) return;
+
+  var rokNowy = dzis.getMonth() === 11 ? dzis.getFullYear() + 1 : dzis.getFullYear();
+  var PODPIS = {
+    bn: 'Wesołych Świąt Bożego Narodzenia!',
+    nowyrok: 'Szczęśliwego Nowego Roku ' + rokNowy + '!',
+    wielkanoc: 'Wesołych Świąt Wielkanocnych!',
+    zaduszki: 'Wszystkich Świętych – pamiętamy',
+    niepodleglosc: '11 listopada – Narodowe Święto Niepodległości'
+  };
+
+  /* ---------- rysunki (SVG) ---------- */
+  var CZAPKA = '<svg viewBox="0 0 100 80" class="sw__ruch sw__ruch--kolys">' +
+    '<defs><linearGradient id="swCz" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F0413B"/><stop offset="1" stop-color="#B3161C"/></linearGradient>' +
+    '<linearGradient id="swFu" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#DCE3EC"/></linearGradient></defs>' +
+    '<path d="M12 62 C 18 34 40 10 68 9 C 83 9 93 18 93 33 C 86 26 76 24 69 28 C 75 39 80 50 84 62 Z" fill="url(#swCz)"/>' +
+    '<path d="M69 28 C 75 39 80 50 84 62 L 74 62 C 72 50 69 40 64 31 Z" fill="#000" opacity=".14"/>' +
+    '<rect x="4" y="55" width="88" height="19" rx="9.5" fill="url(#swFu)"/>' +
+    '<g fill="#C9D3DF"><circle cx="16" cy="66" r="2"/><circle cx="31" cy="62" r="1.6"/><circle cx="47" cy="67" r="2"/><circle cx="62" cy="62" r="1.6"/><circle cx="78" cy="67" r="2"/></g>' +
+    '<circle cx="92" cy="36" r="9" fill="url(#swFu)"/><circle cx="89" cy="33" r="3" fill="#fff"/></svg>';
+
+  var KOTYLION = (function () {
+    var plis = '', i, a;
+    for (i = 0; i < 36; i++) { a = i * 10 * Math.PI / 180;
+      plis += '<line x1="' + (50 + 26 * Math.cos(a)).toFixed(1) + '" y1="' + (44 + 26 * Math.sin(a)).toFixed(1) +
+        '" x2="' + (50 + 41 * Math.cos(a)).toFixed(1) + '" y2="' + (44 + 41 * Math.sin(a)).toFixed(1) + '"/>'; }
+    var plis2 = '';
+    for (i = 0; i < 24; i++) { a = (i * 15 + 7) * Math.PI / 180;
+      plis2 += '<line x1="' + (50 + 9 * Math.cos(a)).toFixed(1) + '" y1="' + (44 + 9 * Math.sin(a)).toFixed(1) +
+        '" x2="' + (50 + 25 * Math.cos(a)).toFixed(1) + '" y2="' + (44 + 25 * Math.sin(a)).toFixed(1) + '"/>'; }
+    return '<svg viewBox="0 0 100 124" class="sw__ruch sw__ruch--powiew">' +
+      '<path d="M44 52 L 24 118 L 33 110 L 39 121 L 56 58 Z" fill="#fff" stroke="#D5DCE5" stroke-width="1"/>' +
+      '<path d="M56 52 L 76 118 L 67 110 L 61 121 L 44 58 Z" fill="#DC143C"/>' +
+      '<circle cx="50" cy="44" r="42" fill="#fff" stroke="#D5DCE5" stroke-width="1.2"/>' +
+      '<g stroke="#D9DFE7" stroke-width="1.1">' + plis + '</g>' +
+      '<circle cx="50" cy="44" r="26" fill="#DC143C"/>' +
+      '<g stroke="#A50E2B" stroke-width="1.1">' + plis2 + '</g>' +
+      '<circle cx="50" cy="44" r="9" fill="#fff"/><circle cx="50" cy="44" r="5" fill="#DC143C"/>' +
+      '<circle cx="47.5" cy="41.5" r="1.6" fill="#fff" opacity=".8"/></svg>';
+  })();
+
+  var ZNICZ = '<svg viewBox="0 0 60 112">' +
+    '<defs><radialGradient id="swPo" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFC24A" stop-opacity=".75"/><stop offset="1" stop-color="#FFC24A" stop-opacity="0"/></radialGradient>' +
+    '<linearGradient id="swSz" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7E0E17"/><stop offset=".45" stop-color="#D3263A"/><stop offset="1" stop-color="#6A0B13"/></linearGradient>' +
+    '<linearGradient id="swPl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF6C8"/><stop offset=".5" stop-color="#FFB627"/><stop offset="1" stop-color="#F25A12"/></linearGradient>' +
+    '<linearGradient id="swZl" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9C7A2B"/><stop offset=".5" stop-color="#F2D27A"/><stop offset="1" stop-color="#8A6A20"/></linearGradient></defs>' +
+    '<circle cx="30" cy="34" r="30" fill="url(#swPo)" class="sw__poswiata"/>' +
+    '<g class="sw__plomien"><path d="M30 8 C 37 20 40 27 37 34 C 35 39 25 39 23 34 C 20 27 24 19 30 8 Z" fill="url(#swPl)"/>' +
+    '<path d="M30 22 C 33 27 34 31 32 34 C 31 36 29 36 28 34 C 27 31 28 27 30 22 Z" fill="#fff" opacity=".85"/></g>' +
+    '<rect x="29.2" y="34" width="1.6" height="5" fill="#333"/>' +
+    '<path d="M12 40 H48 L 45 104 Q 30 108 15 104 Z" fill="url(#swSz)"/>' +
+    '<path d="M18 44 L 21 100" stroke="#fff" stroke-opacity=".35" stroke-width="3" stroke-linecap="round"/>' +
+    '<ellipse cx="30" cy="62" rx="9" ry="14" fill="#FFB627" opacity=".35"/>' +
+    '<rect x="9" y="36" width="42" height="7" rx="2" fill="url(#swZl)"/>' +
+    '<rect x="13" y="102" width="34" height="6" rx="2" fill="url(#swZl)"/></svg>';
+
+  var CZAPECZKA = '<svg viewBox="0 0 64 84" class="sw__ruch sw__ruch--kolys">' +
+    '<defs><clipPath id="swSt"><path d="M32 10 L 58 76 Q 32 84 6 76 Z"/></clipPath></defs>' +
+    '<path d="M32 10 L 58 76 Q 32 84 6 76 Z" fill="#F4C842"/>' +
+    '<g clip-path="url(#swSt)" fill="#13305E"><path d="M0 34 L 64 18 L 64 26 L 0 42 Z"/><path d="M0 54 L 64 38 L 64 46 L 0 62 Z"/><path d="M0 74 L 64 58 L 64 66 L 0 82 Z"/></g>' +
+    '<path d="M32 10 L 58 76 Q 32 84 6 76 Z" fill="none" stroke="#C99A16" stroke-width="1.2"/>' +
+    '<path d="M5 76 Q 32 86 59 76" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" stroke-dasharray="1 6"/>' +
+    '<g class="sw__iskra"><path d="M32 0 L 35 7 L 42 8 L 36 12 L 38 19 L 32 15 L 26 19 L 28 12 L 22 8 L 29 7 Z" fill="#FFE27A" stroke="#E0A800" stroke-width=".8"/></g></svg>';
+
+  function fajerwerk(kolor, kolor2) {
+    var s = '', i, a;
+    for (i = 0; i < 12; i++) { a = i * 30 * Math.PI / 180;
+      s += '<line x1="' + (50 + 14 * Math.cos(a)).toFixed(1) + '" y1="' + (50 + 14 * Math.sin(a)).toFixed(1) +
+        '" x2="' + (50 + 44 * Math.cos(a)).toFixed(1) + '" y2="' + (50 + 44 * Math.sin(a)).toFixed(1) + '"/>' +
+        '<circle cx="' + (50 + 47 * Math.cos(a)).toFixed(1) + '" cy="' + (50 + 47 * Math.sin(a)).toFixed(1) + '" r="3"/>'; }
+    return '<svg viewBox="0 0 100 100" class="sw__fajerwerk"><g stroke="' + kolor + '" fill="' + kolor2 + '" stroke-width="3.5" stroke-linecap="round">' + s + '</g></svg>';
+  }
+
+  var PISANKI = '<svg viewBox="0 0 100 80">' +
+    '<defs><clipPath id="swJ1"><ellipse cx="36" cy="44" rx="17" ry="23"/></clipPath><clipPath id="swJ2"><ellipse cx="66" cy="48" rx="15" ry="20"/></clipPath></defs>' +
+    '<g transform="rotate(-14 36 44)" class="sw__ruch sw__ruch--jajo">' +
+    '<ellipse cx="36" cy="44" rx="17" ry="23" fill="#FFC928"/>' +
+    '<g clip-path="url(#swJ1)"><rect x="10" y="36" width="52" height="11" fill="#D7263D"/>' +
+    '<path d="M14 36 l5 -6 l5 6 l5 -6 l5 6 l5 -6 l5 6 l5 -6 l5 6" stroke="#2A7A3B" stroke-width="2.4" fill="none"/>' +
+    '<path d="M14 47 l5 6 l5 -6 l5 6 l5 -6 l5 6 l5 -6 l5 6 l5 -6" stroke="#2A7A3B" stroke-width="2.4" fill="none"/>' +
+    '<g fill="#fff"><circle cx="20" cy="41.5" r="1.8"/><circle cx="30" cy="41.5" r="1.8"/><circle cx="40" cy="41.5" r="1.8"/><circle cx="50" cy="41.5" r="1.8"/></g>' +
+    '<g fill="#D7263D"><circle cx="36" cy="26" r="2.2"/><circle cx="36" cy="60" r="2.2"/></g></g>' +
+    '<ellipse cx="30" cy="34" rx="4" ry="7" fill="#fff" opacity=".35"/></g>' +
+    '<g transform="rotate(12 66 48)" class="sw__ruch sw__ruch--jajo2">' +
+    '<ellipse cx="66" cy="48" rx="15" ry="20" fill="#2F7DE1"/>' +
+    '<g clip-path="url(#swJ2)"><path d="M48 40 Q 57 34 66 40 T 84 40" stroke="#fff" stroke-width="3" fill="none"/>' +
+    '<path d="M48 52 Q 57 46 66 52 T 84 52" stroke="#FFC928" stroke-width="3" fill="none"/>' +
+    '<g fill="#fff"><circle cx="58" cy="60" r="1.6"/><circle cx="66" cy="62" r="1.6"/><circle cx="74" cy="60" r="1.6"/><circle cx="66" cy="31" r="1.8"/></g></g>' +
+    '<ellipse cx="61" cy="40" rx="3.5" ry="6" fill="#fff" opacity=".35"/></g>' +
+    '<g fill="#4CAF50"><path d="M4 78 Q 8 60 12 78 Z"/><path d="M10 78 Q 18 56 20 78 Z" fill="#3E9A45"/><path d="M80 78 Q 86 58 90 78 Z"/><path d="M88 78 Q 94 62 98 78 Z" fill="#3E9A45"/>' +
+    '<path d="M2 80 Q 50 70 100 80 Z" fill="#5DBB63"/><path d="M44 80 Q 48 64 52 80 Z" fill="#3E9A45"/></g></svg>';
+
+  /* gdzie co stoi: [lewo, góra, szerokość] w % rozmiaru logo; osobno dla tarczy (herb) i koła (Akademia) */
+  var UKLAD = {
+    bn: { tarcza: [[50, -19, 64, CZAPKA, 'sw__el--obr18']], kolo: [[44, -17, 62, CZAPKA, 'sw__el--obr18']] },
+    niepodleglosc: { tarcza: [[56, 58, 52, KOTYLION]], kolo: [[70, 50, 40, KOTYLION]] },
+    zaduszki: { tarcza: [[76, 58, 34, ZNICZ]], kolo: [[80, 44, 30, ZNICZ]] },
+    nowyrok: {
+      tarcza: [[54, -22, 50, CZAPECZKA, 'sw__el--obr18'], [-38, -6, 46, fajerwerk('#FFD54A', '#FFF3B0')], [92, 30, 40, fajerwerk('#FF5A6E', '#FFC2CB'), 'sw__el--pozniej']],
+      kolo: [[58, -24, 40, CZAPECZKA, 'sw__el--obr18'], [-30, -10, 42, fajerwerk('#FFD54A', '#FFF3B0')], [90, 40, 36, fajerwerk('#FF5A6E', '#FFC2CB'), 'sw__el--pozniej']]
+    },
+    wielkanoc: { tarcza: [[38, 56, 84, PISANKI]], kolo: [[50, 54, 64, PISANKI]] }
+  };
+  if (!UKLAD[swieto]) return;
+
+  var cele = document.querySelectorAll('.naglowek .logo img, .naglowek .logo > svg, .wybor__logo, .ak-hero__logo');
+  Array.prototype.forEach.call(cele, function (el, nr) {
+    var src = el.getAttribute('src') || '';
+    var kolo = /akademia/i.test(src) || el.classList.contains('wybor__logo--okragle') || el.classList.contains('ak-hero__logo');
+    var cs = getComputedStyle(el);
+    var opak = document.createElement('span');
+    opak.className = 'sw sw--' + swieto + ' sw--' + (kolo ? 'kolo' : 'tarcza');
+    if (el.classList.contains('wybor__logo')) opak.className += ' sw--wybor';
+    if (el.classList.contains('ak-hero__logo')) opak.className += ' sw--ak-hero';
+    if (el.closest('.naglowek')) opak.className += ' sw--naglowek';
+    opak.title = PODPIS[swieto] || '';
+    ['order', 'justifySelf', 'alignSelf', 'gridColumn', 'gridRow'].forEach(function (w) { if (cs[w]) opak.style[w] = cs[w]; });
+    el.parentNode.insertBefore(opak, el);
+    opak.appendChild(el);
+    var warstwa = document.createElement('span');
+    warstwa.className = 'sw__warstwa'; warstwa.setAttribute('aria-hidden', 'true');
+    UKLAD[swieto][kolo ? 'kolo' : 'tarcza'].forEach(function (x, i) {
+      var s = document.createElement('span');
+      s.className = 'sw__el' + (x[4] ? ' ' + x[4] : '');
+      s.style.left = x[0] + '%'; s.style.top = x[1] + '%'; s.style.width = x[2] + '%';
+      s.style.setProperty('--sw-i', i);
+      s.innerHTML = x[3].replace(/id="sw(\w+)"/g, 'id="sw$1' + nr + '"').replace(/url\(#sw(\w+)\)/g, 'url(#sw$1' + nr + ')');
+      warstwa.appendChild(s);
+    });
+    opak.appendChild(warstwa);
+  });
+  document.documentElement.setAttribute('data-swieto', swieto);
+})();

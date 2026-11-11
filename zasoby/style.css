@@ -1082,3 +1082,36 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
 .ciek__kto{font-weight:700;color:#fff;text-underline-offset:3px}
 .ciek__inne{grid-column:1/-1;justify-self:end;font:inherit;font-weight:700;font-size:14px;background:none;border:0;color:var(--zolty);cursor:pointer;min-height:44px;padding:0 4px}
 @media (min-width:900px){.ciek{grid-template-columns:auto 1fr auto}.ciek__inne{grid-column:3;grid-row:1;align-self:center}.ciek__a{font-size:38px}}
+
+/* =====================================================================
+   ŚWIĄTECZNE LOGO (main.js dokłada dodatki tylko w czasie świąt)
+   ===================================================================== */
+.sw{position:relative;display:inline-block;line-height:0;flex:none}
+.sw>img,.sw>svg{display:block}
+.sw__warstwa{position:absolute;inset:0;pointer-events:none;transition:transform .35s;z-index:2}
+.sw__el{position:absolute;display:block;line-height:0;--sw-op:.35s;animation:sw-wejscie .7s cubic-bezier(.2,.9,.3,1.3) calc(var(--sw-op) + var(--sw-i)*.18s) both}
+.sw__el svg{width:100%;height:auto;display:block;overflow:visible;filter:drop-shadow(0 3px 5px rgba(0,0,0,.28))}
+.sw__el--obr18{transform:rotate(18deg)}
+.sw--wybor .sw__el,.sw--ak-hero .sw__el{--sw-op:1.25s}
+.sw--naglowek{margin-top:2px}
+.wybor__pole:hover .sw__warstwa,.wybor__pole:focus-visible .sw__warstwa{transform:scale(1.06) rotate(-2deg)}
+@keyframes sw-wejscie{0%{opacity:0;translate:0 -40%;scale:.3}100%{opacity:1;translate:0 0;scale:1}}
+.sw__ruch--kolys{transform-origin:20% 90%;animation:sw-kolys 4s ease-in-out 2s infinite}
+@keyframes sw-kolys{0%,100%{transform:rotate(0)}50%{transform:rotate(-5deg)}}
+.sw__ruch--powiew path{transform-origin:50% 40%;animation:sw-powiew 3.2s ease-in-out infinite}
+@keyframes sw-powiew{0%,100%{transform:skewX(0)}50%{transform:skewX(4deg)}}
+.sw__plomien{transform-origin:30px 36px;animation:sw-plomien 1.6s ease-in-out infinite}
+@keyframes sw-plomien{0%,100%{transform:scale(1,1) rotate(0)}25%{transform:scale(.94,1.06) rotate(-2deg)}50%{transform:scale(1.04,.95) rotate(1.5deg)}75%{transform:scale(.97,1.04) rotate(-1deg)}}
+.sw__poswiata{animation:sw-poswiata 2.4s ease-in-out infinite}
+@keyframes sw-poswiata{0%,100%{opacity:.85}50%{opacity:.55}}
+.sw__fajerwerk{animation:sw-wybuch 2.6s ease-out infinite;transform-origin:50% 50%;filter:none!important}
+.sw__el--pozniej .sw__fajerwerk{animation-delay:1.3s}
+@keyframes sw-wybuch{0%{transform:scale(.1);opacity:0}12%{opacity:1}55%{transform:scale(1);opacity:1}100%{transform:scale(1.15);opacity:0}}
+.sw__iskra{transform-origin:32px 10px;animation:sw-iskra 1.8s ease-in-out infinite}
+@keyframes sw-iskra{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.25) rotate(20deg)}}
+.sw__ruch--jajo{animation:sw-jajo 5s ease-in-out 2s infinite;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes sw-jajo{0%,82%,100%{rotate:0deg}88%{rotate:-7deg}94%{rotate:5deg}}
+@media (prefers-reduced-motion:reduce){
+  .sw__el,.sw__ruch--kolys,.sw__ruch--powiew path,.sw__plomien,.sw__poswiata,.sw__iskra,.sw__ruch--jajo{animation:none}
+  .sw__fajerwerk{animation:none;opacity:.9}
+}
