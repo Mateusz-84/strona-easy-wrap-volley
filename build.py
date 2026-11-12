@@ -261,6 +261,91 @@ def forma_druzyn(wszystkie):
     return forma
 
 
+def zmniejsz_zasoby(folder):
+    """Mniejsze style.css i main.js na serwerze (bez komentarzy i wcięć) – szybsze ładowanie na telefonie.
+    Pliki źródłowe w zasoby/ zostają czytelne."""
+    try:
+        sc = os.path.join(folder, "style.css")
+        css = open(sc, encoding="utf-8").read()
+        css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+        css = re.sub(r"\s+", " ", css)
+        css = re.sub(r"\s*([{};,>])\s*", r"\1", css).replace(";}", "}")
+        open(sc, "w", encoding="utf-8").write(css.strip())
+        sj = os.path.join(folder, "main.js")
+        js = open(sj, encoding="utf-8").read()
+        js = re.sub(r"(^|\n)\s*/\*.*?\*/", r"\1", js, flags=re.S)
+        js = "\n".join(l.strip() for l in js.split("\n") if l.strip() and not l.strip().startswith("//"))
+        open(sj, "w", encoding="utf-8").write(js)
+    except Exception as blad:
+        print(f"  UWAGA: zmniejszanie CSS/JS: {blad} – zostają pełne pliki")
+
+
+def _sezon():
+    r = DZIS.year if DZIS.month >= 8 else DZIS.year - 1
+    return f"{r}/{str(r + 1)[2:]}"
+
+
+# Tytuły i opisy podstron dla Google (frazy: siatkówka kobiet Kobyłka, Volley Kobyłka, II liga)
+SEO_PODSTRON = {
+    "druzyny.html": ("Kadra Easy Wrap Volley Kobyłka – siatkarki, II liga kobiet",
+                     f"Kadra Easy Wrap Volley Kobyłka na sezon {_sezon()}: siatkarki, pozycje, numery, wzrost, "
+                     "poprzednie kluby i sezony w Kobyłce. Siatkówka kobiet – II liga."),
+    "terminarz.html": ("Terminarz, wyniki i tabela – Easy Wrap Volley Kobyłka",
+                       "Terminarz meczów, wyniki i tabela II ligi kobiet – Easy Wrap Volley Kobyłka. "
+                       "Godziny, hale, dojazd, forma drużyn i kalendarz sezonu do telefonu."),
+    "aktualnosci.html": ("Aktualności – Volley Kobyłka, siatkówka kobiet",
+                         "Najnowsze wiadomości Easy Wrap Volley Kobyłka: zapowiedzi i relacje meczów II ligi kobiet, "
+                         "MVP, wydarzenia klubu i Akademii Siatkówki Volley."),
+    "o-klubie.html": ("O klubie – KS Volley Kobyłka, siatkówka w Kobyłce",
+                      "Klub Sportowy Volley z Kobyłki: drużyna siatkówki kobiet Easy Wrap Volley w II lidze "
+                      "i Akademia Siatkówki Volley dla dziewcząt. Historia, wartości i dane klubu."),
+    "sponsorzy.html": ("Sponsorzy i partnerzy – Easy Wrap Volley Kobyłka",
+                       "Firmy, które wspierają siatkówkę kobiet w Kobyłce – sponsorzy i partnerzy Easy Wrap Volley "
+                       "Kobyłka. Sprawdź, jak zostać sponsorem klubu."),
+    "kontakt.html": ("Kontakt – Volley Kobyłka | Easy Wrap Volley i Akademia",
+                     None),
+    "galeria.html": ("Galeria – zdjęcia Easy Wrap Volley Kobyłka",
+                     "Zdjęcia z meczów i treningów siatkarek Easy Wrap Volley Kobyłka – II liga kobiet, "
+                     "hala przy ul. Załuskiego 57 w Kobyłce."),
+    "sklep.html": ("Sklep – koszulki i gadżety Easy Wrap Volley Kobyłka",
+                   "Koszulki i gadżety Easy Wrap Volley Kobyłka – wspieraj siatkówkę kobiet w Kobyłce."),
+}
+
+
+def ladny_tytul(tytul, dlugosc=70):
+    """Tytuł newsa z Facebooka: bez WIELKICH LITER (nazwy własne zostają wielką literą) i nie dłuższy niż ~70 znaków."""
+    litery = [c for c in tytul if c.isalpha()]
+    if litery and sum(c.isupper() for c in litery) / len(litery) > 0.6:
+        skroty = {"MVP", "II", "III", "IV", "AZS", "AWF", "MKS", "UKS", "LKS", "ŁKS", "MUKS", "MOS", "PZPS",
+                  "WZPS", "KS", "TPS", "SMS", "GKS", "LTS", "PGE", "UMED", "VIP", "EASY", "WRAP"}
+        wlasne = set()
+        for tekst in ([C.KLUB["nazwa"], "Kobyłka Kobyłce Kobyłki Polska Polski Warszawa Łódź Volley FortisGO Mazowsze"]
+                      + [r.get("skrot", "") for r in C.RYWALE.values()]
+                      + [n for r in C.RYWALE.values() for n in r.get("nazwy_w_zwiazkach", [])]
+                      + [f'{z["imie"]} {z["nazwisko"]}' for z in C.KADRA] + [s["nazwa"] for s in C.SPONSORZY.values()]):
+            for w in re.findall(r"\w+", tekst):
+                if len(w) > 2:
+                    wlasne.add(w.lower()[:5])
+        slowa = []
+        for i, w in enumerate(re.split(r"(\s+)", tytul.lower())):
+            czyste = re.sub(r"\W", "", w)
+            if czyste.upper() in skroty and czyste.upper() not in ("EASY", "WRAP"):
+                w = w.upper()
+            elif czyste and (czyste[:5] in wlasne and len(czyste) > 2):
+                w = w[:1].upper() + w[1:] if w[:1].isalpha() else w[:1] + w[1:2].upper() + w[2:]
+            slowa.append(w)
+        tytul = "".join(slowa)
+        tytul = re.sub(r"^(\W*)(\w)", lambda m: m.group(1) + m.group(2).upper(), tytul)
+        tytul = re.sub(r"([.!?]\s+)(\w)", lambda m: m.group(1) + m.group(2).upper(), tytul)
+    if len(tytul) > dlugosc:
+        zdanie = re.split(r"(?<=[.!?])\s", tytul, maxsplit=1)[0]
+        if 25 <= len(zdanie) <= dlugosc:
+            tytul = zdanie
+        else:
+            tytul = tytul[:dlugosc - 1].rsplit(" ", 1)[0].rstrip(",;:–-") + "…"
+    return tytul
+
+
 class Budowa:
     def __init__(self, dane_zwiazkowe):
         self.dane = dane_zwiazkowe
@@ -301,11 +386,14 @@ class Budowa:
                               sorted(bezp, key=lambda x: x["data"]), opis_druzyny)
 
     # --- wspólny układ ---------------------------------------------------
-    def strona(self, plik, tytul, opis, tresc, aktywna=None, p=None):
+    def strona(self, plik, tytul, opis, tresc, aktywna=None, p=None, pelny=None):
         if p is None:
             p = "../" * plik.count("/")
+        seo = SEO_PODSTRON.get(plik)
+        if seo:
+            pelny, opis = seo[0], seo[1] or opis
         kandydaci = self.rozegrane[-1:] + self.nadchodzace[:4]
-        html = S.uklad(tytul, opis, tresc(p), aktywna or plik, p, S.belka(p, kandydaci), self.wersja)
+        html = S.uklad(tytul, opis, tresc(p), aktywna or plik, p, S.belka(p, kandydaci), self.wersja, pelny)
         zapisz(plik, html)
 
     def tabela(self, druzyna=GLOWNA):
@@ -340,6 +428,7 @@ class Budowa:
             return f"""
 {S.okienko_zapowiedzi(p, self.zapowiedz, C.ZAPOWIEDZ, self.najblizszy)}
 {S.hero(p, self.najblizszy)}
+{self.wydarzenia_ld(tylko_najblizszy=True)}
 {self.przed_meczem(p)}
 <section class="sekcja sekcja--po-hero" aria-labelledby="news-tytul">
   <div class="kontener">
@@ -415,6 +504,59 @@ class Budowa:
                  f'<span class="kafel__slowo">Kontakt</span><small>{e(C.KLUB["email"])}</small></a>')
         return html
 
+    def wydarzenia_ld(self, tylko_najblizszy=False):
+        """Mecze jako wydarzenia sportowe (schema.org SportsEvent) – Google może pokazać terminy w wynikach."""
+        from zoneinfo import ZoneInfo
+        baza = C.KLUB["adres_strony"].rstrip("/") + "/"
+        mecze = [self.najblizszy] if tylko_najblizszy and self.najblizszy else \
+            [m for m in self.mecze if m["druzyna"] == GLOWNA and (m.get("wynik") or m["data"] >= DZIS - timedelta(days=60))]
+        lista = []
+        for m in mecze:
+            gosp, gosc = m["strony"]
+            if not gosc:
+                continue
+            g = m.get("godzina") or "00:00"
+            try:
+                hh, mm = (int(x) for x in g.split(":"))
+            except ValueError:
+                hh, mm = 0, 0
+            start = datetime(m["data"].year, m["data"].month, m["data"].day, hh, mm, tzinfo=ZoneInfo("Europe/Warsaw"))
+            hala = m.get("hala") or (C.HALA_DOMOWA.get("nazwa") if m["u_siebie"] else "") or "Hala sportowa"
+            adres = m.get("adres") or (C.HALA_DOMOWA["adres"] if m["u_siebie"] else "")
+            w = {
+                "@type": "SportsEvent",
+                "name": f"{gosp['nazwa']} – {gosc['nazwa']} ({m['liga']})",
+                "sport": "Volleyball",
+                "startDate": start.isoformat() if m.get("godzina") else m["data"].isoformat(),
+                "eventStatus": "https://schema.org/EventScheduled",
+                "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+                "location": {"@type": "Place", "name": hala,
+                             "address": {"@type": "PostalAddress", "streetAddress": adres or hala, "addressCountry": "PL"}},
+                "homeTeam": {"@type": "SportsTeam", "name": gosp["nazwa"]},
+                "awayTeam": {"@type": "SportsTeam", "name": gosc["nazwa"]},
+                "competitor": [{"@type": "SportsTeam", "name": gosp["nazwa"]}, {"@type": "SportsTeam", "name": gosc["nazwa"]}],
+                "organizer": {"@type": "SportsOrganization", "name": C.KLUB["nazwa_prawna"], "url": baza},
+                "url": baza + "terminarz.html",
+                "image": baza + (OG_ZAPOWIEDZ or "img/og-klub.jpg"),
+                "description": f"Mecz {m['liga']}: {gosp['nazwa']} – {gosc['nazwa']}"
+                               + (f", wynik {m['wynik']}" if m.get("wynik") else "") + ".",
+            }
+            if m["u_siebie"] and C.KLUB.get("wstep_wolny"):
+                w["isAccessibleForFree"] = True
+                w["offers"] = {"@type": "Offer", "price": "0", "priceCurrency": "PLN", "availability": "https://schema.org/InStock",
+                               "url": baza + "terminarz.html", "validFrom": (m["data"] - timedelta(days=14)).isoformat()}
+            lista.append(w)
+        if not lista:
+            return ""
+        dane = {"@context": "https://schema.org", "@graph": lista}
+        return '<script type="application/ld+json">' + json.dumps(dane, ensure_ascii=False).replace("</", "<\\/") + "</script>"
+
+    def filtry_miejsca(self):
+        przyciski = "".join(
+            f'<button class="filtr" aria-pressed="{"true" if w == "wszystkie" else "false"}" data-klucz="miejsce" data-wartosc="{w}">{n}</button>'
+            for w, n in (("wszystkie", "Wszystkie"), ("dom", "U siebie"), ("wyjazd", "Wyjazdowe")))
+        return f'<div class="filtry filtry--miejsce" role="group" aria-label="Pokaż mecze">{przyciski}</div>'
+
     def filtry_druzyn(self):
         druzyny = sorted({m["druzyna"] for m in self.mecze}, key=lambda d: list(C.DRUZYNY).index(d) if d in C.DRUZYNY else 99)
         if len(druzyny) < 2:
@@ -460,6 +602,7 @@ class Budowa:
                 info = (f'<p class="zrodlo">Terminarz i wyniki pobierane automatycznie z systemów WSMWZPS i PZPS. '
                         f'Ostatnia aktualizacja: {t.strftime("%d.%m.%Y, %H:%M")}.</p>')
             return f"""
+{self.wydarzenia_ld()}
 {S.plakat_podstrony(p, 'Terminarz i wyniki', C.DRUZYNY[GLOWNA]['liga'], 'terminarz')}
 <nav class="skroty" aria-label="Na tej stronie"><div class="kontener">
   <a href="#nadchodzace">Nadchodzące</a><a href="#wyniki">Wyniki</a><a href="#tabela">Tabela</a><a href="#kalendarium">Kalendarium</a>
@@ -469,6 +612,7 @@ class Budowa:
     {S.naglowek_sekcji('Nadchodzące', 'mecze', id_='nadchodzace')}
     {S.prezentuje('terminarz', p)}
     {self.filtry_druzyn()}
+    <div class="terminarz-pasek">{self.filtry_miejsca()}<a class="btn-kal" href="#w-telefonie"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v3M17 3v3M4 9h16M5 6h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Z"/></svg>Cały sezon w kalendarzu</a></div>
     <div class="mecze mecze--siatka">{karty_przed}</div>
     {S.subskrypcja_kalendarza(p, GLOWNA)}
     <h2 class="sekcja__tytul sekcja__tytul--drugi" id="wyniki">Wyniki</h2>
@@ -798,7 +942,7 @@ class Budowa:
         """Losowa odpowiedź zawodniczki na stronie głównej („Poznaj nas”) – przy każdej wizycie inna."""
         wpisy = []
         for z in kadra:
-            if not S.adres_profilu(z):
+            if not S.ma_odpowiedzi(z):
                 continue
             for q, a in zip(C.PYTANIA, C.POZNAJ.get(f"{z['imie']} {z['nazwisko']}", [])):
                 if str(a).strip():
@@ -815,38 +959,75 @@ class Budowa:
                 f'<button class="ciek__inne" type="button">Inne pytanie ↻</button></aside>')
 
     def profile(self):
+        """Profil każdej zawodniczki: dane, kluby, MVP w sezonie i – jeśli są – odpowiedzi „Poznaj mnie”."""
         kadra = sorted([z for z in C.KADRA if z["druzyna"] == GLOWNA and S.adres_profilu(z)], key=lambda z: z["numer"])
         for i, z in enumerate(kadra):
             odp = C.POZNAJ.get(f"{z['imie']} {z['nazwisko']}", [])
             poprz, nast = kadra[i - 1], kadra[(i + 1) % len(kadra)]
+            imie_nazwisko = f"{z['imie']} {z['nazwisko']}"
+            mvp = [m for m in self.mecze if (m.get("mvp") or "").strip().lower() == imie_nazwisko.lower()]
 
-            def tresc(p, z=z, odp=odp, poprz=poprz, nast=nast):
+            def tresc(p, z=z, odp=odp, poprz=poprz, nast=nast, mvp=mvp):
                 qa = "".join(f'<div class="pm__qa"><dt>{e(q)}</dt><dd>{e(a)}</dd></div>'
                              for q, a in zip(C.PYTANIA, odp) if str(a).strip())
                 foto = S.img(p, z.get("zdjecie"), f"{z['imie']} {z['nazwisko']}", "pm__foto", lazy=False)
                 kapitan = ' · Kapitan' if z.get("kapitan") else ""
+                fakty = [("Pozycja", z["pozycja"]), ("Numer", f"#{z['numer']}")]
+                if z.get("wzrost"):
+                    fakty.append(("Wzrost", f"{z['wzrost']} cm"))
+                if z.get("zasieg"):
+                    fakty.append(("Zasięg w ataku", f"{z['zasieg']} cm"))
+                if z.get("u_nas"):
+                    fakty.append(("Sezony w Kobyłce", z["u_nas"]))
+                if mvp:
+                    fakty.append(("MVP w sezonie", f"{len(mvp)}×"))
+                fakty_html = "".join(f'<div><dt>{e(a)}</dt><dd>{e(b)}</dd></div>' for a, b in fakty)
+                kluby = ""
+                if z.get("kluby"):
+                    kluby = ('<h2 class="pm__h2">Poprzednie kluby</h2><ul class="pm__kluby">'
+                             + "".join(f"<li><span>{e(sz)}</span>{e(k)}</li>" for sz, k in z["kluby"]) + "</ul>")
+                mvp_html = ""
+                if mvp:
+                    pozycje = []
+                    for m in mvp:
+                        rywal = m["strony"][1] if m["strony"][0].get("nasza") else m["strony"][0]
+                        pozycje.append(f'<li><span>{m["data"].strftime("%d.%m.%Y")}</span>z {e(rywal["krotko"] if rywal else "")} '
+                                       f'<b>{e(m.get("wynik") or "")}</b></li>')
+                    mvp_html = f'<h2 class="pm__h2">MVP meczu</h2><ul class="pm__kluby">{"".join(pozycje)}</ul>'
+                pytania = f'<h2 class="pm__h2">Poznaj mnie</h2><dl class="pm__lista">{qa}</dl>' if qa else ""
                 nawig = ""
                 if len(kadra) > 1:
                     nawig = (f'<nav class="pm__nawig" aria-label="Inne zawodniczki">'
                              f'<a href="{p}{S.adres_profilu(poprz)}">← #{e(poprz["numer"])} {e(poprz["imie"])} {e(poprz["nazwisko"])}</a>'
                              f'<a href="{p}{S.adres_profilu(nast)}">#{e(nast["numer"])} {e(nast["imie"])} {e(nast["nazwisko"])} →</a></nav>')
+                ld = {"@context": "https://schema.org", "@type": "Person", "name": f"{z['imie']} {z['nazwisko']}",
+                      "jobTitle": f"Siatkarka – {z['pozycja'].lower()}",
+                      "memberOf": {"@type": "SportsTeam", "name": C.KLUB["nazwa"], "sport": "Volleyball"}}
+                if z.get("wzrost"):
+                    ld["height"] = f"{z['wzrost']} cm"
                 return f"""
+<script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>
 <section class="pm"><div class="kontener pm__siatka">
   <div class="pm__lewa">
     <div class="pm__zdjecie">{foto}<span class="pm__nr" aria-hidden="true">{e(z['numer'])}</span></div>
   </div>
   <div class="pm__prawa">
-    <p class="pm__nad">Poznaj mnie · {e(z['pozycja'])} · #{e(z['numer'])}{kapitan}</p>
+    <p class="pm__nad">{e(z['pozycja'])} · #{e(z['numer'])}{kapitan}</p>
     <h1 class="pm__imie"><span>{e(z['imie'])}</span>{e(z['nazwisko'])}</h1>
-    <dl class="pm__lista">{qa}</dl>
+    <dl class="pm__fakty">{fakty_html}</dl>
+    {mvp_html}
+    {kluby}
+    {pytania}
     <p class="pm__wroc"><a class="btn btn--zolty" href="{p}druzyny.html">Cała kadra →</a></p>
   </div>
 </div></section>
 <section class="sekcja sekcja--biala"><div class="kontener">{nawig}</div></section>"""
-            self.strona(S.adres_profilu(z), f"{z['imie']} {z['nazwisko']} – poznaj mnie",
-                        f"{z['imie']} {z['nazwisko']}, {z['pozycja'].lower()} Easy Wrap Volley Kobyłka (#{z['numer']}) – "
-                        f"odpowiedzi na 10 pytań: rytuały, ulubione zagrania, muzyka przed meczem.", tresc,
-                        aktywna="druzyny.html")
+            opis = (f"{imie_nazwisko} – {z['pozycja'].lower()} Easy Wrap Volley Kobyłka (#{z['numer']}), II liga kobiet"
+                    + (f", {z['wzrost']} cm" if z.get("wzrost") else "")
+                    + (f". Poprzednio: {', '.join(dict.fromkeys(k for _, k in z['kluby']))[:80]}" if z.get("kluby") else "")
+                    + ".")
+            self.strona(S.adres_profilu(z), imie_nazwisko, opis, tresc, aktywna="druzyny.html",
+                        pelny=f"{imie_nazwisko} – {z['pozycja'].lower()}, Easy Wrap Volley Kobyłka")
 
     # --- STATYSTYKI (ukryta strona, bez linku w menu) --------------------------
     def statystyki(self, strony):
@@ -1193,7 +1374,11 @@ def newsy_z_fb(posty, kategoria):
         if not tytul:
             continue
         czas = datetime.fromisoformat(post["czas"].replace("+0000", "+00:00")).astimezone()
-        adres = f"{czas.date().isoformat()}-{zrodla.slug(tytul)}"
+        adres = f"{czas.date().isoformat()}-{zrodla.slug(tytul)}"   # adres z oryginału – linki się nie zmieniają
+        pelny = tytul
+        tytul = ladny_tytul(tytul)
+        if tytul.rstrip("…") != pelny and pelny not in (tresc or ""):
+            tresc = (pelny + "\n\n" + (tresc or "")).strip()
         if adres in adresy:
             adres += "-" + zrodla.klucz_posta("", post["id"])[1:6]
         adresy.add(adres)
@@ -1320,6 +1505,7 @@ def main():
     if os.path.isdir(WYJSCIE):
         shutil.rmtree(WYJSCIE)
     shutil.copytree(os.path.join(FOLDER, "zasoby"), os.path.join(WYJSCIE, "zasoby"))
+    zmniejsz_zasoby(os.path.join(WYJSCIE, "zasoby"))
     if os.path.isdir(os.path.join(FOLDER, "img")):
         shutil.copytree(os.path.join(FOLDER, "img"), os.path.join(WYJSCIE, "img"))
 

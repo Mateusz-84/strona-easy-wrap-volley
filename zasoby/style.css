@@ -1212,3 +1212,47 @@ html[data-czcionka] .hero__postac-img{display:none}
 
 /* Wstęp wolny – mecze u siebie */
 .hero__wstep{display:inline-block;margin-top:8px;background:var(--zolty);color:var(--granat-ciemny);font-weight:700;font-size:14px;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:999px}
+
+/* =====================================================================
+   SZYBKIE WEJŚCIE – przy kolejnych wizytach (do 12 h) bez animacji budowania plakatu
+   ===================================================================== */
+html.szybko :is(.hero,.ak-hero,.wybor) *:not(.sw):not(.sw *){animation-delay:0s!important;animation-duration:.01s!important}
+
+/* =====================================================================
+   DOLNY PASEK NAWIGACJI (telefon) – jak w aplikacji
+   ===================================================================== */
+.dolny-pasek{display:none}
+@media (max-width:759px){
+  .dolny-pasek{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;left:0;right:0;bottom:0;z-index:90;
+    background:rgba(255,255,255,.97);backdrop-filter:blur(8px);border-top:1px solid var(--linia);
+    padding:6px 4px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px rgba(0,26,63,.08)}
+  .dolny-pasek a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0;color:var(--granat);
+    text-decoration:none;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;min-height:48px;justify-content:center}
+  .dolny-pasek svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .dolny-pasek a[aria-current]{color:var(--blekit-tekst)}
+  .dolny-pasek a[aria-current] svg{stroke-width:2.4}
+  body.strefa-druzyna{padding-bottom:calc(68px + env(safe-area-inset-bottom))}
+  html[data-czcionka] .dolny-pasek{zoom:1}
+}
+
+/* Filtr meczów u siebie / wyjazdowe */
+.filtry--miejsce{margin-top:10px}
+
+/* =====================================================================
+   PROFIL ZAWODNICZKI – fakty, kluby, MVP
+   ===================================================================== */
+.pm__fakty{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:18px 0 6px}
+.pm__fakty>div{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:10px 14px}
+.pm__fakty dt{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--jasny-na-granacie);font-weight:700}
+.pm__fakty dd{margin:2px 0 0;font-family:var(--font-naglowki);font-size:28px;line-height:1.05;color:#fff}
+.pm__h2{font-family:var(--font-tresc);font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:var(--zolty);margin:22px 0 8px}
+.pm__kluby{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.pm__kluby li{display:grid;grid-template-columns:8.5em 1fr;gap:10px;font-size:17px;font-weight:600;color:#fff}
+.pm__kluby li span{color:var(--jasny-na-granacie);font-weight:500;font-variant-numeric:tabular-nums}
+.pm__kluby li b{font-family:var(--font-naglowki);font-weight:400;font-size:22px;margin-left:6px;color:var(--zolty)}
+.terminarz-pasek{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;margin:6px 0 18px}
+.terminarz-pasek .filtry{margin:0}
+.btn-kal{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:8px 16px;border-radius:999px;background:var(--zolty);color:var(--granat-ciemny);font-weight:700;text-decoration:none;font-size:15px}
+.btn-kal svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.btn-kal:hover{filter:brightness(.95)}
+@media (max-width:599px){.pm__kluby li{grid-template-columns:1fr;gap:0}.pm__kluby li b{margin-left:0}}

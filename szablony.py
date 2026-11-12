@@ -315,6 +315,19 @@ def belka(p, kandydaci):
 # ---------------------------------------------------------------------
 # Układ każdej podstrony
 # ---------------------------------------------------------------------
+_CZCIONKI = None
+
+
+def czcionki_css(p):
+    """Czcionki wpisane prosto w <head> – o jedno blokujące pobranie mniej (szybsza strona na telefonie)."""
+    global _CZCIONKI
+    if _CZCIONKI is None:
+        import os
+        sciezka = os.path.join(os.path.dirname(os.path.abspath(__file__)), "zasoby", "fonty.css")
+        _CZCIONKI = re.sub(r"/\*.*?\*/", "", open(sciezka, encoding="utf-8").read(), flags=re.S).strip()
+    return _CZCIONKI.replace("url(fonty/", f"url({p}zasoby/fonty/")
+
+
 def glowa(pelny_tytul, opis, p, wersja, kolor="#002F6C", ikona=None):
     return f"""<!doctype html>
 <html lang="pl">
@@ -338,9 +351,9 @@ def glowa(pelny_tytul, opis, p, wersja, kolor="#002F6C", ikona=None):
 <link rel="preload" href="{p}zasoby/fonty/bebas-neue-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{p}zasoby/fonty/bebas-neue-latin-ext-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{p}zasoby/fonty/barlow-condensed-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="{p}zasoby/fonty.css?v={wersja}">
+<style>{czcionki_css(p)}</style>
 <link rel="stylesheet" href="{p}zasoby/style.css?v={wersja}">
-<script>document.documentElement.classList.add('js');try{{var c=localStorage.getItem('czcionka');if(c==='1'||c==='2')document.documentElement.setAttribute('data-czcionka',c)}}catch(e){{}}</script>
+<script>document.documentElement.classList.add('js');try{{var w=+localStorage.getItem('wizyta')||0,t=Date.now();if(t-w<432e5)document.documentElement.classList.add('szybko');localStorage.setItem('wizyta',t)}}catch(e){{}}try{{var c=localStorage.getItem('czcionka');if(c==='1'||c==='2')document.documentElement.setAttribute('data-czcionka',c)}}catch(e){{}}</script>
 <script src="{p}zasoby/main.js?v={wersja}" defer></script>
 </head>"""
 
@@ -350,7 +363,23 @@ def logo_druzyny(p, wysokosc=48):
             if jest_plik(C.KLUB["herb"]) else herb_nasz_svg())
 
 
-def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja):
+def dolny_pasek(p, aktywna):
+    """Pasek nawigacji na dole ekranu telefonu – jak w aplikacji."""
+    ikony = {
+        "mecze": '<path d="M7 3v3M17 3v3M4 9h16M5 6h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Z"/>',
+        "tabela": '<path d="M5 20V10M12 20V4M19 20v-7"/>',
+        "kadra": '<circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.3 2.8-5 5.5-5s4.9 1.7 5.5 5"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.2c2.5-.2 4.4 1.3 5 4.3"/>',
+        "akademia": '<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5c-3 2.5-3 14.5 0 17M3.8 10c4-1.5 12.4-1.5 16.4 0M5 16.5c4-2 10-2 14 0"/>',
+    }
+    pozycje = [("terminarz.html", "Mecze", "mecze"), ("terminarz.html#tabela", "Tabela", "tabela"),
+               ("druzyny.html", "Kadra", "kadra"), ("akademia.html", "Akademia", "akademia")]
+    linki = "".join(
+        f'<a href="{p}{h}"{" aria-current=page" if h == aktywna else ""}>'
+        f'<svg viewBox="0 0 24 24" aria-hidden="true">{ikony[i]}</svg><span>{n}</span></a>' for h, n, i in pozycje)
+    return f'<nav class="dolny-pasek" aria-label="Szybka nawigacja">{linki}</nav>'
+
+
+def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja, pelny=None):
     """Część DRUŻYNY (Easy Wrap Volley Kobyłka): własne logo, menu i FB/IG/YT."""
     menu = ""
     for plik, nazwa, glowne in menu_pozycje():
@@ -359,7 +388,7 @@ def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja):
         menu += f'<li{klasa}><a href="{p}{plik}"{biezaca}>{e(nazwa)}</a></li>'
     skroty = "".join(f'<li><a href="{p}{plik}">{e(nazwa)}</a></li>'
                      for plik, nazwa, glowne in menu_pozycje() if not glowne and plik != START_DRUZYNY)
-    pelny_tytul = C.KLUB.get("tytul_glowny", C.KLUB["nazwa"]) if aktywna == START_DRUZYNY else f"{tytul} – {C.KLUB['nazwa']}"
+    pelny_tytul = pelny or (C.KLUB.get("tytul_glowny", C.KLUB["nazwa"]) if aktywna == START_DRUZYNY else f"{tytul} – {C.KLUB['nazwa']}")
     rok = date.today().year
     return f"""{glowa(pelny_tytul, opis, p, wersja)}
 <body class="strefa-druzyna">
@@ -376,6 +405,7 @@ def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja):
 <main id="tresc">
 {tresc}
 </main>
+{dolny_pasek(p, aktywna)}
 <footer class="stopka">
   <div class="kontener">
     <div class="stopka__kolumny">
@@ -610,7 +640,8 @@ def hero(p, m):
   <div class="kontener"><div class="hero__tresc">
     <div class="hero__gora"><span class="hero__etykieta">{'Mecz wyjazdowy' if wyjazd else 'Mecz u siebie'}</span>
     <span class="hero__liga">{e(m['liga'])}</span></div>
-    <h1 class="ukryte" id="hero-tytul">Najbliższy mecz: {e(gosp['nazwa'])} – {e(gosc['nazwa'] if gosc else '')}, {e(data_pl(d))}</h1>
+    <h1 class="ukryte">{e(C.KLUB['nazwa'])} – siatkówka kobiet w Kobyłce, {e(m['liga'])}</h1>
+    <h2 class="ukryte" id="hero-tytul">Najbliższy mecz: {e(gosp['nazwa'])} – {e(gosc['nazwa'] if gosc else '')}, {e(data_pl(d))}</h2>
     <div class="hero__druzyny">
       <div class="hero__druzyna">{herb(p, gosp)}<span class="nazwa">{nazwa_druzyny(gosp)}</span></div>
       {druzyna_gosc}
@@ -730,7 +761,7 @@ def karta_meczu(p, m):
                     f'download>Grafika wyniku ↓</a>')
 
     return f"""
-<article class="{' '.join(klasy)}" data-druzyna="{e(m['druzyna'])}" data-stan="{'rozegrany' if m.get('wynik') else 'nadchodzacy'}">
+<article class="{' '.join(klasy)}" data-druzyna="{e(m['druzyna'])}" data-miejsce="{'dom' if m['u_siebie'] else 'wyjazd'}" data-stan="{'rozegrany' if m.get('wynik') else 'nadchodzacy'}">
   {tlo}{wstazka}<div class="mecz__gora"><span class="mecz__typ">{e(typ)}</span>{etykieta}</div>
   <div class="mecz__data"><span class="dz">{DNI_KROTKO[d.weekday()]}</span><span class="nr">{d.day}</span><span class="ms">{MIES_KROTKO[d.month - 1]}</span>
     <time class="ukryte" datetime="{d.isoformat()}">{e(data_pl(d))}</time></div>
@@ -742,10 +773,18 @@ def karta_meczu(p, m):
 # ---------------------------------------------------------------------
 # Karta zawodniczki – gigantyczny numer, zdjęcie albo inicjały
 # ---------------------------------------------------------------------
+def odpowiedzi(z):
+    """Wypełnione odpowiedzi zawodniczki na pytania „Poznaj nas”."""
+    return [o for o in (getattr(C, "POZNAJ", {}) or {}).get(f"{z['imie']} {z['nazwisko']}", []) if str(o).strip()]
+
+
+def ma_odpowiedzi(z):
+    return len(odpowiedzi(z)) >= 3
+
+
 def adres_profilu(z):
-    """Ścieżka strony „Poznaj mnie” zawodniczki albo None (gdy ma mniej niż 3 odpowiedzi)."""
-    odp = [o for o in (getattr(C, "POZNAJ", {}) or {}).get(f"{z['imie']} {z['nazwisko']}", []) if str(o).strip()]
-    if len(odp) < 3:
+    """Ścieżka strony profilu zawodniczki (każda zawodniczka pierwszej drużyny ma swoją stronę)."""
+    if z.get("druzyna") != "seniorki":
         return None
     import unicodedata
     t = unicodedata.normalize("NFKD", f"{z['imie']}-{z['nazwisko']}".replace("ł", "l").replace("Ł", "L"))
@@ -782,7 +821,7 @@ def karta_zawodniczki(p, z):
     <span class="zawodniczka__poz">{e(z['pozycja'])} · #{e(z['numer'])}{kapitan}</span>
     <h3><span>{e(z['imie'])}</span>{e(z['nazwisko'])}</h3>
     {wiecej}
-    {f'<a class="zawodniczka__poznaj" href="{p}{adres_profilu(z)}">Poznaj mnie →</a>' if adres_profilu(z) else ''}
+    {f'<a class="zawodniczka__poznaj" href="{p}{adres_profilu(z)}">{"Poznaj mnie" if ma_odpowiedzi(z) else "Profil"} →</a>' if adres_profilu(z) else ''}
   </div>
 </article>"""
 
