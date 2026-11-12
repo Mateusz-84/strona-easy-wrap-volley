@@ -755,6 +755,8 @@ def karta_zawodniczki(p, z):
         szczegoly.append(("Urodzona", date.fromisoformat(z["urodzona"]).strftime("%d.%m.%Y")))
     if z.get("wzrost"):
         szczegoly.append(("Wzrost", f"{z['wzrost']} cm"))
+    if z.get("u_nas"):
+        szczegoly.append(("W Kobyłce", z["u_nas"]))
     if z.get("zasieg"):
         szczegoly.append(("Zasięg w ataku", f"{z['zasieg']} cm"))
     dl = "".join(f"<dt>{e(a)}</dt><dd>{e(b)}</dd>" for a, b in szczegoly)
