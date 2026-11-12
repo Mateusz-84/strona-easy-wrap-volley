@@ -174,7 +174,7 @@ def dane_strukturalne(sciezka):
              "postalCode": "05-230", "addressLocality": "Kobyłka", "addressRegion": "mazowieckie",
              "addressCountry": "PL"}
     klub = {"@context": "https://schema.org", "@type": "SportsOrganization", "@id": baza + "#klub",
-            "name": C.KLUB["nazwa_prawna"] + " Kobyłka", "alternateName": [C.KLUB["nazwa"], "KS Volley Kobyłka"],
+            "name": C.KLUB["nazwa_prawna"] + " Kobyłka", "alternateName": [C.KLUB["nazwa"], "KS Volley Kobyłka", "Volley Kobyłka"],
             "url": baza, "logo": baza + "img/favicon-512.png", "sport": "Siatkówka",
             "address": adres, "areaServed": "Kobyłka",
             "sameAs": [x for x in [C.KLUB.get("facebook"), C.KLUB.get("instagram"), C.KLUB.get("youtube"),

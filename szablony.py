@@ -458,12 +458,12 @@ def strona_wyboru(p, wersja):
     logo_dr = (f'<img class="wybor__logo" src="{p}img/{e(C.KLUB["herb"])}" alt="" height="220">'
                if jest_plik(C.KLUB["herb"]) else herb_nasz_svg("wybor__logo"))
     rok = date.today().year
-    return f"""{glowa("Siatkówka w Kobyłce – Easy Wrap Volley i Akademia Siatkówki Volley",
-                 "Klub Sportowy Volley z Kobyłki: drużyna siatkówki kobiet Easy Wrap Volley (2. liga) "
-                 "i Akademia Siatkówki Volley – treningi siatkówki dla dziewcząt.", p, wersja)}
+    return f"""{glowa("Volley Kobyłka – siatkówka kobiet | Siatkówka Kobyłka",
+                 "Volley Kobyłka – siatkówka kobiet z Kobyłki. Siatkówka Kobyłka: drużyna Easy Wrap Volley "
+                 "(2. liga kobiet) i Akademia Siatkówki Volley – treningi siatkówki dla dziewcząt.", p, wersja)}
 <body class="strefa-wybor">
 <main class="wybor" id="tresc">
-  <h1 class="ukryte">Siatkówka w Kobyłce – Easy Wrap Volley i Akademia Siatkówki Volley</h1>
+  <h1 class="ukryte">Volley Kobyłka – siatkówka kobiet i Akademia Siatkówki Volley</h1>
   <a class="wybor__pole wybor__pole--druzyna" href="{p}{START_DRUZYNY}">
     {logo_dr}
     <span class="wybor__nazwa">Easy Wrap Volley<small>Kobyłka</small></span>
@@ -476,7 +476,7 @@ def strona_wyboru(p, wersja):
     <span class="wybor__opis">Treningi dla dziewcząt</span>
     <span class="wybor__strzalka" aria-hidden="true">→</span>
   </a>
-  <p class="wybor__seo">{e(C.KLUB['nazwa_prawna'])} z Kobyłki – drużyna siatkówki kobiet Easy Wrap Volley w 2. lidze
+  <p class="wybor__seo">Volley Kobyłka ({e(C.KLUB['nazwa_prawna'])}) – siatkówka kobiet: drużyna Easy Wrap Volley w 2. lidze
     oraz Akademia Siatkówki Volley: treningi siatkówki dla dziewcząt w hali przy ul. Załuskiego 57 w Kobyłce.</p>
   <p class="wybor__dol"><span>© {rok} {e(C.KLUB['nazwa_prawna'])}</span>{licznik_html()}<a href="{p}polityka-prywatnosci.html">Polityka prywatności</a></p>
 </main>

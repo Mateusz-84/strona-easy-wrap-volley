@@ -43,8 +43,8 @@ KLUB = {
     "wyniki_na_zywo": "https://2ligakobiet.volleystation.com/pl/",
     "adres_strony": "https://volleykobylka.pl/",
     # Tytuł strony głównej drużyny w Google (karta przeglądarki i wyniki wyszukiwania)
-    "tytul_glowny": "Easy Wrap Volley Kobyłka – siatkówka kobiet w Kobyłce, 2. liga",
-    "opis": "Easy Wrap Volley Kobyłka – drużyna siatkówki kobiet z Kobyłki (2. liga). Terminarz, wyniki, "
+    "tytul_glowny": "Easy Wrap Volley Kobyłka – siatkówka kobiet | Volley Kobyłka",
+    "opis": "Siatkówka kobiet Kobyłka – Easy Wrap Volley (Volley Kobyłka), 2. liga kobiet. Terminarz, wyniki, "
             "tabela, kadra i aktualności. Mecze w hali przy ul. Załuskiego 57.",
 }
 
