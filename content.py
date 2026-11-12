@@ -300,28 +300,43 @@ MECZE = [
 #   zdjecie: plik z img/zawodniczki/ (wycięta postać, WebP, przezroczyste tło)
 #            None → stylowa karta z numerem i inicjałami w barwach klubu
 #   Opcjonalnie (pokażą się po najechaniu / dotknięciu karty):
-#     "urodzona": "2001-03-12", "w_klubie_od": 2021, "wzrost": 181
+#     "urodzona": "2001-03-12", "w_klubie_od": 2021, "wzrost": 181 (cm), "zasieg": 300 (cm, zasięg w ataku)
+#     "kluby": poprzednie kluby od najnowszego – [("sezony", "klub"), ...]  (źródło: Volleybox, 12.11.2026)
+#     None = brak danych (wiersz się nie pokazuje)
 #   Kapitan: "kapitan": True
 # ---------------------------------------------------------------------
 KADRA = [
     # Rozgrywające
-    {"druzyna": "seniorki", "numer": 7,  "imie": "Natalia",   "nazwisko": "Bielińska",       "pozycja": "Rozgrywająca", "zdjecie": "zawodniczki/natalia-bielinska.webp"},
-    {"druzyna": "seniorki", "numer": 20, "imie": "Zuzanna",   "nazwisko": "Kałkowska",       "pozycja": "Rozgrywająca", "zdjecie": "zawodniczki/zuzanna-kalkowska.webp"},
+    {"druzyna": "seniorki", "numer": 7,  "imie": "Natalia",   "nazwisko": "Bielińska",       "pozycja": "Rozgrywająca", "zdjecie": "zawodniczki/natalia-bielinska.webp", "wzrost": 177, "zasieg": None,
+     "kluby": [("2025/26", "AZS UMCS Lublin"), ("2020/21–2023/24", "AZS Vistula Warszawa (liga akademicka)"), ("2019/20–2022/23", "Nike Węgrów"), ("2017/18–2018/19", "WTS KDBS Włocławek"), ("2015/16–2016/17", "Nike Węgrów")]},
+    {"druzyna": "seniorki", "numer": 20, "imie": "Zuzanna",   "nazwisko": "Kałkowska",       "pozycja": "Rozgrywająca", "zdjecie": "zawodniczki/zuzanna-kalkowska.webp", "wzrost": None, "zasieg": None,
+     "kluby": [("2024/25", "MUKS Krótka Mysiadło"), ("2020/21–2024/25", "UMKS MOS Wola / KSG Warszawa (juniorki)")]},
     # Atakujące
-    {"druzyna": "seniorki", "numer": 14, "imie": "Nikola",    "nazwisko": "Gutowska",        "pozycja": "Atakująca",    "zdjecie": "zawodniczki/nikola-gutowska-mecz.webp"},
-    {"druzyna": "seniorki", "numer": 17, "imie": "Natalia",   "nazwisko": "Dąbrowska",       "pozycja": "Atakująca",    "zdjecie": "zawodniczki/natalia-dabrowska-mecz.webp"},
+    {"druzyna": "seniorki", "numer": 14, "imie": "Nikola",    "nazwisko": "Gutowska",        "pozycja": "Atakująca",    "zdjecie": "zawodniczki/nikola-gutowska-mecz.webp", "wzrost": 180, "zasieg": None,
+     "kluby": [("2024/25", "LOS Nowy Dwór Mazowiecki"), ("2022/23–2024/25", "AZS Vistula Warszawa (liga akademicka)"), ("2022/23–2023/24", "KS AZS AWF Warszawa"), ("2021/22", "Sparta Warszawa")]},
+    {"druzyna": "seniorki", "numer": 17, "imie": "Natalia",   "nazwisko": "Dąbrowska",       "pozycja": "Atakująca",    "zdjecie": "zawodniczki/natalia-dabrowska-mecz.webp", "wzrost": 183, "zasieg": None,
+     "kluby": [("2020/21–2023/24", "AZS Vistula Warszawa (liga akademicka)")]},
     # Przyjmujące
-    {"druzyna": "seniorki", "numer": 2,  "imie": "Julia",     "nazwisko": "Grzelak",         "pozycja": "Przyjmująca",  "zdjecie": "zawodniczki/julia-grzelak.webp"},
-    {"druzyna": "seniorki", "numer": 6,  "imie": "Kamila",    "nazwisko": "Wrzosek",         "pozycja": "Przyjmująca",  "zdjecie": "zawodniczki/kamila-wrzosek-mecz.webp"},
-    {"druzyna": "seniorki", "numer": 10, "imie": "Kaja",      "nazwisko": "Klepacz",         "pozycja": "Przyjmująca",  "zdjecie": "zawodniczki/kaja-klepacz-mecz.webp"},
-    {"druzyna": "seniorki", "numer": 21, "imie": "Matylda",   "nazwisko": "Woźny",           "pozycja": "Przyjmująca",  "zdjecie": "zawodniczki/matylda-wozny-mecz.webp"},
+    {"druzyna": "seniorki", "numer": 2,  "imie": "Julia",     "nazwisko": "Grzelak",         "pozycja": "Przyjmująca",  "zdjecie": "zawodniczki/julia-grzelak.webp", "wzrost": 180, "zasieg": None,
+     "kluby": [("2025/26", "MUKS Krótka Mysiadło"), ("2023/24–2024/25", "KSG Warszawa"), ("2023/24–2024/25", "AZS AWF Warszawa (liga akademicka)"), ("2020/21–2022/23", "LOS Nowy Dwór Mazowiecki")]},
+    {"druzyna": "seniorki", "numer": 6,  "imie": "Kamila",    "nazwisko": "Wrzosek",         "pozycja": "Przyjmująca",  "zdjecie": "zawodniczki/kamila-wrzosek-mecz.webp", "wzrost": None, "zasieg": None,
+     "kluby": []},
+    {"druzyna": "seniorki", "numer": 10, "imie": "Kaja",      "nazwisko": "Klepacz",         "pozycja": "Przyjmująca",  "zdjecie": "zawodniczki/kaja-klepacz-mecz.webp", "wzrost": 178, "zasieg": None,
+     "kluby": [("2022/23–2023/24", "KS AZS AWF Warszawa"), ("2022/23–2023/24", "AZS AWF Warszawa (liga akademicka)"), ("2018/19–2021/22", "KSZO SMS Ostrowiec Świętokrzyski")]},
+    {"druzyna": "seniorki", "numer": 21, "imie": "Matylda",   "nazwisko": "Woźny",           "pozycja": "Przyjmująca",  "zdjecie": "zawodniczki/matylda-wozny-mecz.webp", "wzrost": 180, "zasieg": None,
+     "kluby": [("2023/24–2025/26", "LOS Nowy Dwór Mazowiecki"), ("2021/22–2022/23", "Jefferson College (USA)"), ("2019/20–2020/21", "Sparta Warszawa")]},
     # Środkowe
-    {"druzyna": "seniorki", "numer": 11, "imie": "Natalia",   "nazwisko": "Pietruszkiewicz", "pozycja": "Środkowa",     "zdjecie": "zawodniczki/natalia-pietruszkiewicz-mecz.webp"},
-    {"druzyna": "seniorki", "numer": 12, "imie": "Wiktoria",  "nazwisko": "Sztylko",         "pozycja": "Środkowa",     "zdjecie": "zawodniczki/wiktoria-sztylko.webp"},
-    {"druzyna": "seniorki", "numer": 22, "imie": "Adrianna",  "nazwisko": "Sitarska",        "pozycja": "Środkowa",     "zdjecie": "zawodniczki/adrianna-sitarska-mecz.webp"},
+    {"druzyna": "seniorki", "numer": 11, "imie": "Natalia",   "nazwisko": "Pietruszkiewicz", "pozycja": "Środkowa",     "zdjecie": "zawodniczki/natalia-pietruszkiewicz-mecz.webp", "wzrost": None, "zasieg": None,
+     "kluby": [("2022/23–2023/24", "UKS Atena Warszawa (juniorki)")]},
+    {"druzyna": "seniorki", "numer": 12, "imie": "Wiktoria",  "nazwisko": "Sztylko",         "pozycja": "Środkowa",     "zdjecie": "zawodniczki/wiktoria-sztylko.webp", "wzrost": None, "zasieg": None,
+     "kluby": [("2024/25", "AZS AWF Varsovia")]},
+    {"druzyna": "seniorki", "numer": 22, "imie": "Adrianna",  "nazwisko": "Sitarska",        "pozycja": "Środkowa",     "zdjecie": "zawodniczki/adrianna-sitarska-mecz.webp", "wzrost": 186, "zasieg": None,
+     "kluby": [("2025/26", "KSG Warszawa II")]},
     # Libero
-    {"druzyna": "seniorki", "numer": 8,  "imie": "Klaudia",   "nazwisko": "Kucharska",       "pozycja": "Libero",       "zdjecie": "zawodniczki/klaudia-kucharska-mecz.webp", "kapitan": True},
-    {"druzyna": "seniorki", "numer": 23, "imie": "Małgorzata", "nazwisko": "Czajka",         "pozycja": "Libero",       "zdjecie": "zawodniczki/malgorzata-czajka-mecz.webp"},
+    {"druzyna": "seniorki", "numer": 8,  "imie": "Klaudia",   "nazwisko": "Kucharska",       "pozycja": "Libero",       "zdjecie": "zawodniczki/klaudia-kucharska-mecz.webp", "kapitan": True, "wzrost": 170, "zasieg": None,
+     "kluby": [("2020/21–2022/23", "Nike Węgrów"), ("2021/22", "AZS AWF Warszawa (liga akademicka)"), ("2014/15–2017/18", "Mazovia Warszawa"), ("2012/13–2015/16", "UMKS MOS Wola Warszawa (juniorki)")]},
+    {"druzyna": "seniorki", "numer": 23, "imie": "Małgorzata", "nazwisko": "Czajka",         "pozycja": "Libero",       "zdjecie": "zawodniczki/malgorzata-czajka-mecz.webp", "wzrost": 168, "zasieg": None,
+     "kluby": []},
 ]
 
 # Kolejność pozycji na stronie Drużyny

@@ -1115,3 +1115,16 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
   .sw__el,.sw__ruch--kolys,.sw__ruch--powiew path,.sw__plomien,.sw__poswiata,.sw__iskra,.sw__ruch--jajo{animation:none}
   .sw__fajerwerk{animation:none;opacity:.9}
 }
+
+/* Karta zawodniczki – wzrost, zasięg, poprzednie kluby */
+.zawodniczka__kluby-tyt{grid-column:1/-1;margin-top:6px;font-size:.8em;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--zolty)!important}
+.zawodniczka__kluby{grid-column:1/-1}
+.zawodniczka__kluby ul{list-style:none;margin:2px 0 0;padding:0;font-weight:600;font-size:.88em;line-height:1.25}
+.zawodniczka__kluby li{padding:2px 0}
+.zawodniczka__kluby li span{display:block;font-size:.82em;font-weight:500;color:var(--jasny-na-granacie);font-variant-numeric:tabular-nums}
+.zawodniczka:hover .zawodniczka__wiecej>div,.zawodniczka:focus-within .zawodniczka__wiecej>div,.zawodniczka.pokaz .zawodniczka__wiecej>div{overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.zawodniczka:hover .zawodniczka__opis,.zawodniczka:focus-within .zawodniczka__opis,.zawodniczka.pokaz .zawodniczka__opis{background:linear-gradient(rgba(0,26,63,.25),rgba(0,26,63,.95) 22%)}
+@media (min-width:600px){.zawodniczka__kluby li{display:grid;grid-template-columns:8.6em 1fr;gap:8px;align-items:baseline}.zawodniczka__kluby li span{display:inline;font-size:.9em}}
+
+.zawodniczka__opis{max-height:100%;display:flex;flex-direction:column}
+.zawodniczka__wiecej{min-height:0;flex:0 1 auto}

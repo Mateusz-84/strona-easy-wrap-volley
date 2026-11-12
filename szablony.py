@@ -755,7 +755,12 @@ def karta_zawodniczki(p, z):
         szczegoly.append(("Urodzona", date.fromisoformat(z["urodzona"]).strftime("%d.%m.%Y")))
     if z.get("wzrost"):
         szczegoly.append(("Wzrost", f"{z['wzrost']} cm"))
+    if z.get("zasieg"):
+        szczegoly.append(("Zasięg w ataku", f"{z['zasieg']} cm"))
     dl = "".join(f"<dt>{e(a)}</dt><dd>{e(b)}</dd>" for a, b in szczegoly)
+    if z.get("kluby"):
+        dl += ('<dt class="zawodniczka__kluby-tyt">Poprzednie kluby</dt><dd class="zawodniczka__kluby"><ul>'
+               + "".join(f"<li><span>{e(s)}</span>{e(k)}</li>" for s, k in z["kluby"]) + "</ul></dd>")
     wiecej = f'<div class="zawodniczka__wiecej"><div><dl>{dl}</dl></div></div>' if dl else ""
     kapitan = ' <span class="kapitan" title="Kapitan">C</span>' if z.get("kapitan") else ""
     return f"""
