@@ -47,7 +47,7 @@
   }
  },
  "seniorki": {
-  "pobrano": "2026-11-12T16:15",
+  "pobrano": "2026-11-12T17:13",
   "pzps_lista": [
    {
     "data": "2026-09-26",
@@ -393,6 +393,296 @@
      "sety_minus": 24,
      "sety_plus": 2,
      "zwyciestwa": 0
+    }
+   ],
+   "wszystkie": [
+    {
+     "data": "2026-09-26",
+     "gosc": "AZS AWF Varsovia",
+     "gospodarz": "EASY WRAP Volley Kobyłka",
+     "wynik": "2:3"
+    },
+    {
+     "data": "2026-09-26",
+     "gosc": "GKS Orlęta Raszyn",
+     "gospodarz": "Libero VIP Gwarant Aleksandrów Łódzki",
+     "wynik": "0:3"
+    },
+    {
+     "data": "2026-09-26",
+     "gosc": "PGE LTS Legionovia Legionowo 2",
+     "gospodarz": "MOS Wola AZS Warszawa",
+     "wynik": "1:3"
+    },
+    {
+     "data": "2026-09-26",
+     "gosc": "SMS Ostrów Łaskovia Łask",
+     "gospodarz": "TPS Bielsk Podlaski",
+     "wynik": "3:1"
+    },
+    {
+     "data": "2026-09-26",
+     "gosc": "MAPEI BARYCZ Janków Przygodzki",
+     "gospodarz": "ŁKS AZS UMED Łódź",
+     "wynik": "3:1"
+    },
+    {
+     "data": "2026-09-26",
+     "gosc": "MUKS Krótka",
+     "gospodarz": "MKS Kalisz II",
+     "wynik": "0:3"
+    },
+    {
+     "data": "2026-10-03",
+     "gosc": "MUKS Krótka",
+     "gospodarz": "AZS AWF Varsovia",
+     "wynik": "3:0"
+    },
+    {
+     "data": "2026-10-03",
+     "gosc": "MKS Kalisz II",
+     "gospodarz": "MAPEI BARYCZ Janków Przygodzki",
+     "wynik": "3:0"
+    },
+    {
+     "data": "2026-10-03",
+     "gosc": "ŁKS AZS UMED Łódź",
+     "gospodarz": "SMS Ostrów Łaskovia Łask",
+     "wynik": "3:1"
+    },
+    {
+     "data": "2026-10-03",
+     "gosc": "TPS Bielsk Podlaski",
+     "gospodarz": "PGE LTS Legionovia Legionowo 2",
+     "wynik": "0:3"
+    },
+    {
+     "data": "2026-10-03",
+     "gosc": "MOS Wola AZS Warszawa",
+     "gospodarz": "GKS Orlęta Raszyn",
+     "wynik": "3:0"
+    },
+    {
+     "data": "2026-10-03",
+     "gosc": "Libero VIP Gwarant Aleksandrów Łódzki",
+     "gospodarz": "EASY WRAP Volley Kobyłka",
+     "wynik": "3:0"
+    },
+    {
+     "data": "2026-10-07",
+     "gosc": "AZS AWF Varsovia",
+     "gospodarz": "Libero VIP Gwarant Aleksandrów Łódzki",
+     "wynik": "3:2"
+    },
+    {
+     "data": "2026-10-07",
+     "gosc": "EASY WRAP Volley Kobyłka",
+     "gospodarz": "MOS Wola AZS Warszawa",
+     "wynik": "2:3"
+    },
+    {
+     "data": "2026-10-07",
+     "gosc": "GKS Orlęta Raszyn",
+     "gospodarz": "TPS Bielsk Podlaski",
+     "wynik": "3:1"
+    },
+    {
+     "data": "2026-10-07",
+     "gosc": "PGE LTS Legionovia Legionowo 2",
+     "gospodarz": "ŁKS AZS UMED Łódź",
+     "wynik": "3:2"
+    },
+    {
+     "data": "2026-10-07",
+     "gosc": "SMS Ostrów Łaskovia Łask",
+     "gospodarz": "MKS Kalisz II",
+     "wynik": "0:3"
+    },
+    {
+     "data": "2026-10-07",
+     "gosc": "MAPEI BARYCZ Janków Przygodzki",
+     "gospodarz": "MUKS Krótka",
+     "wynik": "2:3"
+    },
+    {
+     "data": "2026-10-10",
+     "gosc": "MAPEI BARYCZ Janków Przygodzki",
+     "gospodarz": "AZS AWF Varsovia",
+     "wynik": "3:2"
+    },
+    {
+     "data": "2026-10-10",
+     "gosc": "MUKS Krótka",
+     "gospodarz": "SMS Ostrów Łaskovia Łask",
+     "wynik": "3:0"
+    },
+    {
+     "data": "2026-10-11",
+     "gosc": "MKS Kalisz II",
+     "gospodarz": "PGE LTS Legionovia Legionowo 2",
+     "wynik": "3:1"
+    },
+    {
+     "data": "2026-10-10",
+     "gosc": "ŁKS AZS UMED Łódź",
+     "gospodarz": "GKS Orlęta Raszyn",
+     "wynik": "3:0"
+    },
+    {
+     "data": "2026-10-11",
+     "gosc": "TPS Bielsk Podlaski",
+     "gospodarz": "EASY WRAP Volley Kobyłka",
+     "wynik": "3:0"
+    },
+    {
+     "data": "2026-10-10",
+     "gosc": "MOS Wola AZS Warszawa",
+     "gospodarz": "Libero VIP Gwarant Aleksandrów Łódzki",
+     "wynik": "2:3"
+    },
+    {
+     "data": "2026-10-17",
+     "gosc": "AZS AWF Varsovia",
+     "gospodarz": "MOS Wola AZS Warszawa",
+     "wynik": "3:2"
+    },
+    {
+     "data": "2026-10-17",
+     "gosc": "Libero VIP Gwarant Aleksandrów Łódzki",
+     "gospodarz": "TPS Bielsk Podlaski",
+     "wynik": "1:3"
+    },
+    {
+     "data": "2026-10-17",
+     "gosc": "EASY WRAP Volley Kobyłka",
+     "gospodarz": "ŁKS AZS UMED Łódź",
+     "wynik": "1:3"
+    },
+    {
+     "data": "2026-10-17",
+     "gosc": "GKS Orlęta Raszyn",
+     "gospodarz": "MKS Kalisz II",
+     "wynik": "1:3"
+    },
+    {
+     "data": "2026-10-17",
+     "gosc": "PGE LTS Legionovia Legionowo 2",
+     "gospodarz": "MUKS Krótka",
+     "wynik": "2:3"
+    },
+    {
+     "data": "2026-10-17",
+     "gosc": "SMS Ostrów Łaskovia Łask",
+     "gospodarz": "MAPEI BARYCZ Janków Przygodzki",
+     "wynik": "1:3"
+    },
+    {
+     "data": "2026-10-24",
+     "gosc": "SMS Ostrów Łaskovia Łask",
+     "gospodarz": "AZS AWF Varsovia",
+     "wynik": "1:3"
+    },
+    {
+     "data": "2026-10-24",
+     "gosc": "MAPEI BARYCZ Janków Przygodzki",
+     "gospodarz": "PGE LTS Legionovia Legionowo 2",
+     "wynik": "3:0"
+    },
+    {
+     "data": "2026-10-24",
+     "gosc": "MUKS Krótka",
+     "gospodarz": "GKS Orlęta Raszyn",
+     "wynik": "3:0"
+    },
+    {
+     "data": "2026-10-24",
+     "gosc": "MKS Kalisz II",
+     "gospodarz": "EASY WRAP Volley Kobyłka",
+     "wynik": "3:0"
+    },
+    {
+     "data": "2026-10-24",
+     "gosc": "ŁKS AZS UMED Łódź",
+     "gospodarz": "Libero VIP Gwarant Aleksandrów Łódzki",
+     "wynik": "3:0"
+    },
+    {
+     "data": "2026-10-24",
+     "gosc": "TPS Bielsk Podlaski",
+     "gospodarz": "MOS Wola AZS Warszawa",
+     "wynik": "2:3"
+    },
+    {
+     "data": "2026-10-28",
+     "gosc": "AZS AWF Varsovia",
+     "gospodarz": "TPS Bielsk Podlaski",
+     "wynik": "3:2"
+    },
+    {
+     "data": "2026-10-28",
+     "gosc": "MOS Wola AZS Warszawa",
+     "gospodarz": "ŁKS AZS UMED Łódź",
+     "wynik": "3:0"
+    },
+    {
+     "data": "2026-10-28",
+     "gosc": "Libero VIP Gwarant Aleksandrów Łódzki",
+     "gospodarz": "MKS Kalisz II",
+     "wynik": "0:3"
+    },
+    {
+     "data": "2026-10-28",
+     "gosc": "EASY WRAP Volley Kobyłka",
+     "gospodarz": "MUKS Krótka",
+     "wynik": "0:3"
+    },
+    {
+     "data": "2026-10-28",
+     "gosc": "GKS Orlęta Raszyn",
+     "gospodarz": "MAPEI BARYCZ Janków Przygodzki",
+     "wynik": "3:1"
+    },
+    {
+     "data": "2026-10-28",
+     "gosc": "PGE LTS Legionovia Legionowo 2",
+     "gospodarz": "SMS Ostrów Łaskovia Łask",
+     "wynik": "3:1"
+    },
+    {
+     "data": "2026-11-07",
+     "gosc": "PGE LTS Legionovia Legionowo 2",
+     "gospodarz": "AZS AWF Varsovia",
+     "wynik": "3:0"
+    },
+    {
+     "data": "2026-11-07",
+     "gosc": "SMS Ostrów Łaskovia Łask",
+     "gospodarz": "GKS Orlęta Raszyn",
+     "wynik": "3:1"
+    },
+    {
+     "data": "2026-11-07",
+     "gosc": "MAPEI BARYCZ Janków Przygodzki",
+     "gospodarz": "EASY WRAP Volley Kobyłka",
+     "wynik": "3:0"
+    },
+    {
+     "data": "2026-11-07",
+     "gosc": "MUKS Krótka",
+     "gospodarz": "Libero VIP Gwarant Aleksandrów Łódzki",
+     "wynik": "0:3"
+    },
+    {
+     "data": "2026-11-07",
+     "gosc": "MKS Kalisz II",
+     "gospodarz": "MOS Wola AZS Warszawa",
+     "wynik": "3:0"
+    },
+    {
+     "data": "2026-11-07",
+     "gosc": "ŁKS AZS UMED Łódź",
+     "gospodarz": "TPS Bielsk Podlaski",
+     "wynik": "3:1"
     }
    ],
    "wyniki": {
