@@ -1288,6 +1288,9 @@ def main():
            '{"src":"img/favicon-512.png","sizes":"512x512","type":"image/png"}],'
            '"theme_color":"#002F6C","background_color":"#ffffff","display":"browser"}')
 
+    # IndexNow (Bing, Yandex, Seznam): plik z kluczem w katalogu głównym – pozwala szybko zgłaszać zmiany strony
+    zapisz("626555853380b51c3aa9050ff937c69a.txt", "626555853380b51c3aa9050ff937c69a")
+
     nm = b.najblizszy
     print(f"\nGotowe! Strona jest w folderze: {WYJSCIE}")
     print(f"  Meczów: {len(b.mecze)}, aktualności: {len(b.newsy)}")
