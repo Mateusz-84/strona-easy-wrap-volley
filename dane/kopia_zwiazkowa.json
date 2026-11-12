@@ -39,10 +39,15 @@
    "adres": "ul. M.C. Skłodowskiej 5, Aleksandrów Łódzki",
    "godzina": null,
    "hala": "Hala Sportowa przy Zespole Licealno-Sportowym"
+  },
+  "/system/mecz/212/": {
+   "adres": "Kobyłka, ul. ks. Marcina Załuskiego 57",
+   "godzina": null,
+   "hala": "Hala Sportowa przy PSP nr 3 w Kobyłce"
   }
  },
  "seniorki": {
-  "pobrano": "2026-11-11T22:34",
+  "pobrano": "2026-11-12T02:07",
   "pzps_lista": [
    {
     "data": "2026-09-26",
