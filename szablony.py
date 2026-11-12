@@ -336,7 +336,7 @@ def glowa(pelny_tytul, opis, p, wersja, kolor="#002F6C", ikona=None):
 <link rel="preload" href="{p}zasoby/fonty/barlow-condensed-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{p}zasoby/fonty.css?v={wersja}">
 <link rel="stylesheet" href="{p}zasoby/style.css?v={wersja}">
-<script>document.documentElement.classList.add('js')</script>
+<script>document.documentElement.classList.add('js');try{{var c=localStorage.getItem('czcionka');if(c==='1'||c==='2')document.documentElement.setAttribute('data-czcionka',c)}}catch(e){{}}</script>
 <script src="{p}zasoby/main.js?v={wersja}" defer></script>
 </head>"""
 
@@ -364,6 +364,7 @@ def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja):
 <header class="naglowek">
   <div class="kontener">
     <a class="logo" href="{p}{START_DRUZYNY}">{logo_druzyny(p)}<span class="logo__tekst">{e(C.KLUB['nazwa_krotka'])}<small>Kobyłka</small></span></a>
+    <button class="czcionka-przycisk" type="button" aria-label="Powiększ tekst na stronie" title="Powiększ tekst"><span class="czcionka-przycisk__a" aria-hidden="true">A</span><span class="czcionka-przycisk__plus" aria-hidden="true">+</span></button>
     <button class="menu-przycisk" aria-expanded="false" aria-controls="menu"><span></span><span></span><span></span><span class="ukryte">Menu</span></button>
     <nav class="menu" id="menu" aria-label="Menu główne"><ul>{menu}</ul></nav>
   </div>
@@ -422,6 +423,7 @@ def uklad_akademii(tytul, opis, tresc, p, wersja, aktualnosci=False):
 <header class="naglowek naglowek--akademia">
   <div class="kontener">
     <a class="logo" href="{k_ or '#tresc'}">{logo}<span class="logo__tekst">Akademia Siatkówki<small>Volley · Kobyłka</small></span></a>
+    <button class="czcionka-przycisk" type="button" aria-label="Powiększ tekst na stronie" title="Powiększ tekst"><span class="czcionka-przycisk__a" aria-hidden="true">A</span><span class="czcionka-przycisk__plus" aria-hidden="true">+</span></button>
     <button class="menu-przycisk" aria-expanded="false" aria-controls="menu"><span></span><span></span><span></span><span class="ukryte">Menu</span></button>
     <nav class="menu" id="menu" aria-label="Menu Akademii"><ul>{menu}</ul></nav>
   </div>

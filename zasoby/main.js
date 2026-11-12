@@ -738,3 +738,33 @@
   });
   document.documentElement.setAttribute('data-swieto', swieto);
 })();
+
+/* =====================================================================
+   POWIĘKSZENIE TEKSTU – jeden przycisk w nagłówku (dla słabowidzących)
+   Kolejne kliknięcia: 100% → 125% → 150% → z powrotem 100%.
+   Wybór zapamiętany w przeglądarce (działa na każdej podstronie).
+   ===================================================================== */
+(function () {
+  'use strict';
+  var html = document.documentElement;
+  var POZIOMY = ['0', '1', '2'], PROC = { '0': '100%', '1': '125%', '2': '150%' };
+  function poziom() { return html.getAttribute('data-czcionka') || '0'; }
+  function opisz(b) {
+    var p = poziom(), nast = POZIOMY[(POZIOMY.indexOf(p) + 1) % POZIOMY.length];
+    b.setAttribute('aria-label', nast === '0'
+      ? 'Przywróć zwykły rozmiar tekstu (teraz ' + PROC[p] + ')'
+      : 'Powiększ tekst do ' + PROC[nast] + ' (teraz ' + PROC[p] + ')');
+    b.title = nast === '0' ? 'Zwykły rozmiar tekstu' : 'Powiększ tekst';
+    b.setAttribute('aria-pressed', p === '0' ? 'false' : 'true');
+    b.setAttribute('data-poziom', p);
+  }
+  document.querySelectorAll('.czcionka-przycisk').forEach(function (b) {
+    opisz(b);
+    b.addEventListener('click', function () {
+      var nast = POZIOMY[(POZIOMY.indexOf(poziom()) + 1) % POZIOMY.length];
+      if (nast === '0') html.removeAttribute('data-czcionka'); else html.setAttribute('data-czcionka', nast);
+      try { if (nast === '0') localStorage.removeItem('czcionka'); else localStorage.setItem('czcionka', nast); } catch (e) {}
+      document.querySelectorAll('.czcionka-przycisk').forEach(opisz);
+    });
+  });
+})();
