@@ -309,21 +309,21 @@ MECZE = [
 KADRA = [
     # Rozgrywające
     {"druzyna": "seniorki", "numer": 7,  "imie": "Natalia",   "nazwisko": "Bielińska",       "pozycja": "Rozgrywająca", "zdjecie": "zawodniczki/natalia-bielinska.webp", "wzrost": 177, "zasieg": None, "u_nas": "2023/24–2024/25, 2026/27",
-     "kluby": [("2025/26", "AZS UMCS Lublin"), ("2020/21–2023/24", "AZS Vistula Warszawa (liga akademicka)"), ("2019/20–2022/23", "Nike Węgrów"), ("2017/18–2018/19", "WTS KDBS Włocławek"), ("2015/16–2016/17", "Nike Węgrów")]},
+     "kluby": [("2025/26", "AZS UMCS Lublin"), ("2019/20–2022/23", "Nike Węgrów"), ("2017/18–2018/19", "WTS KDBS Włocławek"), ("2015/16–2016/17", "Nike Węgrów")]},
     {"druzyna": "seniorki", "numer": 20, "imie": "Zuzanna",   "nazwisko": "Kałkowska",       "pozycja": "Rozgrywająca", "zdjecie": "zawodniczki/zuzanna-kalkowska.webp", "wzrost": None, "zasieg": None, "u_nas": "2025/26–2026/27",
      "kluby": [("2024/25", "MUKS Krótka Mysiadło"), ("2020/21–2024/25", "UMKS MOS Wola / KSG Warszawa (juniorki)")]},
     # Atakujące
     {"druzyna": "seniorki", "numer": 14, "imie": "Nikola",    "nazwisko": "Gutowska",        "pozycja": "Atakująca",    "zdjecie": "zawodniczki/nikola-gutowska-mecz.webp", "wzrost": 180, "zasieg": None, "u_nas": "2025/26–2026/27",
-     "kluby": [("2024/25", "LOS Nowy Dwór Mazowiecki"), ("2022/23–2024/25", "AZS Vistula Warszawa (liga akademicka)"), ("2022/23–2023/24", "KS AZS AWF Warszawa"), ("2021/22", "Sparta Warszawa")]},
+     "kluby": [("2024/25", "LOS Nowy Dwór Mazowiecki"), ("2022/23–2023/24", "KS AZS AWF Warszawa"), ("2021/22", "Sparta Warszawa")]},
     {"druzyna": "seniorki", "numer": 17, "imie": "Natalia",   "nazwisko": "Dąbrowska",       "pozycja": "Atakująca",    "zdjecie": "zawodniczki/natalia-dabrowska-mecz.webp", "wzrost": 183, "zasieg": None, "u_nas": "2023/24–2026/27",
-     "kluby": [("2020/21–2023/24", "AZS Vistula Warszawa (liga akademicka)")]},
+     "kluby": []},
     # Przyjmujące
     {"druzyna": "seniorki", "numer": 2,  "imie": "Julia",     "nazwisko": "Grzelak",         "pozycja": "Przyjmująca",  "zdjecie": "zawodniczki/julia-grzelak.webp", "wzrost": 180, "zasieg": None, "u_nas": "2026/27",
-     "kluby": [("2025/26", "MUKS Krótka Mysiadło"), ("2023/24–2024/25", "KSG Warszawa"), ("2023/24–2024/25", "AZS AWF Warszawa (liga akademicka)"), ("2020/21–2022/23", "LOS Nowy Dwór Mazowiecki")]},
+     "kluby": [("2025/26", "MUKS Krótka Mysiadło"), ("2023/24–2024/25", "KSG Warszawa"), ("2020/21–2022/23", "LOS Nowy Dwór Mazowiecki")]},
     {"druzyna": "seniorki", "numer": 6,  "imie": "Kamila",    "nazwisko": "Wrzosek",         "pozycja": "Przyjmująca",  "zdjecie": "zawodniczki/kamila-wrzosek-mecz.webp", "wzrost": None, "zasieg": None, "u_nas": "2025/26–2026/27",
      "kluby": []},
     {"druzyna": "seniorki", "numer": 10, "imie": "Kaja",      "nazwisko": "Klepacz",         "pozycja": "Przyjmująca",  "zdjecie": "zawodniczki/kaja-klepacz-mecz.webp", "wzrost": 178, "zasieg": None, "u_nas": "2024/25–2026/27",
-     "kluby": [("2022/23–2023/24", "KS AZS AWF Warszawa"), ("2022/23–2023/24", "AZS AWF Warszawa (liga akademicka)"), ("2018/19–2021/22", "KSZO SMS Ostrowiec Świętokrzyski")]},
+     "kluby": [("2022/23–2023/24", "KS AZS AWF Warszawa"), ("2018/19–2021/22", "KSZO SMS Ostrowiec Świętokrzyski")]},
     {"druzyna": "seniorki", "numer": 21, "imie": "Matylda",   "nazwisko": "Woźny",           "pozycja": "Przyjmująca",  "zdjecie": "zawodniczki/matylda-wozny-mecz.webp", "wzrost": 180, "zasieg": None, "u_nas": "2026/27",
      "kluby": [("2023/24–2025/26", "LOS Nowy Dwór Mazowiecki"), ("2021/22–2022/23", "Jefferson College (USA)"), ("2019/20–2020/21", "Sparta Warszawa")]},
     # Środkowe
