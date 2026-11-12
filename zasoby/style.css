@@ -255,7 +255,7 @@ img.herb,img.belka__herb,img.tabela__herb{object-fit:contain}
 .mecze{display:grid;grid-auto-flow:column;grid-auto-columns:86%;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 16px 12px;margin:0 -16px}
 .mecze--siatka{grid-auto-flow:row;grid-template-columns:1fr;overflow:visible;margin:0;padding:0}
 .mecz{scroll-snap-align:start;background:linear-gradient(160deg,var(--granat-jasny),var(--granat) 55%);color:#fff;display:flex;flex-direction:column;position:relative;overflow:hidden}
-.mecz--wyjazd{background:linear-gradient(160deg,#36B7EC,var(--blekit) 55%);color:var(--granat-ciemny)}
+.mecz--wyjazd{background:var(--tlo-blekit);color:var(--granat-ciemny)}
 .mecz--inne{background:#fff;color:var(--granat);border:2px solid var(--granat)}
 .mecz[hidden]{display:none}
 .mecz--najblizszy{box-shadow:inset 0 0 0 4px var(--zolty)}
@@ -545,7 +545,7 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
 /* =====================================================================
    STOPKA
    ===================================================================== */
-.stopka{background:var(--granat-ciemny);color:#D5E2F2;padding:44px 0 24px;font-size:17px}
+.stopka{background:var(--granat-ciemny);color:var(--jasny-na-granacie);padding:44px 0 24px;font-size:17px}
 .stopka__kolumny{display:grid;grid-template-columns:1fr 1fr;gap:22px 16px}
 .stopka__kolumny > div:nth-child(-n+2){grid-column:1/-1}
 .stopka__social{display:flex;flex-wrap:wrap;gap:10px}
@@ -892,7 +892,7 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
 @media (min-width:900px){.ak-hero__logo{width:320px}}
 
 /* ---- RODO / ochrona małoletnich ---- */
-.ak-rodo{margin-top:1.75rem;max-width:62rem;font-size:.92rem;color:#3d4b63;border-top:1px solid rgba(15,76,150,.15);padding-top:1rem}
+.ak-rodo{margin-top:1.75rem;max-width:62rem;font-size:.92rem;color:var(--tekst-szary);border-top:1px solid rgba(15,76,150,.15);padding-top:1rem}
 .ak-rodo summary{cursor:pointer;font-weight:600;color:var(--ak-ciemny,#0F4C96);list-style:none;display:flex;align-items:center;gap:.5rem}
 .ak-rodo summary::-webkit-details-marker{display:none}
 .ak-rodo summary::before{content:"+";display:inline-grid;place-items:center;width:1.35rem;height:1.35rem;border-radius:50%;background:var(--ak-jasny,#EAF3FF);font-weight:700}
@@ -903,7 +903,7 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
 .ochrona__dzieci ul{margin:0;padding-left:1.2rem;display:grid;gap:.55rem;line-height:1.55}
 .ochrona__telefon{margin:1rem 0 0}
 .ochrona__telefon a{color:#FFC72C;font-size:1.15em}
-.kontakt__rodo{margin-top:1.5rem;font-size:.85rem;color:#5b6880;max-width:34rem}
+.kontakt__rodo{margin-top:1.5rem;font-size:.85rem;color:var(--tekst-szary);max-width:34rem}
 .polityka__skrot{padding:1rem 1.2rem;border-left:4px solid #069DDF;background:#EEF7FD;border-radius:0 12px 12px 0}
 
 /* Strona główna – „Nasza kadra”: zawsze 3 losowe karty */
@@ -992,7 +992,7 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
 
 /* Strona statystyk (ukryta) */
 .statystyki__miesiac{display:inline-flex;gap:10px;align-items:center;font-weight:700}
-.statystyki__miesiac select{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid #c9d6e6}
+.statystyki__miesiac select{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid var(--linia)}
 .statystyki__kafle{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:22px 0 34px}
 .statystyki__kafel{background:var(--tlo-granat);color:#fff;border-radius:var(--r-l,18px);padding:18px;font-size:14px;letter-spacing:.06em;text-transform:uppercase}
 .statystyki__kafel span{display:block;font-family:var(--font-naglowki);font-size:52px;line-height:1;letter-spacing:0}
@@ -1017,7 +1017,7 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
 /* Plansza meczu: karta „Zapraszam!” – numer, imię i nazwisko zawodniczki ze zdjęcia.
    Komputer: na zdjęciu (prawy dół). Telefon: w treści nad przyciskami – nic jej nie zasłania. */
 .zapr{position:relative;display:inline-flex;align-items:center;gap:12px;padding:14px 18px 12px 12px;
-  background:linear-gradient(135deg,#0b3474 0%,#001a3f 100%);border:2px solid var(--zolty);border-radius:18px;
+  background:linear-gradient(135deg,var(--granat-jasny) 0%,var(--granat-ciemny) 100%);border:2px solid var(--zolty);border-radius:18px;
   box-shadow:0 16px 34px rgba(0,10,30,.45);color:#fff;transform:rotate(-3deg);transform-origin:left center}
 .zapr__tytul{position:absolute;top:-15px;left:14px;background:var(--zolty);color:var(--granat-ciemny);
   font-family:var(--font-naglowki);font-size:21px;line-height:1;letter-spacing:.06em;padding:5px 12px 4px;border-radius:8px;
@@ -1026,7 +1026,7 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
   border-radius:50%;box-shadow:inset 0 0 0 3px rgba(0,26,63,.15);background:var(--zolty);color:var(--granat-ciemny);font-family:var(--font-naglowki);font-size:36px;line-height:1}
 .zapr__nr small{font-size:.45em;align-self:flex-start;margin:8px 1px 0 0}
 .zapr__osoba{display:flex;flex-direction:column;line-height:1}
-.zapr__imie{font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#cfe3ff}
+.zapr__imie{font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--jasny-na-granacie)}
 .zapr__nazwisko{font-family:var(--font-naglowki);font-size:32px;letter-spacing:.02em;text-transform:uppercase}
 .zapr--foto{display:none}
 .zapr--tel{display:flex;width:max-content;max-width:calc(100% - 8px);margin:18px 6px 22px auto;transform-origin:right center}
@@ -1047,7 +1047,7 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
 .kal-sub__tekst p{margin:0;line-height:1.45}
 .kal-sub__przyciski{display:flex;flex-wrap:wrap;gap:10px}
 .kal-sub .btn--obrys{color:#fff;border-color:rgba(255,255,255,.6)}
-.kal-sub__kopiuj{font:inherit;font-weight:600;font-size:14px;background:none;border:0;color:#cfe3ff;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:8px 4px;min-height:44px}
+.kal-sub__kopiuj{font:inherit;font-weight:600;font-size:14px;background:none;border:0;color:var(--jasny-na-granacie);text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:8px 4px;min-height:44px}
 .kal-sub__przypis{grid-column:1/-1;margin:0;font-size:13px;opacity:.7}
 @media (min-width:900px){.kal-sub{grid-template-columns:1fr auto}}
 .kal-sub-link{margin:-6px 0 16px}
@@ -1063,7 +1063,7 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
 .pm__nr{position:absolute;right:-6%;top:4%;font-family:var(--font-naglowki);font-size:min(52vw,300px);line-height:.8;color:transparent;-webkit-text-stroke:2px rgba(255,199,44,.55)}
 .pm__nad{margin:0 0 6px;font-weight:700;font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:var(--zolty)}
 .pm__imie{font-family:var(--font-naglowki);font-weight:400;font-size:clamp(54px,9vw,104px);line-height:.88;margin:0 0 24px;text-transform:uppercase}
-.pm__imie span{display:block;font-size:.45em;color:#cfe3ff}
+.pm__imie span{display:block;font-size:.45em;color:var(--jasny-na-granacie)}
 .pm__lista{margin:0;display:grid;gap:12px}
 .pm__qa{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:14px 18px}
 .pm__qa dt{font-weight:700;font-size:14px;letter-spacing:.04em;color:var(--zolty);margin-bottom:4px}
@@ -1077,7 +1077,7 @@ a.logo-sp:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px var(--blek
 .ciek{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;align-items:center;margin:26px 0 0;padding:18px 20px;border-radius:var(--r-l,18px);background:var(--tlo-granat);color:#fff;position:relative}
 .ciek__foto{width:96px;height:120px;object-fit:cover;object-position:top;border-radius:14px;background:rgba(255,255,255,.08)}
 .ciek__nad{margin:0;font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--zolty)}
-.ciek__q{margin:2px 0 6px;font-weight:700;color:#cfe3ff}
+.ciek__q{margin:2px 0 6px;font-weight:700;color:var(--jasny-na-granacie)}
 .ciek__a{margin:0 0 8px;font-family:var(--font-naglowki);font-size:30px;line-height:1.05}
 .ciek__kto{font-weight:700;color:#fff;text-underline-offset:3px}
 .ciek__inne{grid-column:1/-1;justify-self:end;font:inherit;font-weight:700;font-size:14px;background:none;border:0;color:var(--zolty);cursor:pointer;min-height:44px;padding:0 4px}
