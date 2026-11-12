@@ -768,3 +768,17 @@
     });
   });
 })();
+
+/* =====================================================================
+   STRONA JAK APLIKACJA – rejestracja service workera (działanie bez internetu)
+   ===================================================================== */
+(function () {
+  'use strict';
+  if (!('serviceWorker' in navigator) || location.protocol !== 'https:') return;
+  var skrypt = document.currentScript || document.querySelector('script[src*="zasoby/main.js"]');
+  if (!skrypt) return;
+  var adres = new URL('../sw.js', skrypt.src);
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register(adres.href, { scope: new URL('../', skrypt.src).pathname }).catch(function () {});
+  });
+})();

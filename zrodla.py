@@ -169,16 +169,18 @@ def parsuj_pzps_tabele(strona, grupa, nasza):
         raise ValueError("PZPS: tabela grupy jest pusta lub zmienił się jej wygląd")
 
     wyniki = {}
+    wszystkie = []   # wyniki CAŁEJ grupy – do formy drużyn w tabeli i bilansu przed meczem
     for link, dzien, gosp, gosc, a, b, sety in WIERSZ_WYNIKU.findall(fragment):
-        if norm(nasza) not in (norm(gosp), norm(gosc)):
-            continue
         if a == "0" and b == "0":
             continue  # mecz jeszcze nierozegrany
+        wszystkie.append({"data": dzien, "gospodarz": czysc(gosp), "gosc": czysc(gosc), "wynik": f"{a}:{b}"})
+        if norm(nasza) not in (norm(gosp), norm(gosc)):
+            continue
         wyniki[link.replace("//", "/")] = {
             "data": dzien, "wynik": f"{a}:{b}",
             "sety": [s.strip() for s in sety.split(",") if s.strip()],
         }
-    return tabela, wyniki
+    return tabela, wyniki, wszystkie
 
 
 # ---------------------------------------------------------------------
@@ -783,8 +785,8 @@ def pobierz_dane(zrodla, rywale, bez_internetu=False):
             z.get("godzina_zastepcza_minuty")))
 
         def tabela_i_wyniki():
-            t, w = parsuj_pzps_tabele(pobierz(z["tabela"]), z["tabela_grupa"], z["nazwa_w_tabeli"])
-            return {"tabela": t, "wyniki": w}
+            t, w, wsz = parsuj_pzps_tabele(pobierz(z["tabela"]), z["tabela_grupa"], z["nazwa_w_tabeli"])
+            return {"tabela": t, "wyniki": w, "wszystkie": wsz}
         sprobuj("pzps_tabela", tabela_i_wyniki)
 
         tw = czesci.get("pzps_tabela") or {"tabela": [], "wyniki": {}}
@@ -815,7 +817,8 @@ def pobierz_dane(zrodla, rywale, bez_internetu=False):
         nowa = {k: v for k, v in czesci.items() if v}
         nowa["pobrano"] = teraz if not komunikaty else stara.get("pobrano", teraz)
         kopia[klucz] = nowa
-        wynik[klucz] = {"mecze": mecze, "tabela": tw["tabela"], "pobrano": nowa["pobrano"]}
+        wynik[klucz] = {"mecze": mecze, "tabela": tw["tabela"], "wszystkie": tw.get("wszystkie") or [],
+                        "pobrano": nowa["pobrano"]}
 
     if not bez_internetu:
         zapisz_kopie(kopia)

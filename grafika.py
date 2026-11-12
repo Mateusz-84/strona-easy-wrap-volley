@@ -189,7 +189,7 @@ def zapisz_grafiki_wynikow(mecze, sciezka_img, liga, dni, miesiace, dopisek=None
     for m in mecze:
         if not m.get("wynik") or not m.get("strony") or not m["strony"][1]:
             continue
-        nazwa = f"wynik-{m['data'].isoformat()}-{m['wynik'].replace(':', '-')}.jpg"
+        nazwa = f"wynik-{m['data'].isoformat()}-{m['wynik'].replace(':', '-')}{'-mvp' if m.get('mvp') else ''}.jpg"
         cel = os.path.join(folder, nazwa)
         if not os.path.isfile(cel):
             try:
@@ -199,3 +199,106 @@ def zapisz_grafiki_wynikow(mecze, sciezka_img, liga, dni, miesiace, dopisek=None
                 print(f"  UWAGA: grafika wyniku {nazwa}: {type(blad).__name__}: {blad}")
                 continue
         m["grafika_wyniku"] = f"grafiki/{nazwa}"
+
+
+# =====================================================================
+#  PODGLĄD LINKU (og:image) – zapowiedź najbliższego meczu, 1200×630
+#  Pokazuje się, gdy ktoś wklei adres strony na Facebooku, w Messengerze,
+#  WhatsAppie. Powstaje przy każdej przebudowie strony.
+# =====================================================================
+def _tlo_og(wyjazd, w, h):
+    gora, dol = ((40, 170, 235), (6, 120, 190)) if wyjazd else ((0, 63, 140), GRANAT_C)
+    im = Image.new("RGB", (w, h))
+    d = ImageDraw.Draw(im)
+    for x in range(w):
+        t = x / w
+        d.line([(x, 0), (x, h)], fill=tuple(int(gora[i] * (1 - t) + dol[i] * t) for i in range(3)))
+    paski = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    dp = ImageDraw.Draw(paski)
+    for x in range(-h, w, 40):
+        dp.polygon([(x, h), (x + 14, h), (x + 14 + h * 0.6, 0), (x + h * 0.6, 0)], fill=(255, 255, 255, 14))
+    im.paste(paski, (0, 0), paski)
+    return im
+
+
+def grafika_og(m, sciezka_img, plik_postaci, zawodniczka, dni, miesiace, inicjaly=None, wstep_wolny=False, dopisek=None):
+    OW, OH = 1200, 630
+    gosp, gosc = m["strony"]
+    wyjazd = not m.get("u_siebie")
+    tekst = GRANAT_C if wyjazd else BIALY
+    akcent = GRANAT_C if wyjazd else ZOLTY
+    im = _tlo_og(wyjazd, OW, OH).convert("RGBA")
+
+    # wycięta zawodniczka przy prawej krawędzi
+    if plik_postaci and os.path.isfile(plik_postaci):
+        try:
+            post = Image.open(plik_postaci).convert("RGBA")
+            bb = post.getbbox()
+            if bb:
+                post = post.crop(bb)
+            skala = (OH - 30) / post.height
+            post = post.resize((int(post.width * skala), OH - 30), Image.LANCZOS)
+            _cien(im, post, (OW - post.width + 10, 30))
+        except Exception:
+            pass
+
+    d = ImageDraw.Draw(im)
+    # etykieta
+    etyk = "MECZ WYJAZDOWY" if wyjazd else "MECZ U SIEBIE"
+    fe = barlow(30)
+    sz = int(fe.getlength(etyk)) + 44
+    d.rounded_rectangle([60, 48, 60 + sz, 98], radius=25, fill=(GRANAT_C if wyjazd else ZOLTY))
+    d.text((60 + sz // 2, 73), etyk, font=fe, fill=(BIALY if wyjazd else GRANAT_C), anchor="mm")
+    d.text((60 + sz + 20, 73), (m.get("liga") or "").upper(), font=barlow(26, False), fill=tekst, anchor="lm")
+
+    # herby obok siebie z VS – gospodarz pierwszy
+    for i, s in enumerate((gosp, gosc)):
+        if not s:
+            continue
+        cx = 150 + i * 300
+        h = _herb(s, 150, sciezka_img, inicjaly)
+        _cien(im, h, (cx - h.width // 2, 130 + (150 - h.height) // 2))
+        d = ImageDraw.Draw(im)
+        fn = bebas(42)
+        for j, linia in enumerate(_zawin(s["krotko"], fn, 270)[:2]):
+            d.text((cx, 312 + j * 40), linia, font=fn, fill=tekst, anchor="mm")
+    if gosc:
+        d.text((300, 205), "VS", font=bebas(70), fill=akcent, anchor="mm")
+
+    # data
+    dz = m["data"]
+    d.text((60, 470), str(dz.day), font=bebas(170), fill=tekst, anchor="ls")
+    x = 60 + bebas(170).getlength(str(dz.day)) + 18
+    d.text((x, 420), dni[dz.weekday()].upper(), font=bebas(52), fill=tekst, anchor="ls")
+    d.text((x, 470), miesiace[dz.month - 1].upper(), font=bebas(52), fill=tekst, anchor="ls")
+
+    godz = f"GODZ. {m['godzina']}" if m.get("godzina") else "GODZINA WKRÓTCE"
+    hala = (m.get("hala") or "").upper()
+    d.text((60, 520), godz, font=bebas(46), fill=akcent, anchor="ls")
+    gx = 60 + bebas(46).getlength(godz) + 24
+    if hala:
+        fh = barlow(28)
+        while fh.getlength(hala) > 640 - gx and len(hala) > 10:
+            hala = hala[:-2]
+        d.text((gx, 516), hala, font=fh, fill=tekst, anchor="ls")
+    dolny = "VOLLEYKOBYLKA.PL"
+    if wstep_wolny and m.get("u_siebie"):
+        dolny = "WSTĘP WOLNY  ·  " + dolny
+    d.text((60, 572), dolny, font=barlow(30), fill=tekst, anchor="ls")
+    if dopisek:
+        d.text((60, 606), dopisek, font=barlow(20, False), fill=tekst, anchor="ls")
+
+    # karta „Zapraszam!” z numerem i nazwiskiem
+    if zawodniczka and plik_postaci and os.path.isfile(plik_postaci):
+        kx, ky, kw, kh = OW - 400, OH - 150, 360, 110
+        karta = Image.new("RGBA", (kw + 40, kh + 60), (0, 0, 0, 0))
+        dk = ImageDraw.Draw(karta)
+        dk.rounded_rectangle([0, 30, kw, 30 + kh], radius=20, fill=GRANAT_C + (240,), outline=ZOLTY, width=3)
+        dk.rounded_rectangle([18, 8, 196, 50], radius=12, fill=ZOLTY)
+        dk.text((107, 29), "ZAPRASZAM!", font=bebas(32), fill=GRANAT_C, anchor="mm")
+        dk.ellipse([22, 50, 102, 130], fill=ZOLTY)
+        dk.text((62, 92), f"{zawodniczka['numer']}", font=bebas(52), fill=GRANAT_C, anchor="mm")
+        dk.text((120, 74), zawodniczka["imie"].upper(), font=barlow(22), fill=(207, 227, 255), anchor="lm")
+        dk.text((120, 106), zawodniczka["nazwisko"].upper(), font=bebas(48), fill=BIALY, anchor="lm")
+        _cien(im, karta, (kx, ky - 30))
+    return im.convert("RGB")

@@ -331,6 +331,10 @@ def glowa(pelny_tytul, opis, p, wersja, kolor="#002F6C", ikona=None):
 <link rel="icon" type="image/png" sizes="32x32" href="{p}img/favicon-32.png">'''}
 <link rel="apple-touch-icon" href="{p}img/apple-touch-icon.png">
 <link rel="manifest" href="{p}site.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Volley Kobyłka">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preload" href="{p}zasoby/fonty/bebas-neue-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{p}zasoby/fonty/bebas-neue-latin-ext-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{p}zasoby/fonty/barlow-condensed-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -618,6 +622,7 @@ def hero(p, m):
     <div class="hero__szczegoly">
       {godzina}
       <div class="hero__hala"><strong>{e(miejsce)}</strong>{e(adres)}</div>
+      {'<div class="hero__wstep">Wstęp wolny</div>' if m["u_siebie"] and m["druzyna"] == "seniorki" and C.KLUB.get("wstep_wolny") else ''}
     </div>
     {na_zywo}
     {zaproszenie}
@@ -707,6 +712,8 @@ def karta_meczu(p, m):
         miejsce = (miejsce + " · " if miejsce else "") + m["adres"].split(",")[-1].strip()
     if not m.get("godzina") and not m.get("wynik") and d >= date.today():
         miejsce = "Godzina wkrótce" + (f" · {miejsce}" if miejsce else "")
+    if m["u_siebie"] and m["druzyna"] == "seniorki" and not m.get("wynik") and d >= date.today() and C.KLUB.get("wstep_wolny"):
+        miejsce = (miejsce + " · " if miejsce else "") + "Wstęp wolny"
     wstazka = '<div class="mecz__wstazka">Najbliższy mecz</div>' if m.get("najblizszy") else ""
     # Wygrany mecz: zdjęcie z posta o wygranej jako „znak wodny” w tle karty
     tlo = ""
@@ -783,22 +790,39 @@ def karta_zawodniczki(p, z):
 # ---------------------------------------------------------------------
 # Tabela ligowa
 # ---------------------------------------------------------------------
-def tabela_html(p, wiersze, opis_druzyny, podpis):
+def kropki_formy(forma, opis_druzyny=None):
+    """Forma: kropki W/P (najstarszy mecz po lewej, najnowszy po prawej) z opisem po najechaniu."""
+    if not forma:
+        return ""
+    kropki = []
+    for f in forma:
+        rywal = opis_druzyny(f["rywal"])["krotko"] if opis_druzyny else f["rywal"]
+        opis = f'{"Wygrana" if f["w"] else "Porażka"} {f["wynik"]} z {rywal}, {f["data"][8:10]}.{f["data"][5:7]}'
+        kropki.append(f'<span class="forma__k forma__k--{"w" if f["w"] else "p"}" title="{e(opis)}">'
+                      f'<span class="ukryte">{e(opis)}</span></span>')
+    return f'<span class="forma" aria-label="Forma: ostatnie mecze">{"".join(kropki)}</span>'
+
+
+def tabela_html(p, wiersze, opis_druzyny, podpis, forma=None):
     if not wiersze:
         return '<p class="pusto">Tabela pojawi się po pierwszej kolejce.</p>'
     tr = []
     for w in wiersze:
         d = opis_druzyny(w["nazwa"])
+        f = kropki_formy(forma(w["nazwa"]), opis_druzyny) if forma else ""
         tr.append(
             f'<tr{" class=nasz" if w["nasz"] else ""}><td>{w["lp"]}</td>'
             f'<td><span class="tabela__druzyna">{herb(p, d, "tabela__herb")}{nazwa_druzyny(d)}</span></td>'
             f'<td>{w["mecze"]}</td><td class="ukryj-mobile">{w["zwyciestwa"]}</td>'
-            f'<td class="ukryj-mobile">{w["sety_plus"]}:{w["sety_minus"]}</td><td class="pkt">{w["pkt"]}</td></tr>')
+            f'<td class="ukryj-mobile">{w["sety_plus"]}:{w["sety_minus"]}</td>'
+            + (f'<td class="tabela__forma">{f}</td>' if forma else "") +
+            f'<td class="pkt">{w["pkt"]}</td></tr>')
+    th_forma = '<th scope="col" class="tabela__forma" title="Ostatnie mecze – od najstarszego">Forma</th>' if forma else ""
     return f"""
-<div class="tabela-ramka"><table class="tabela">
+<div class="tabela-ramka"><table class="tabela{' tabela--forma' if forma else ''}">
   <caption class="ukryte">{e(podpis)}</caption>
   <thead><tr><th scope="col">#</th><th scope="col">Drużyna</th><th scope="col" title="Mecze">M</th>
-  <th scope="col" class="ukryj-mobile" title="Zwycięstwa">Zw</th><th scope="col" class="ukryj-mobile">Sety</th><th scope="col">Pkt</th></tr></thead>
+  <th scope="col" class="ukryj-mobile" title="Zwycięstwa">Zw</th><th scope="col" class="ukryj-mobile">Sety</th>{th_forma}<th scope="col">Pkt</th></tr></thead>
   <tbody>{''.join(tr)}</tbody>
 </table></div>"""
 
@@ -843,3 +867,50 @@ def akapity(tekst):
     """Zwykły tekst z content.py → akapity HTML (pusta linia = nowy akapit)."""
     czesci = [c.strip() for c in str(tekst or "").strip().split("\n\n") if c.strip()]
     return "".join(f"<p>{e(' '.join(c.split()))}</p>" for c in czesci)
+
+
+# ---------------------------------------------------------------------
+# „Przed meczem” – pod plakatem najbliższego meczu: miejsca w tabeli,
+# forma obu drużyn i wcześniejsze mecze tych drużyn w tym sezonie
+# ---------------------------------------------------------------------
+def przed_meczem(p, m, wiersz_gosp, wiersz_gosc, forma_gosp, forma_gosc, bezposrednie, opis_druzyny):
+    gosp, gosc = m["strony"]
+    if not gosc or not (wiersz_gosp and wiersz_gosc):
+        return ""
+
+    def kolumna(strona, w, forma):
+        wygrane = sum(1 for f in forma if f["w"])
+        seria = ""
+        if forma:
+            ost = forma[-1]["w"]
+            n = 0
+            for f in reversed(forma):
+                if f["w"] != ost:
+                    break
+                n += 1
+            if n >= 2:
+                seria = f'<span class="przed__seria">{n} {"wygrane" if ost else "porażki"} z rzędu</span>' if n < 5 else \
+                        f'<span class="przed__seria">{n} {"wygranych" if ost else "porażek"} z rzędu</span>'
+        return f"""<div class="przed__druzyna{' przed__druzyna--nasza' if strona.get('nasza') else ''}">
+      {herb(p, strona, "przed__herb")}
+      <div><strong class="przed__nazwa">{e(strona['krotko'])}</strong>
+      <span class="przed__miejsce"><b>{w['lp']}.</b> miejsce · {w['pkt']} pkt · sety {w['sety_plus']}:{w['sety_minus']}</span>
+      <span class="przed__forma">{kropki_formy(forma, opis_druzyny)}<span>{wygrane} z {len(forma)} ostatnich wygranych</span></span>
+      {seria}</div>
+    </div>"""
+
+    if bezposrednie:
+        mecze = "".join(
+            f'<li><time>{b["data"][8:10]}.{b["data"][5:7]}</time> {e(opis_druzyny(b["gospodarz"])["krotko"])} – '
+            f'{e(opis_druzyny(b["gosc"])["krotko"])} <b>{e(b["wynik"])}</b></li>' for b in bezposrednie)
+        h2h = f'<div class="przed__h2h"><span>W tym sezonie</span><ul>{mecze}</ul></div>'
+    else:
+        h2h = '<div class="przed__h2h"><span>W tym sezonie</span><p>Pierwszy mecz tych drużyn</p></div>'
+    return f"""
+<section class="przed" aria-labelledby="przed-tytul">
+  <div class="kontener"><div class="przed__karta pojaw">
+    <h2 class="przed__tytul" id="przed-tytul">Przed meczem</h2>
+    <div class="przed__pary">{kolumna(gosp, wiersz_gosp, forma_gosp)}<span class="przed__vs" aria-hidden="true">vs</span>{kolumna(gosc, wiersz_gosc, forma_gosc)}</div>
+    {h2h}
+  </div></div>
+</section>"""

@@ -32,6 +32,7 @@ from szablony import e       # noqa: E402
 WYJSCIE = os.path.join(FOLDER, "strona")
 GLOWNA = "seniorki"          # drużyna pokazywana w belce i na plakacie
 DZIS = date.today()
+OG_ZAPOWIEDZ = None          # obraz podglądu linku z najbliższym meczem (ustawia main(), gdy uda się go zrobić)
 
 
 # =====================================================================
@@ -202,6 +203,8 @@ def seo_glowa(sciezka, html):
     akademia = sciezka.startswith("akademia")
     baza = C.KLUB["adres_strony"].rstrip("/") + "/"
     obraz = baza + ("img/og-akademia.jpg" if akademia else "img/og-klub.jpg")
+    if not akademia and OG_ZAPOWIEDZ and sciezka in ("index.html", S.START_DRUZYNY, "terminarz.html"):
+        obraz = baza + OG_ZAPOWIEDZ   # podgląd linku = aktualna zapowiedź meczu
     if sciezka in ("404.html", "statystyki.html"):
         dodatki = '<meta name="robots" content="noindex">'
     else:
@@ -244,6 +247,20 @@ def wersja_zasobow():
 POLITYKA_DATA = "28 października 2026"
 
 
+def forma_druzyn(wszystkie):
+    """Wyniki całej grupy → {nazwa (norm): [mecze od najstarszego]} z punktu widzenia każdej drużyny."""
+    forma = {}
+    for w in sorted(wszystkie or [], key=lambda x: x["data"]):
+        try:
+            a, b = (int(x) for x in w["wynik"].split(":"))
+        except ValueError:
+            continue
+        for nazwa, rywal, moje, jego in ((w["gospodarz"], w["gosc"], a, b), (w["gosc"], w["gospodarz"], b, a)):
+            forma.setdefault(zrodla.norm(nazwa), []).append(
+                {"data": w["data"], "rywal": rywal, "wynik": f"{moje}:{jego}", "w": moje > jego})
+    return forma
+
+
 class Budowa:
     def __init__(self, dane_zwiazkowe):
         self.dane = dane_zwiazkowe
@@ -258,6 +275,30 @@ class Budowa:
             self.najblizszy["najblizszy"] = True   # wyróżnienie na kartach meczów
         self.newsy = sorted(C.NEWSY, key=lambda n: n["data"], reverse=True)
         self.newsy_akademii = []       # uzupełnia main() z postów FB Akademii
+        self.wyniki_grupy = (dane_zwiazkowe.get(GLOWNA) or {}).get("wszystkie") or []
+        self._forma = forma_druzyn(self.wyniki_grupy)
+
+    def forma(self, nazwa, ile=5):
+        return self._forma.get(zrodla.norm(nazwa), [])[-ile:]
+
+    def przed_meczem(self, p):
+        """Blok „Przed meczem” pod plakatem: miejsca, forma, wcześniejsze mecze tych drużyn."""
+        m = self.najblizszy
+        if not m or not m["strony"][1] or not self.tabela():
+            return ""
+        def wiersz(strona):
+            for w in self.tabela():
+                d = opis_druzyny(w["nazwa"])
+                if (strona.get("nasza") and w["nasz"]) or (not strona.get("nasza") and d["krotko"] == strona["krotko"]):
+                    return w
+            return None
+        wg, wh = (wiersz(x) for x in m["strony"])
+        if not (wg and wh):
+            return ""
+        ng, nh = zrodla.norm(wg["nazwa"]), zrodla.norm(wh["nazwa"])
+        bezp = [w for w in self.wyniki_grupy if {zrodla.norm(w["gospodarz"]), zrodla.norm(w["gosc"])} == {ng, nh}]
+        return S.przed_meczem(p, m, wg, wh, self.forma(wg["nazwa"]), self.forma(wh["nazwa"]),
+                              sorted(bezp, key=lambda x: x["data"]), opis_druzyny)
 
     # --- wspólny układ ---------------------------------------------------
     def strona(self, plik, tytul, opis, tresc, aktywna=None, p=None):
@@ -299,6 +340,7 @@ class Budowa:
             return f"""
 {S.okienko_zapowiedzi(p, self.zapowiedz, C.ZAPOWIEDZ, self.najblizszy)}
 {S.hero(p, self.najblizszy)}
+{self.przed_meczem(p)}
 <section class="sekcja sekcja--po-hero" aria-labelledby="news-tytul">
   <div class="kontener">
     {S.naglowek_sekcji('Aktualności', '', p + 'aktualnosci.html', 'Wszystkie', id_='news-tytul')}
@@ -321,7 +363,7 @@ class Budowa:
     <div class="pojaw">
       {S.naglowek_sekcji('Tabela', '', p + 'terminarz.html#tabela', 'Terminarz i tabela', id_='tabela-tytul')}
       {S.prezentuje('tabela', p)}
-      {S.tabela_html(p, self.tabela(), opis_druzyny, C.DRUZYNY[GLOWNA]['liga'])}
+      {S.tabela_html(p, self.tabela(), opis_druzyny, C.DRUZYNY[GLOWNA]['liga'], self.forma)}
     </div>
   </div>
 </section>
@@ -438,7 +480,7 @@ class Budowa:
   <div class="kontener">
     {S.naglowek_sekcji('Tabela', C.DRUZYNY[GLOWNA]['liga'], id_='tabela-tytul')}
     {S.prezentuje('tabela', p)}
-    {S.tabela_html(p, self.tabela(), opis_druzyny, C.DRUZYNY[GLOWNA]['liga'])}
+    {S.tabela_html(p, self.tabela(), opis_druzyny, C.DRUZYNY[GLOWNA]['liga'], self.forma)}
   </div>
 </section>
 <section class="sekcja" id="kalendarium" aria-labelledby="kal-tytul">
@@ -1175,6 +1217,31 @@ def podepnij_relacje(mecze, newsy):
                 break
 
 
+def podepnij_mvp(mecze, posty):
+    """Mecz bez wpisanego MVP dostaje zawodniczkę z posta FB o nagrodzie MVP (do 4 dni po meczu).
+    Nazwisko rozpoznawane też w odmianie („Adrianny Sitarskiej”)."""
+    kadra = [z for z in C.KADRA if z["druzyna"] == GLOWNA]
+    def rdzen(slowo):
+        slowo = slowo.lower()
+        return slowo[:-1] if len(slowo) > 4 else slowo
+    for m in mecze:
+        if not m.get("wynik") or m.get("mvp") or m["druzyna"] != GLOWNA:
+            continue
+        for post in sorted(posty or [], key=lambda x: x.get("czas") or ""):
+            opis = post.get("opis") or ""
+            if "mvp" not in opis.lower() or not post.get("czas"):
+                continue
+            dni = (date.fromisoformat(post["czas"][:10]) - m["data"]).days
+            if not 0 <= dni <= 4:
+                continue
+            tekst = opis.lower()
+            trafione = [z for z in kadra if re.search(r"\b" + re.escape(rdzen(z["nazwisko"])) + r"\w{0,4}\b", tekst)]
+            if len(trafione) == 1:
+                z = trafione[0]
+                m["mvp"] = f'{z["imie"]} {z["nazwisko"]}'
+                break
+
+
 def mecz_do_zapowiedzi(mecz):
     """Data najbliższego meczu i wszystkie znane nazwy rywala – do rozpoznania posta z plakatem."""
     if mecz is None:
@@ -1199,6 +1266,7 @@ def main():
 
     # Aktualności z Facebooka (drużyna i Akademia) – sprawdzane 2 razy dziennie
     nowe_fb_druzyny = None
+    posty_fb_druzyny = []
     for czesc in ("druzyna", "akademia"):
         try:
             zapisane, nowe, uwaga = zrodla.aktualnosci_fb(czesc, C.POSTY_FB, bez_internetu)
@@ -1209,12 +1277,17 @@ def main():
         kategoria = (C.POSTY_FB.get(czesc) or {}).get("kategoria", "Klub")
         if czesc == "druzyna":
             nowe_fb_druzyny = nowe
+            posty_fb_druzyny = zapisane
             b.newsy = sorted(C.NEWSY + newsy_z_fb(zapisane, kategoria),
                              key=lambda n: n.get("czas") or n["data"], reverse=True)
         else:
             b.newsy_akademii = newsy_z_fb(zapisane, kategoria)
         print(f"  Aktualności z FB ({czesc}): {len(zapisane)}" + (" – sprawdzono nowe posty" if nowe is not None else ""))
     podepnij_relacje(b.mecze, b.newsy)
+    try:
+        podepnij_mvp(b.mecze, posty_fb_druzyny)
+    except Exception as blad:
+        print(f"  UWAGA: MVP z postów FB: {type(blad).__name__} – pomijam")
 
     # Posty z Instagrama/Facebooka: zapowiedź meczu i zdjęcia wygranych.
     # Każdy błąd tylko pomija zdjęcie – nigdy nie zatrzymuje budowania strony.
@@ -1250,6 +1323,23 @@ def main():
     if os.path.isdir(os.path.join(FOLDER, "img")):
         shutil.copytree(os.path.join(FOLDER, "img"), os.path.join(WYJSCIE, "img"))
 
+    # Podgląd linku (Facebook, Messenger, WhatsApp): grafika z najbliższym meczem.
+    # Nazwa pliku z datą meczu – nowy mecz = nowy adres, więc Facebook nie pokaże starego obrazka.
+    global OG_ZAPOWIEDZ
+    if b.najblizszy:
+        try:
+            import grafika
+            z = S.postac_do_plakatu(b.najblizszy)
+            plik = f"img/og/zapowiedz-{b.najblizszy['data'].isoformat()}.jpg"
+            os.makedirs(os.path.join(WYJSCIE, "img", "og"), exist_ok=True)
+            grafika.grafika_og(b.najblizszy, os.path.join(FOLDER, "img"),
+                               os.path.join(FOLDER, "img", z["zdjecie"]) if z else None,
+                               z, S.DNI, S.MIESIACE_DOP, S.inicjaly,
+                               C.KLUB.get("wstep_wolny"), C.KLUB.get("dopisek_grafiki")).save(os.path.join(WYJSCIE, plik), "JPEG", quality=86, optimize=True)
+            OG_ZAPOWIEDZ = plik
+        except Exception as blad:
+            print(f"  UWAGA: podgląd linku: {type(blad).__name__}: {blad} – zostaje ogólna grafika")
+
     b.wybor()
     b.strona_glowna()
     b.terminarz()
@@ -1283,10 +1373,24 @@ def main():
     # Ikona strony: favicon.ico w katalogu głównym (przeglądarki i Google szukają jej tam) + manifest
     if os.path.isfile(os.path.join(FOLDER, "img", "favicon.ico")):
         shutil.copy(os.path.join(FOLDER, "img", "favicon.ico"), os.path.join(WYJSCIE, "favicon.ico"))
-    zapisz("site.webmanifest", '{"name":"KS Volley Kobyłka","short_name":"Volley Kobyłka",'
-           '"icons":[{"src":"img/favicon-192.png","sizes":"192x192","type":"image/png"},'
-           '{"src":"img/favicon-512.png","sizes":"512x512","type":"image/png"}],'
-           '"theme_color":"#002F6C","background_color":"#ffffff","display":"browser"}')
+    # Strona jak aplikacja: po „Dodaj do ekranu głównego” otwiera się bez paska przeglądarki
+    zapisz("site.webmanifest", json.dumps({
+        "name": "Volley Kobyłka – Easy Wrap Volley", "short_name": "Volley Kobyłka",
+        "description": "Mecze, wyniki, tabela i kadra Easy Wrap Volley Kobyłka",
+        "id": "./", "start_url": f"./{S.START_DRUZYNY}?z=aplikacja", "scope": "./",
+        "display": "standalone", "orientation": "portrait",
+        "theme_color": "#002F6C", "background_color": "#ffffff", "lang": "pl",
+        "icons": [{"src": "img/favicon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+                  {"src": "img/favicon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}],
+        "shortcuts": [{"name": "Terminarz", "url": "./terminarz.html"},
+                      {"name": "Tabela", "url": "./terminarz.html#tabela"},
+                      {"name": "Kadra", "url": "./druzyny.html"}],
+    }, ensure_ascii=False))
+    # Service worker: strona działa też bez internetu (ostatnio odwiedzone podstrony + terminarz)
+    sw = open(os.path.join(FOLDER, "zasoby", "sw-szablon.js"), encoding="utf-8").read()
+    sw = sw.replace("__WERSJA__", f"{b.wersja}-{datetime.now().strftime('%Y%m%d%H%M')}") \
+           .replace("__START__", S.START_DRUZYNY).replace("__ZASOB_V__", b.wersja)
+    zapisz("sw.js", sw)
 
     # IndexNow (Bing, Yandex, Seznam): plik z kluczem w katalogu głównym – pozwala szybko zgłaszać zmiany strony
     zapisz("626555853380b51c3aa9050ff937c69a.txt", "626555853380b51c3aa9050ff937c69a")

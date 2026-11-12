@@ -1161,3 +1161,54 @@ html[data-czcionka="1"] :is(.sekcja__tytul,.plakat__tytul,.hero__data,.hero__pos
 html[data-czcionka="2"] :is(.sekcja__tytul,.plakat__tytul,.hero__data,.hero__postac,.hero__vs,.mecz__data,.ostatni__wynik,.kafel__slowo,.ak-tytul,.ak-h2,.pm__imie,.panel__nr,.zawodniczka__numer,.news__znak){zoom:.6667}
 /* Przy powiększeniu zdjęcie zawodniczki nie wchodzi pod tekst plakatu – zostaje sama karta „Zapraszam!” */
 html[data-czcionka] .hero__postac-img{display:none}
+
+/* =====================================================================
+   FORMA W TABELI – kropki ostatnich meczów (od najstarszego do najnowszego)
+   ===================================================================== */
+.forma{display:inline-flex;gap:4px;align-items:center;vertical-align:middle}
+.forma__k{width:12px;height:12px;border-radius:50%;flex:none;display:inline-block}
+.forma__k--w{background:#1F9D55}
+.forma__k--p{background:#D64545}
+.forma__k:last-child{box-shadow:0 0 0 2px #fff,0 0 0 3.5px currentColor}
+.tabela .tabela__forma{white-space:nowrap;padding-left:4px;padding-right:4px;color:var(--granat)}
+.tabela tr.nasz .tabela__forma{color:#fff}
+.tabela tr.nasz .forma__k:last-child{box-shadow:0 0 0 2px var(--granat),0 0 0 3.5px #fff}
+@media (max-width:479px){
+  .tabela--forma .forma__k{width:9px;height:9px}
+  .tabela--forma .forma{gap:3px}
+  .tabela--forma .forma__k:nth-last-child(n+4){display:none}   /* na wąskim telefonie 3 ostatnie mecze */
+}
+
+/* =====================================================================
+   PRZED MECZEM – pod plakatem najbliższego meczu
+   ===================================================================== */
+.przed{padding:22px 0 0}
+.przed__karta{background:#fff;border-radius:var(--r-l,22px);box-shadow:0 6px 20px rgba(0,26,63,.08);padding:20px 22px;display:grid;gap:14px}
+.przed__tytul{margin:0;font-family:var(--font-tresc);font-weight:700;font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:var(--blekit-tekst)}
+.przed__pary{display:grid;gap:12px}
+.przed__vs{display:none}
+.przed__druzyna{display:flex;gap:14px;align-items:flex-start}
+.przed__herb{width:52px;height:52px;object-fit:contain;flex:none}
+.przed__druzyna svg.przed__herb,.przed__druzyna svg{width:46px;height:54px;flex:none}
+.przed__nazwa{display:block;font-family:var(--font-naglowki);font-weight:400;font-size:28px;line-height:1;color:var(--granat)}
+.przed__miejsce{display:block;font-size:16px;color:var(--tekst-szary);margin-top:4px}
+.przed__miejsce b{color:var(--granat);font-size:18px}
+.przed__forma{display:flex;gap:10px;align-items:center;margin-top:6px;font-size:15px;color:var(--tekst-szary);flex-wrap:wrap}
+.przed__forma .forma__k{width:14px;height:14px;color:var(--granat)}
+.przed__seria{display:inline-block;margin-top:6px;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--blekit-jasny);color:var(--granat);padding:3px 10px;border-radius:999px}
+.przed__h2h{border-top:1px solid var(--linia);padding-top:12px;display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;font-size:16px}
+.przed__h2h>span{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--tekst-szary)}
+.przed__h2h ul{list-style:none;margin:0;padding:0;display:flex;gap:6px 18px;flex-wrap:wrap}
+.przed__h2h p{margin:0;font-weight:600;color:var(--granat)}
+.przed__h2h time{color:var(--tekst-szary);margin-right:4px}
+.przed__h2h b{font-family:var(--font-naglowki);font-weight:400;font-size:22px;color:var(--granat);margin-left:4px}
+@media (min-width:760px){
+  .przed__karta{grid-template-columns:auto 1fr;align-items:center;padding:20px 28px;column-gap:28px}
+  .przed__tytul{grid-row:1/3;writing-mode:vertical-rl;transform:rotate(180deg);font-size:13px}
+  .przed__pary{grid-template-columns:1fr auto 1fr;align-items:center;gap:20px}
+  .przed__vs{display:block;font-family:var(--font-naglowki);font-size:34px;color:var(--blekit-tekst)}
+}
+.sekcja--po-hero{padding-top:36px}
+
+/* Wstęp wolny – mecze u siebie */
+.hero__wstep{display:inline-block;margin-top:8px;background:var(--zolty);color:var(--granat-ciemny);font-weight:700;font-size:14px;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:999px}

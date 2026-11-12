@@ -38,6 +38,8 @@ KLUB = {
     "instagram": "https://instagram.com/easy_wrap_volley_kobylka",
     "youtube": "https://youtube.com/@ks_Volley",
     # Drobny dopisek na dole automatycznych grafik „Wynik meczu” (None = bez dopisku)
+    # Mecze u siebie: dopisek „Wstęp wolny” na plakacie meczu i w kartach (False = bez dopisku)
+    "wstep_wolny": True,
     "dopisek_grafiki": "Zadanie współfinansowane ze środków Miasta Kobyłka",
     # Wynik na żywo w trakcie meczu – przycisk na planszy meczu (od pierwszego gwizdka przez ok. 2,5 h)
     "wyniki_na_zywo": "https://2ligakobiet.volleystation.com/pl/",
