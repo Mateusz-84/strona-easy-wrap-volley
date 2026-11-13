@@ -782,3 +782,88 @@
     navigator.serviceWorker.register(adres.href, { scope: new URL('../', skrypt.src).pathname }).catch(function () {});
   });
 })();
+
+/* =====================================================================
+   RUCH PRZY PRZEWIJANIU – każdy element strony reaguje na przewijanie:
+   wjeżdża, gdy pojawia się na ekranie (kolejno, z małym opóźnieniem),
+   chowa się, gdy przewijasz z powrotem w górę, a duże napisy i zdjęcia
+   lekko „płyną” (paralaksa). Wyłączone, gdy telefon ma ograniczone animacje.
+   ===================================================================== */
+(function () {
+  'use strict';
+  if (!('IntersectionObserver' in window)) return;
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var GRUPY = [
+    ['ruch--lewo', 'main .sekcja__tytul, main .plakat__tytul, main .pm__imie, main .przed__tytul, main h2:not(.ukryte), main h3'],
+    ['ruch--karta', 'main .mecz, main .zawodniczka, main .news, main .kafel, main .przed__karta, main .ostatni, main .kal-sub, main .pm__fakty > div, main .zapr, main .ciek, main [class*="sponsor"] a, main .sponsor, main .grupa, main .cennik > *, main .fakt'],
+    ['ruch--obraz', 'main img, main .pm__zdjecie'],
+    ['ruch--wiersz', 'main .tabela tbody tr, main li, main dl > div, main .pm__qa'],
+    ['ruch--gora', 'main p, main .btn, main .btn-kal, main .filtry, main .terminarz-pasek, main table, main form, .stopka__kolumny > div, .stopka p']
+  ];
+
+  // stare „pojawianie się całych sekcji” zastępuje ruch pojedynczych elementów
+  document.querySelectorAll('.pojaw').forEach(function (el) { el.classList.add('widoczne'); });
+  var wszystkie = [];
+  GRUPY.forEach(function (g) {
+    document.querySelectorAll(g[1]).forEach(function (el) {
+      if (el.classList.contains('ruch')) return;
+      if (el.closest('.hero, .ak-hero, .wybor, .belka, .naglowek, .dolny-pasek, .zapowiedz, .zawodniczka__wiecej, .sw')) return;
+      // nie animuj elementu, którego rodzic już jest animowany (np. akapit w karcie)
+      var r = el.parentElement;
+      while (r && r !== document.body) { if (r.classList.contains('ruch')) return; r = r.parentElement; }
+      el.classList.add('ruch', g[0]);
+      wszystkie.push(el);
+    });
+  });
+  if (!wszystkie.length) return;
+  document.documentElement.classList.add('ruch-gotowy');
+
+  // kolejność „fali”: elementy pojawiające się razem dostają rosnące opóźnienie
+  var kolejka = [], zegar = null;
+  function pokaz() {
+    kolejka.sort(function (a, b) {
+      var ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+      return (ra.top - rb.top) || (ra.left - rb.left);
+    }).forEach(function (el, i) {
+      el.style.setProperty('--ruch-opoznienie', Math.min(i * 70, 420) + 'ms');
+      el.classList.add('ruch--widoczny');
+    });
+    kolejka = []; zegar = null;
+  }
+  var obs = new IntersectionObserver(function (wpisy) {
+    wpisy.forEach(function (w) {
+      var el = w.target;
+      if (w.isIntersecting) {
+        kolejka.push(el);
+        if (!zegar) zegar = requestAnimationFrame(pokaz);
+      } else if (w.boundingClientRect.top > 0) {
+        // element zszedł dołem ekranu (przewijanie w górę) – schowaj, żeby znów wjechał
+        el.classList.remove('ruch--widoczny');
+        el.style.removeProperty('--ruch-opoznienie');
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -6% 0px' });
+  wszystkie.forEach(function (el) { obs.observe(el); });
+
+  // paralaksa dużych napisów, numerów i zdjęć
+  var plyn = Array.prototype.slice.call(document.querySelectorAll(
+    'main .sekcja__tytul, main .plakat__tytul, main .pm__nr, main .zawodniczka__numer, .hero__postac-img, .ak-hero__logo, main .plakat__tlo'));
+  plyn = plyn.filter(function (el) { return !el.closest('.zawodniczka__wiecej'); });
+  if (!plyn.length) return;
+  var czeka = false;
+  function przesun() {
+    czeka = false;
+    var h = window.innerHeight;
+    plyn.forEach(function (el) {
+      var r = el.getBoundingClientRect();
+      if (r.bottom < -100 || r.top > h + 100) return;
+      var srodek = (r.top + r.height / 2 - h / 2) / h;           // -1 … 1
+      var sila = el.classList.contains('hero__postac-img') ? -40 : el.matches('.pm__nr, .zawodniczka__numer') ? -60 : -24;
+      el.style.setProperty('--plyn', (srodek * sila).toFixed(1) + 'px');
+    });
+  }
+  window.addEventListener('scroll', function () { if (!czeka) { czeka = true; requestAnimationFrame(przesun); } }, { passive: true });
+  window.addEventListener('resize', przesun);
+  przesun();
+})();

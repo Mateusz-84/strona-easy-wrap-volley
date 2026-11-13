@@ -1256,3 +1256,26 @@ html.szybko :is(.hero,.ak-hero,.wybor) *:not(.sw):not(.sw *){animation-delay:0s!
 .btn-kal svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
 .btn-kal:hover{filter:brightness(.95)}
 @media (max-width:599px){.pm__kluby li{grid-template-columns:1fr;gap:0}.pm__kluby li b{margin-left:0}}
+
+/* =====================================================================
+   RUCH PRZY PRZEWIJANIU (main.js dodaje klasy .ruch)
+   ===================================================================== */
+.ruch-gotowy .ruch{opacity:0;transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1),filter .8s ease;
+  transition-delay:var(--ruch-opoznienie,0ms);will-change:opacity,transform}
+.ruch-gotowy .ruch--gora{transform:translateY(34px)}
+.ruch-gotowy .ruch--lewo{transform:translateX(-46px)}
+.ruch-gotowy .ruch--karta{transform:translateY(48px) scale(.94)}
+.ruch-gotowy .ruch--karta:nth-child(even){transform:translateY(60px) scale(.94) rotate(.6deg)}
+.ruch-gotowy .ruch--obraz{transform:scale(1.08);filter:blur(6px)}
+.ruch-gotowy .ruch--wiersz{transform:translateX(24px)}
+.ruch-gotowy tr.ruch--wiersz{transform:none}
+.ruch-gotowy .ruch.ruch--widoczny{opacity:1;transform:none;filter:none}
+/* po wjeździe karty dalej reagują na najechanie */
+.ruch-gotowy .ruch--karta.ruch--widoczny{transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .35s ease,filter .8s ease}
+
+/* paralaksa – elementy przesuwają się wolniej niż strona */
+.sekcja__tytul,.plakat__tytul,.pm__nr,.zawodniczka__numer,.ak-hero__logo,.plakat__tlo{translate:0 var(--plyn,0px)}
+.hero__postac-img{translate:0 var(--plyn,0px)}
+
+@media (prefers-reduced-motion:reduce){.ruch-gotowy .ruch{opacity:1!important;transform:none!important;filter:none!important}}
+@media print{.ruch-gotowy .ruch{opacity:1!important;transform:none!important;filter:none!important}}
