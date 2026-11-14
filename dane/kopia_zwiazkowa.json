@@ -47,7 +47,7 @@
   }
  },
  "seniorki": {
-  "pobrano": "2026-11-14T19:41",
+  "pobrano": "2026-11-14T21:38",
   "pzps_lista": [
    {
     "data": "2026-09-26",
@@ -252,18 +252,30 @@
    "tabela": [
     {
      "lp": 1,
-     "male_minus": 526,
-     "male_plus": 669,
-     "mecze": 8,
+     "male_minus": 581,
+     "male_plus": 744,
+     "mecze": 9,
      "nasz": true,
      "nazwa": "EASY WRAP Volley Kobyłka",
-     "pkt": 21,
+     "pkt": 24,
      "sety_minus": 6,
-     "sety_plus": 23,
-     "zwyciestwa": 7
+     "sety_plus": 26,
+     "zwyciestwa": 8
     },
     {
      "lp": 2,
+     "male_minus": 765,
+     "male_plus": 808,
+     "mecze": 9,
+     "nasz": false,
+     "nazwa": "TPS Bielsk Podlaski",
+     "pkt": 19,
+     "sety_minus": 14,
+     "sety_plus": 22,
+     "zwyciestwa": 7
+    },
+    {
+     "lp": 3,
      "male_minus": 561,
      "male_plus": 660,
      "mecze": 8,
@@ -275,27 +287,15 @@
      "zwyciestwa": 6
     },
     {
-     "lp": 3,
-     "male_minus": 641,
-     "male_plus": 712,
-     "mecze": 8,
+     "lp": 4,
+     "male_minus": 716,
+     "male_plus": 767,
+     "mecze": 9,
      "nasz": false,
      "nazwa": "SMS Ostrów Łaskovia Łask",
      "pkt": 18,
-     "sety_minus": 10,
-     "sety_plus": 20,
-     "zwyciestwa": 6
-    },
-    {
-     "lp": 4,
-     "male_minus": 697,
-     "male_plus": 716,
-     "mecze": 8,
-     "nasz": false,
-     "nazwa": "TPS Bielsk Podlaski",
-     "pkt": 16,
      "sety_minus": 13,
-     "sety_plus": 19,
+     "sety_plus": 20,
      "zwyciestwa": 6
     },
     {
@@ -324,18 +324,30 @@
     },
     {
      "lp": 7,
-     "male_minus": 644,
-     "male_plus": 648,
-     "mecze": 8,
+     "male_minus": 709,
+     "male_plus": 722,
+     "mecze": 9,
      "nasz": false,
-     "nazwa": "Libero VIP Gwarant Aleksandrów Łódzki",
+     "nazwa": "MAPEI BARYCZ Janków Przygodzki",
      "pkt": 12,
-     "sety_minus": 15,
-     "sety_plus": 14,
+     "sety_minus": 18,
+     "sety_plus": 16,
      "zwyciestwa": 4
     },
     {
      "lp": 8,
+     "male_minus": 719,
+     "male_plus": 702,
+     "mecze": 9,
+     "nasz": false,
+     "nazwa": "Libero VIP Gwarant Aleksandrów Łódzki",
+     "pkt": 12,
+     "sety_minus": 18,
+     "sety_plus": 14,
+     "zwyciestwa": 4
+    },
+    {
+     "lp": 9,
      "male_minus": 698,
      "male_plus": 681,
      "mecze": 8,
@@ -344,18 +356,6 @@
      "pkt": 9,
      "sety_minus": 19,
      "sety_plus": 14,
-     "zwyciestwa": 3
-    },
-    {
-     "lp": 9,
-     "male_minus": 655,
-     "male_plus": 647,
-     "mecze": 8,
-     "nasz": false,
-     "nazwa": "MAPEI BARYCZ Janków Przygodzki",
-     "pkt": 9,
-     "sety_minus": 18,
-     "sety_plus": 13,
      "zwyciestwa": 3
     },
     {
@@ -384,14 +384,14 @@
     },
     {
      "lp": 12,
-     "male_minus": 642,
-     "male_plus": 460,
-     "mecze": 8,
+     "male_minus": 734,
+     "male_plus": 528,
+     "mecze": 9,
      "nasz": false,
      "nazwa": "MKS Kalisz II",
      "pkt": 0,
-     "sety_minus": 24,
-     "sety_plus": 2,
+     "sety_minus": 27,
+     "sety_plus": 3,
      "zwyciestwa": 0
     }
    ],
@@ -689,6 +689,24 @@
      "gosc": "AZS AWF Varsovia",
      "gospodarz": "ŁKS AZS UMED Łódź",
      "wynik": "2:3"
+    },
+    {
+     "data": "2026-11-14",
+     "gosc": "TPS Bielsk Podlaski",
+     "gospodarz": "MKS Kalisz II",
+     "wynik": "1:3"
+    },
+    {
+     "data": "2026-11-14",
+     "gosc": "Libero VIP Gwarant Aleksandrów Łódzki",
+     "gospodarz": "MAPEI BARYCZ Janków Przygodzki",
+     "wynik": "3:0"
+    },
+    {
+     "data": "2026-11-14",
+     "gosc": "EASY WRAP Volley Kobyłka",
+     "gospodarz": "SMS Ostrów Łaskovia Łask",
+     "wynik": "0:3"
     }
    ],
    "wyniki": {
@@ -768,6 +786,15 @@
       "25:15"
      ],
      "wynik": "3:0"
+    },
+    "/system/mecz/185/": {
+     "data": "2026-11-14",
+     "sety": [
+      "19:25",
+      "15:25",
+      "21:25"
+     ],
+     "wynik": "0:3"
     }
    }
   },
