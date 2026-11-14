@@ -47,7 +47,7 @@
   }
  },
  "seniorki": {
-  "pobrano": "2026-11-14T22:37",
+  "pobrano": "2026-11-14T23:37",
   "pzps_lista": [
    {
     "data": "2026-09-26",
@@ -348,15 +348,15 @@
     },
     {
      "lp": 9,
-     "male_minus": 698,
-     "male_plus": 681,
-     "mecze": 8,
+     "male_minus": 783,
+     "male_plus": 783,
+     "mecze": 9,
      "nasz": false,
      "nazwa": "MOS Wola AZS Warszawa",
-     "pkt": 9,
-     "sety_minus": 19,
-     "sety_plus": 14,
-     "zwyciestwa": 3
+     "pkt": 11,
+     "sety_minus": 21,
+     "sety_plus": 17,
+     "zwyciestwa": 4
     },
     {
      "lp": 10,
@@ -372,14 +372,14 @@
     },
     {
      "lp": 11,
-     "male_minus": 648,
-     "male_plus": 593,
-     "mecze": 8,
+     "male_minus": 750,
+     "male_plus": 678,
+     "mecze": 9,
      "nasz": false,
      "nazwa": "MUKS Krótka",
-     "pkt": 8,
-     "sety_minus": 18,
-     "sety_plus": 10,
+     "pkt": 9,
+     "sety_minus": 21,
+     "sety_plus": 12,
      "zwyciestwa": 2
     },
     {
@@ -695,6 +695,12 @@
      "gosc": "TPS Bielsk Podlaski",
      "gospodarz": "MKS Kalisz II",
      "wynik": "1:3"
+    },
+    {
+     "data": "2026-11-14",
+     "gosc": "MOS Wola AZS Warszawa",
+     "gospodarz": "MUKS Krótka",
+     "wynik": "2:3"
     },
     {
      "data": "2026-11-14",
