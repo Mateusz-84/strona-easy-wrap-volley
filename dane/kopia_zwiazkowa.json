@@ -47,7 +47,7 @@
   }
  },
  "seniorki": {
-  "pobrano": "2026-11-14T18:36",
+  "pobrano": "2026-11-14T19:41",
   "pzps_lista": [
    {
     "data": "2026-09-26",
@@ -300,15 +300,15 @@
     },
     {
      "lp": 5,
-     "male_minus": 747,
-     "male_plus": 754,
-     "mecze": 8,
+     "male_minus": 843,
+     "male_plus": 854,
+     "mecze": 9,
      "nasz": false,
      "nazwa": "AZS AWF Varsovia",
-     "pkt": 13,
-     "sety_minus": 16,
-     "sety_plus": 19,
-     "zwyciestwa": 4
+     "pkt": 15,
+     "sety_minus": 18,
+     "sety_plus": 22,
+     "zwyciestwa": 5
     },
     {
      "lp": 6,
@@ -360,14 +360,14 @@
     },
     {
      "lp": 10,
-     "male_minus": 674,
-     "male_plus": 604,
-     "mecze": 8,
+     "male_minus": 774,
+     "male_plus": 700,
+     "mecze": 9,
      "nasz": false,
      "nazwa": "ŁKS AZS UMED Łódź",
-     "pkt": 8,
-     "sety_minus": 18,
-     "sety_plus": 12,
+     "pkt": 9,
+     "sety_minus": 21,
+     "sety_plus": 14,
      "zwyciestwa": 3
     },
     {
@@ -683,6 +683,12 @@
      "gosc": "ŁKS AZS UMED Łódź",
      "gospodarz": "TPS Bielsk Podlaski",
      "wynik": "3:1"
+    },
+    {
+     "data": "2026-11-14",
+     "gosc": "AZS AWF Varsovia",
+     "gospodarz": "ŁKS AZS UMED Łódź",
+     "wynik": "2:3"
     }
    ],
    "wyniki": {
