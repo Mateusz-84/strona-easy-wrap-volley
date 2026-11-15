@@ -187,6 +187,12 @@ def licznik_html():
             f'<span class="ukryte">Odwiedziny strony: </span><span data-wyswietlenia-liczba></span></span>')
 
 
+WSTEP_WOLNY_HTML = ('<span class="hero__wstep"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" '
+    'stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+    '<path d="M3 8.5V6.8C3 6.4 3.4 6 3.8 6h16.4c.4 0 .8.4.8.8v1.7a3.5 3.5 0 0 0 0 7v1.7c0 .4-.4.8-.8.8H3.8c-.4 0-.8-.4-.8-.8v-1.7a3.5 3.5 0 0 0 0-7z"/>'
+    '<path d="M15 6.5v2M15 11v2M15 15.5v2"/></svg>Wstęp wolny</span>')
+
+
 def herb_svg(tekst, kolor, klasa="herb"):
     rozmiar = 22 if len(tekst) <= 2 else 18 if len(tekst) == 3 else 14
     return (f'<svg class="{klasa}" viewBox="0 0 60 70" aria-hidden="true">'
@@ -654,8 +660,7 @@ def hero(p, m):
     </div>
     <div class="hero__szczegoly">
       {godzina}
-      <div class="hero__hala"><strong>{e(miejsce)}</strong>{e(adres)}</div>
-      {'<div class="hero__wstep">Wstęp wolny</div>' if m["u_siebie"] and m["druzyna"] == "seniorki" and C.KLUB.get("wstep_wolny") else ''}
+      <div class="hero__hala"><strong>{e(miejsce)}</strong>{e(adres)}{WSTEP_WOLNY_HTML if m["u_siebie"] and m["druzyna"] == "seniorki" and C.KLUB.get("wstep_wolny") else ''}</div>
     </div>
     {na_zywo}
     {zaproszenie}

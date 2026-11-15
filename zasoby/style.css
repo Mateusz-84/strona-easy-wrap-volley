@@ -1211,7 +1211,9 @@ html[data-czcionka] .hero__postac-img{display:none}
 .sekcja--po-hero{padding-top:36px}
 
 /* Wstęp wolny – mecze u siebie */
-.hero__wstep{display:inline-block;margin-top:8px;background:var(--zolty);color:var(--granat-ciemny);font-weight:700;font-size:14px;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:999px}
+.hero__wstep{display:flex;align-items:center;gap:8px;width:fit-content;margin-top:14px;background:var(--zolty);color:var(--granat-ciemny);font-family:var(--font-naglowki);font-weight:400;font-size:22px;line-height:1;letter-spacing:.06em;text-transform:uppercase;padding:9px 16px 7px 13px;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.hero__wstep svg{flex:none;margin-top:-2px}
+@media (min-width:900px){.hero__wstep{font-size:24px}}
 
 /* =====================================================================
    SZYBKIE WEJŚCIE – przy kolejnych wizytach (do 12 h) bez animacji budowania plakatu
