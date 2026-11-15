@@ -382,14 +382,6 @@ Dziękujemy za wsparcie!
 # ---------------------------------------------------------------------
 #   logo: plik w img/sponsorzy/ (PNG/SVG/WebP), np. "sponsorzy/easy-wrap.webp" – dopóki brak, widać nazwę
 #   poziom: "tytularny", "strategiczny", "techniczny" (partner techniczny) albo "partner"
-# Lokalne organizacje z Kobyłki – linki w stopce i na stronie „O klubie”
-PRZYJACIELE = [
-    {"nazwa": "OSiR Wicher w Kobyłce", "opis": "Ośrodek Sportu i Rekreacji",
-     "www": "https://www.facebook.com/p/OSiR-Wicher-w-Koby%C5%82ce-61577562620462/"},
-    {"nazwa": "OSP Kobyłka", "opis": "Ochotnicza Straż Pożarna",
-     "www": "https://www.facebook.com/ospkobylka"},
-]
-
 SPONSORZY = {
     "easy-wrap":  {"nazwa": "Easy Wrap", "poziom": "tytularny", "logo": "sponsorzy/easy-wrap.webp", "www": "https://easywrap.pl", "prezentuje": None},
     "miasto":     {"nazwa": "Miasto Kobyłka", "poziom": "strategiczny", "logo": "sponsorzy/miasto.webp", "www": "https://kobylka.pl", "prezentuje": None},
@@ -403,8 +395,8 @@ SPONSORZY = {
     "racbus":     {"nazwa": "Racbus", "poziom": "partner", "logo": "sponsorzy/racbus.webp", "www": "https://racbus.pl", "prezentuje": None},
     "zdrofit":    {"nazwa": "Zdrofit", "poziom": "partner", "logo": "sponsorzy/zdrofit.webp", "www": "https://zdrofit.pl", "prezentuje": None},
     "sp3":        {"nazwa": "SP nr 3 im. Karola Wojtyły w Kobyłce", "poziom": "partner", "logo": "sponsorzy/sp3.webp", "www": "https://sp3kobylka.pl", "prezentuje": None},
-    "osir":       {"nazwa": "OSiR „Wicher” w Kobyłce", "poziom": "partner", "logo": "sponsorzy/osir.webp", "www": None, "prezentuje": None},
-    "osp":        {"nazwa": "OSP Kobyłka", "poziom": "partner", "logo": "sponsorzy/osp.webp", "www": None, "prezentuje": None},
+    "osir":       {"nazwa": "OSiR „Wicher” w Kobyłce", "poziom": "partner", "logo": "sponsorzy/osir.webp", "www": "https://www.facebook.com/p/OSiR-Wicher-w-Koby%C5%82ce-61577562620462/", "prezentuje": None},
+    "osp":        {"nazwa": "OSP Kobyłka", "poziom": "partner", "logo": "sponsorzy/osp.webp", "www": "https://www.facebook.com/ospkobylka", "prezentuje": None},
 }
 
 # Licznik wyświetleń w stopce (darmowy serwis Abacus, bez konta i bez cookies).
