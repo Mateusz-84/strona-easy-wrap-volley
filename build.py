@@ -160,6 +160,34 @@ def ukryj_maile(html):
     return "".join(c if c.startswith("<") else _MAIL.sub(tekst, c) for c in czesci)
 
 
+_HALA = re.compile(r"(?:[Hh]ala|[Hh]ali|[Hh]alę) przy PSP nr 3 w Kobyłce(?:,? (?:ul\. )?(?:ks\. Marcina )?Załuskiego 57(?:, (?:05-230 )?Kobyłka)?)?")
+
+
+def linkuj_hale(html):
+    """Każda wzmianka „hala przy PSP nr 3 w Kobyłce…” w tekście strony prowadzi do Google Maps
+    (poza nagłówkiem, skryptami, atrybutami i istniejącymi linkami/przyciskami)."""
+    mapa = C.HALA_DOMOWA.get("mapa")
+    if not mapa or "<body" not in html:
+        return html
+    glowa, cialo = html.split("<body", 1)
+    czesci = re.split(r"(<script\b.*?</script>|<style\b.*?</style>|<[^>]+>)", cialo, flags=re.S)
+    w_linku = 0
+    wynik = []
+    for c in czesci:
+        if c.startswith("<"):
+            if re.match(r"<(a|button|option|textarea|title)\b", c, re.I):
+                w_linku += 1
+            elif re.match(r"</(a|button|option|textarea|title)>", c, re.I):
+                w_linku = max(0, w_linku - 1)
+            wynik.append(c)
+        elif w_linku:
+            wynik.append(c)
+        else:
+            wynik.append(_HALA.sub(lambda m: f'<a class="link-hala" href="{mapa}" target="_blank" rel="noopener" '
+                                             f'title="Pokaż halę w Google Maps">{m.group(0)}</a>', c))
+    return glowa + "<body" + "".join(wynik)
+
+
 # ---- SEO: adres kanoniczny, podgląd przy udostępnianiu, dane strukturalne, mapa strony ----
 STRONY_HTML = []          # wszystkie zapisane strony – z nich powstaje sitemap.xml
 DODATKI_SEO = {}          # sciezka → {"obraz", "typ", "ld": [...], "data", "obrazy"} ustawiane przez budowę strony
@@ -267,7 +295,7 @@ def seo_glowa(sciezka, html):
 
 def zapisz(sciezka, tekst):
     if sciezka.endswith(".html"):
-        tekst = ukryj_maile(seo_glowa(sciezka, tekst))
+        tekst = ukryj_maile(linkuj_hale(seo_glowa(sciezka, tekst)))
         if sciezka != "404.html":
             STRONY_HTML.append(sciezka)
     pelna = os.path.join(WYJSCIE, sciezka)
@@ -389,7 +417,7 @@ SEO_PODSTRON = {
                      None),
     "galeria.html": ("Galeria – zdjęcia Easy Wrap Volley Kobyłka",
                      "Zdjęcia z meczów i treningów siatkarek Easy Wrap Volley Kobyłka – II liga kobiet, "
-                     "hala przy ul. Załuskiego 57 w Kobyłce."),
+                     "hala przy PSP nr 3 w Kobyłce, ul. Załuskiego 57."),
     "sklep.html": ("Sklep – koszulki i gadżety Easy Wrap Volley Kobyłka",
                    "Koszulki i gadżety Easy Wrap Volley Kobyłka – wspieraj siatkówkę kobiet w Kobyłce."),
 }
@@ -1060,7 +1088,7 @@ class Budowa:
   <div class="kontener">
     <h2 class="ak-h2" id="plan-tytul">Plan treningów</h2>
     {plan_html}
-    <p class="ak-przypis">Treningi w hali sportowej przy ul. ks. Marcina Załuskiego 57 w Kobyłce. Trening trwa 90 minut.</p>
+    <p class="ak-przypis">Treningi w hali przy PSP nr 3 w Kobyłce, ul. Załuskiego 57. Trening trwa 90 minut.</p>
   </div>
 </section>
 {f"""
@@ -1122,7 +1150,7 @@ class Budowa:
     </div>
     <div class="ak-karta">
       <h3>Gdzie trenujemy</h3>
-      <p>Hala sportowa<br>{e(C.KLUB['adres'])}</p>
+      <p>Hala przy PSP nr 3 w Kobyłce<br>ul. Załuskiego 57, 05-230 Kobyłka</p>
       {f'<a class="btn btn--ak" href="{e(mapa)}" rel="noopener" target="_blank">Pokaż na mapie →</a>' if mapa else ''}
     </div>
   </div>
@@ -1487,7 +1515,7 @@ class Budowa:
                  '(iPhone, Android, Outlook). Nowe godziny i wyniki pojawią się w nim same.'),
                 ("Jak zapisać córkę na siatkówkę w Kobyłce?",
                  'Treningi dla dziewcząt prowadzi <a href="/akademia.html">Akademia Siatkówki Volley</a> – '
-                 'w hali przy ul. Załuskiego 57 w Kobyłce.'),
+                 'w hali przy PSP nr 3 w Kobyłce, ul. Załuskiego 57.'),
                 ("Jak zostać sponsorem Easy Wrap Volley Kobyłka?",
                  f'Napisz do nas: <a href="mailto:{e(C.KLUB["email"])}">{e(C.KLUB["email"])}</a>. '
                  'Zobacz też <a href="/sponsorzy.html">naszych sponsorów</a>.')]
@@ -1504,7 +1532,7 @@ class Budowa:
   <h2 class="sekcja__tytul">Siatkówka kobiet <span>w Kobyłce</span></h2>
   <p>{e(C.KLUB['nazwa_prawna'])} to klub siatkarski z Kobyłki w powiecie wołomińskim. Pierwsza drużyna – {e(C.KLUB['nazwa'])} –
   gra w rozgrywkach: {e(C.DRUZYNY[GLOWNA]['liga'])}. Sponsorem tytularnym zespołu jest {e(tytularny)}.
-  Mecze u siebie rozgrywamy w hali przy ul. ks. Marcina Załuskiego 57 w Kobyłce{', wstęp jest wolny' if C.KLUB.get('wstep_wolny') else ''}.</p>
+  Mecze u siebie rozgrywamy w hali przy PSP nr 3 w Kobyłce, ul. Załuskiego 57{', wstęp jest wolny' if C.KLUB.get('wstep_wolny') else ''}.</p>
   <p>W kadrze na sezon gra {len(kadra)} siatkarek: {linki}. Terminarz, wyniki i tabelę znajdziesz na stronie
   <a href="{p}terminarz.html">Terminarz i wyniki</a>, a zapowiedzi i relacje w <a href="{p}aktualnosci.html">Aktualnościach</a>.</p>
   <p>Szkolimy też dziewczęta: <a href="{p}akademia.html">Akademia Siatkówki Volley</a> prowadzi treningi siatkówki

@@ -47,12 +47,12 @@ KLUB = {
     # Tytuł strony głównej drużyny w Google (karta przeglądarki i wyniki wyszukiwania)
     "tytul_glowny": "Easy Wrap Volley Kobyłka – siatkówka kobiet | Volley Kobyłka",
     "opis": "Siatkówka kobiet Kobyłka – Easy Wrap Volley (Volley Kobyłka), 2. liga kobiet. Terminarz, wyniki, "
-            "tabela, kadra i aktualności. Mecze w hali przy ul. Załuskiego 57.",
+            "tabela, kadra i aktualności. Mecze w hali przy PSP nr 3 w Kobyłce, ul. Załuskiego 57.",
 }
 
 # Hala, w której gramy u siebie (używana przy meczach wpisanych ręcznie)
 HALA_DOMOWA = {
-    "nazwa": "Hala Sportowa przy PSP nr 3 w Kobyłce",
+    "nazwa": "Hala przy PSP nr 3 w Kobyłce",
     "adres": "ul. ks. Marcina Załuskiego 57, Kobyłka",
     "mapa": "https://www.google.com/maps/search/?api=1&query=ul.+ks.+Marcina+Za%C5%82uskiego+57+Kobyłka",
 }
@@ -430,7 +430,7 @@ AKADEMIA = {
                     "email": "akademia@volleykobylka.pl"},
     "haslo": "Dołącz do nas!",
     "opis": "Treningi siatkówki dla dziewcząt z klas 3–6 szkoły podstawowej – we wtorki i czwartki, 16:15–17:45, "
-            "w hali przy ul. Załuskiego 57 w Kobyłce.",
+            "w hali przy PSP nr 3 w Kobyłce, ul. Załuskiego 57.",
     # Cennik i najważniejsze zasady – pokazują się w pierwszym ekranie strony Akademii
     "cennik": [
         {"co": "2 treningi w tygodniu", "cena": "180 zł / mies."},
@@ -461,8 +461,8 @@ AKADEMIA = {
     # Harmonogram – DO UZUPEŁNIENIA. Pusta lista = sekcja się nie pokazuje.
     #   Wzór: {"grupa": "Mini Volley", "dzien": "poniedziałek", "od": "16:00", "do": "17:30", "hala": "Hala przy PSP nr 3"},
     "harmonogram": [
-        {"grupa": "Dziewczęta, klasy 3–6 SP", "dzien": "wtorek", "od": "16:15", "do": "17:45", "hala": "Hala przy PSP nr 3"},
-        {"grupa": "Dziewczęta, klasy 3–6 SP", "dzien": "czwartek", "od": "16:15", "do": "17:45", "hala": "Hala przy PSP nr 3"},
+        {"grupa": "Dziewczęta, klasy 3–6 SP", "dzien": "wtorek", "od": "16:15", "do": "17:45", "hala": "Hala przy PSP nr 3 w Kobyłce, ul. Załuskiego 57"},
+        {"grupa": "Dziewczęta, klasy 3–6 SP", "dzien": "czwartek", "od": "16:15", "do": "17:45", "hala": "Hala przy PSP nr 3 w Kobyłce, ul. Załuskiego 57"},
     ],
     "ochrona_maloletnich": {
         "tekst": "Klub stosuje Standardy Ochrony Małoletnich. Każda osoba pracująca z dziećmi "

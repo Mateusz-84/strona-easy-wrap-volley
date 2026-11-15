@@ -484,7 +484,7 @@ def uklad_akademii(tytul, opis, tresc, p, wersja, aktualnosci=False):
 <footer class="stopka stopka--akademia">
   <div class="kontener">
     <div class="stopka__kolumny">
-      <div><h2>{e(A['nazwa'])}</h2><p>Hala sportowa<br>{e(C.KLUB['adres'])}</p></div>
+      <div><h2>{e(A['nazwa'])}</h2><p>Hala przy PSP nr 3 w Kobyłce<br>ul. Załuskiego 57, 05-230 Kobyłka</p></div>
       <div><h2>Kontakt</h2><p>{kontakt}</p></div>
       <div><h2>Obserwuj</h2><ul class="stopka__social">{social_linki("stopka", True, {"facebook": A.get("facebook")}, "Akademii")}</ul></div>
       <div><h2>Na skróty</h2><ul>
@@ -530,7 +530,7 @@ def strona_wyboru(p, wersja):
     <span class="wybor__strzalka" aria-hidden="true">→</span>
   </a>
   <p class="wybor__seo">Volley Kobyłka ({e(C.KLUB['nazwa_prawna'])}) – siatkówka kobiet: drużyna Easy Wrap Volley w 2. lidze
-    oraz Akademia Siatkówki Volley: treningi siatkówki dla dziewcząt w hali przy ul. Załuskiego 57 w Kobyłce.</p>
+    oraz Akademia Siatkówki Volley: treningi siatkówki dla dziewcząt w hali przy PSP nr 3 w Kobyłce, ul. Załuskiego 57.</p>
   <p class="wybor__dol"><span>© {rok} {e(C.KLUB['nazwa_prawna'])}</span>{licznik_html()}<a href="{p}polityka-prywatnosci.html">Polityka prywatności</a></p>
 </main>
 </body>

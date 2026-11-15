@@ -1376,3 +1376,6 @@ html.szybko :is(.hero,.ak-hero,.wybor) *:not(.sw):not(.sw *){animation-delay:0s!
 .belka--przejscie a:hover{text-decoration:underline;text-underline-offset:3px}
 .belka--przejscie .belka__druga{color:var(--zolty);text-align:right}
 @media (max-width:640px){.belka--przejscie .belka__dopisek{display:none}}
+/* Nazwa hali → Google Maps */
+.link-hala{color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;text-decoration-style:dotted}
+.link-hala:hover{text-decoration-style:solid}
