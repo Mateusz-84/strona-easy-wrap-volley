@@ -1052,7 +1052,7 @@ class Budowa:
   <div class="kontener">
     <h2 class="ak-h2" id="cennik-tytul">Cennik</h2>
     <ul class="ak-ceny">{cennik}</ul>
-    <p class="ak-przypis">Opłata miesięczna, umowa na sezon (wrzesień–czerwiec). Bez wpisowego.</p>
+    <p class="ak-przypis">Opłata miesięczna, umowa na sezon (wrzesień–czerwiec).</p>
   </div>
 </section>
 
@@ -1066,7 +1066,7 @@ class Budowa:
 {f"""
 <section class="sekcja ak-sekcja" id="trenerzy" aria-labelledby="trenerzy-tytul">
   <div class="kontener">
-    <h2 class="ak-h2" id="trenerzy-tytul">Kto prowadzi zajęcia</h2>
+    <h2 class="ak-h2" id="trenerzy-tytul">Trenerzy</h2>
     <div class="ak-trenerzy">{trenerzy}</div>
   </div>
 </section>""" if trenerzy else ''}
@@ -1151,7 +1151,7 @@ class Budowa:
                   f'<a class="ak-pasek__plan" href="#plan">Plan treningów</a></nav>')
         html = S.uklad_akademii("Akademia Siatkówki Volley Kobyłka – siatkówka dla dziewcząt i dzieci",
                                 "Siatkówka dla dziewcząt z klas 3–6 SP w Kobyłce (blisko Wołomina, Marek i Zielonki) – "
-                                "Akademia Siatkówki Volley. Wtorki i czwartki 16:15–17:45, bez wpisowego. Cennik i zapisy online.",
+                                "Akademia Siatkówki Volley. Wtorki i czwartki 16:15–17:45. Cennik i zapisy online.",
                                 tresc, p, self.wersja, aktualnosci=bool(na))
         zapisz("akademia.html", html)
 
@@ -1435,7 +1435,7 @@ class Budowa:
                         f'Zajęcia prowadzi {osoby}' +
                         (" – rozgrywająca drużyny Easy Wrap Volley Kobyłka, która gra w 2. lidze kobiet."
                          if len(A["trenerzy"]) == 1 and S.zawodniczka_po_nazwisku(f'{t0["imie"]} {t0["nazwisko"]}') else ".") +
-                        ' Więcej w sekcji <a href="#trenerzy">Kto prowadzi zajęcia</a>.'))
+                        ' Więcej w sekcji <a href="#trenerzy">Trenerzy</a>.'))
         mail = (A.get("koordynator") or {}).get("email") or C.KLUB["email"]
         if A.get("formularz_google"):
             pyt.append(("Jak zapisać dziecko na siatkówkę?",
@@ -1487,7 +1487,7 @@ class Budowa:
                  '(iPhone, Android, Outlook). Nowe godziny i wyniki pojawią się w nim same.'),
                 ("Jak zapisać córkę na siatkówkę w Kobyłce?",
                  'Treningi dla dziewcząt prowadzi <a href="/akademia.html">Akademia Siatkówki Volley</a> – '
-                 'w hali przy ul. Załuskiego 57 w Kobyłce, bez wpisowego.'),
+                 'w hali przy ul. Załuskiego 57 w Kobyłce.'),
                 ("Jak zostać sponsorem Easy Wrap Volley Kobyłka?",
                  f'Napisz do nas: <a href="mailto:{e(C.KLUB["email"])}">{e(C.KLUB["email"])}</a>. '
                  'Zobacz też <a href="/sponsorzy.html">naszych sponsorów</a>.')]

@@ -1369,3 +1369,10 @@ html.szybko :is(.hero,.ak-hero,.wybor) *:not(.sw):not(.sw *){animation-delay:0s!
   body.strefa-akademia:has(.ak-pasek){padding-bottom:76px}
 }
 @media print{.ak-pasek{display:none!important}}
+/* Drużyna: górny pasek z przejściem do strony wyboru i do Akademii (jak w Akademii, w drugą stronę) */
+.belka--przejscie{background:#1C6FD1}
+.belka--przejscie .kontener{min-height:36px}
+.belka--przejscie a{color:#fff;text-decoration:none;font-weight:600;font-size:14px;letter-spacing:.04em;min-height:36px;display:inline-flex;align-items:center}
+.belka--przejscie a:hover{text-decoration:underline;text-underline-offset:3px}
+.belka--przejscie .belka__druga{color:var(--zolty);text-align:right}
+@media (max-width:640px){.belka--przejscie .belka__dopisek{display:none}}

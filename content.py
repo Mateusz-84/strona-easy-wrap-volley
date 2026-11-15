@@ -430,13 +430,13 @@ AKADEMIA = {
                     "email": "akademia@volleykobylka.pl"},
     "haslo": "Dołącz do nas!",
     "opis": "Treningi siatkówki dla dziewcząt z klas 3–6 szkoły podstawowej – we wtorki i czwartki, 16:15–17:45, "
-            "w hali przy ul. Załuskiego 57 w Kobyłce. Bez wpisowego.",
+            "w hali przy ul. Załuskiego 57 w Kobyłce.",
     # Cennik i najważniejsze zasady – pokazują się w pierwszym ekranie strony Akademii
     "cennik": [
         {"co": "2 treningi w tygodniu", "cena": "180 zł / mies."},
         {"co": "1 trening w tygodniu", "cena": "130 zł / mies."},
     ],
-    "fakty": ["Dla dziewcząt z klas 3–6 SP", "Wtorki i czwartki 16:15–17:45", "Trening trwa 90 minut", "Bez wpisowego",
+    "fakty": ["Dla dziewcząt z klas 3–6 SP", "Wtorki i czwartki 16:15–17:45", "Trening trwa 90 minut",
               "Umowa na sezon (wrzesień–czerwiec)"],
     "formularz_google": "https://forms.gle/Wux1GhVqWcNHwuXZ6",   # formularz zgłoszeń (z posta o naborze na FB)
     "zdjecie": None,            # zdjęcie do nagłówka, np. "akademia/hero.webp"
@@ -476,7 +476,6 @@ AKADEMIA = {
             "Trener może Cię dotknąć tylko wtedy, gdy pomaga w ćwiczeniu lub poprawia ułożenie ciała – zawsze jawnie. Jeśli coś jest dla Ciebie nieprzyjemne, masz prawo powiedzieć „nie”.",
             "Trenerzy nie spotykają się z Tobą prywatnie i nie zapraszają Cię do domu. Rozmawiamy na treningach i w hali.",
             "Twoje zdjęcia i informacje o Tobie są chronione – publikujemy je tylko za zgodą rodzica.",
-            "Jeśli ktoś sprawia Ci przykrość albo coś Cię niepokoi – w Klubie, w domu czy w internecie – powiedz rodzicowi, trenerowi albo osobie, której ufasz. Pomożemy.",
         ],
         "osoba_kontaktowa": "kontakt@volleykobylka.pl",
     },

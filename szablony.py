@@ -404,6 +404,10 @@ def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja, pelny=None):
     return f"""{glowa(pelny_tytul, opis, p, wersja)}
 <body class="strefa-druzyna">
 <a class="przeskocz" href="#tresc">Przejdź do treści</a>
+<div class="belka belka--przejscie"><div class="kontener">
+  <a class="belka__wroc" href="{p}index.html">← volleykobylka.pl</a>
+  <a class="belka__druga" href="{p}akademia.html">Akademia Siatkówki Volley<span class="belka__dopisek"> – zajęcia dla dziewcząt</span> ↗</a>
+</div></div>
 {belka_html}
 <header class="naglowek">
   <div class="kontener">
