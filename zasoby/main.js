@@ -4,6 +4,43 @@
    Bez bibliotek. Każdy blok działa tylko wtedy, gdy na stronie jest
    odpowiedni element – można go spokojnie zostawić na każdej podstronie.
    ===================================================================== */
+
+/* LICZNIKI (serwis Abacus) – wspólna kolejka dla licznika w stopce i statystyk.
+   Serwis przyjmuje najwyżej 30 zapytań na 10 s z jednego adresu IP – powyżej odpowiada „429”
+   i licznik w stopce znikał (np. po otwarciu strony statystyk albo w sieci szkolnej/komórkowej,
+   gdzie wiele osób ma ten sam adres). Dlatego: najwyżej 8 zapytań naraz, potem ok. 2 na sekundę,
+   a przy błędzie 429/5xx lub braku sieci – ponowienie po kilku sekundach (do 3 razy). */
+window.vkLicznik = (function () {
+  var BAZA = 'https://abacus.jasoncameron.dev/', kolejka = [], zetony = 8, ostatnio = Date.now(), czeka = false;
+  function pompa() {
+    var teraz = Date.now();
+    zetony = Math.min(8, zetony + (teraz - ostatnio) / 550); ostatnio = teraz;
+    while (kolejka.length && zetony >= 1) { zetony -= 1; kolejka.shift()(); }
+    if (kolejka.length && !czeka) { czeka = true; setTimeout(function () { czeka = false; pompa(); }, 500); }
+  }
+  function zapytaj(sciezka, proby, gotowe) {
+    function ponow(ms) {
+      if (proby <= 0) return gotowe(null);
+      setTimeout(function () { zapytaj(sciezka, proby - 1, gotowe); }, ms + Math.random() * 1500);
+    }
+    kolejka.push(function () {
+      fetch(BAZA + sciezka, { keepalive: true }).then(function (r) {
+        if (r.ok) return r.json().then(gotowe, function () { gotowe(null); });
+        if (r.status === 404) return gotowe({ value: 0 });            // licznik jeszcze nie istnieje = 0
+        if (r.status === 429 || r.status >= 500) {
+          var po = parseInt(r.headers.get('Retry-After'), 10);
+          return ponow(po > 0 ? Math.min(po, 10000) : 3000);
+        }
+        gotowe(null);
+      }).catch(function () { ponow(3000); });
+    });
+    pompa();
+  }
+  return function (sciezka) {
+    return new Promise(function (ok) { zapytaj(sciezka, 3, ok); });
+  };
+})();
+
 (function () {
   'use strict';
 
@@ -172,15 +209,13 @@
     // tylko odczytuje licznik, bez zwiększania. Nic nie zapisujemy w przeglądarce.
     var wewnetrzne = false;
     try { wewnetrzne = !!document.referrer && new URL(document.referrer).host === location.host; } catch (e) {}
-    fetch('https://abacus.jasoncameron.dev/' + (wewnetrzne ? 'get/' : 'hit/') + wysw.dataset.wyswietlenia)
-      .then(function (r) { return r.ok ? r.json() : null; })
+    window.vkLicznik((wewnetrzne ? 'get/' : 'hit/') + wysw.dataset.wyswietlenia)
       .then(function (d) {
-        if (!d || typeof d.value !== 'number') return;
+        if (!d || typeof d.value !== 'number' || d.value < 1) return;
         wysw.querySelector('[data-wyswietlenia-liczba]').textContent = d.value.toLocaleString('pl-PL');
         wysw.title = 'Odwiedziny strony';
         wysw.hidden = false;
-      })
-      .catch(function () {});
+      });
   }
 
   /* ---------------------------------------------------------------
@@ -455,9 +490,10 @@
     var tel = window.matchMedia && matchMedia('(pointer: coarse)').matches;
     hity.push('wejscia-' + mies, 'zrodlo-' + zrodlo + '-' + mies, 'urz-' + (tel ? 'telefon' : 'komputer') + '-' + mies);
   }
-  hity.forEach(function (k) {
-    fetch('https://abacus.jasoncameron.dev/hit/' + ns + '/' + k, { keepalive: true }).catch(function () {});
-  });
+  // Statystyki chwilę po liczniku w stopce, żeby licznik w stopce był zawsze pierwszy w kolejce
+  setTimeout(function () {
+    hity.forEach(function (k) { window.vkLicznik('hit/' + ns + '/' + k); });
+  }, 300);
 })();
 
 /* Strona statystyk – odczyt liczników (tylko „get”, nic nie dolicza) */
@@ -476,26 +512,29 @@
     o.textContent = nazwyMies[m.getMonth()] + ' ' + m.getFullYear();
     sel.appendChild(o);
   }
+  // null = serwis nie odpowiedział (pokazujemy „?”, a nie fałszywe 0)
   function get(k) {
-    return fetch('https://abacus.jasoncameron.dev/get/' + ns + '/' + k)
-      .then(function (r) { return r.ok ? r.json() : { value: 0 }; })
-      .then(function (j) { return j.value || 0; }).catch(function () { return 0; });
+    return window.vkLicznik('get/' + ns + '/' + k).then(function (j) { return j ? (j.value || 0) : null; });
   }
+  function liczba(v) { return v === null ? '?' : v.toLocaleString('pl-PL'); }
   function lista(el, wiersze) {
-    var max = Math.max.apply(null, wiersze.map(function (w) { return w[1]; }).concat([1]));
-    el.innerHTML = wiersze.filter(function (w) { return w[1] > 0; }).sort(function (a, b) { return b[1] - a[1]; })
+    var max = Math.max.apply(null, wiersze.map(function (w) { return w[1] || 0; }).concat([1]));
+    var brak = wiersze.some(function (w) { return w[1] === null; });
+    el.innerHTML = (wiersze.filter(function (w) { return w[1] !== 0; })
+      .sort(function (a, b) { return (b[1] === null ? -1 : b[1]) - (a[1] === null ? -1 : a[1]); })
       .map(function (w) {
         return '<div class="st-wiersz"><span class="st-nazwa">' + w[0] + '</span><span class="st-pasek"><i style="width:' +
-          Math.round(w[1] / max * 100) + '%"></i></span><b>' + w[1].toLocaleString('pl-PL') + '</b></div>';
-      }).join('') || '<p class="pusto">Brak danych w tym miesiącu.</p>';
+          Math.round((w[1] || 0) / max * 100) + '%"></i></span><b>' + liczba(w[1]) + '</b></div>';
+      }).join('') || '<p class="pusto">Brak danych w tym miesiącu.</p>') +
+      (brak ? '<p class="pusto">„?” – serwis liczników chwilowo nie odpowiedział, odśwież stronę za minutę.</p>' : '');
   }
   function wczytaj() {
     var mies = sel.value;
     ['wszystko', 'wejscia'].forEach(function (k) {
-      get(k + '-' + mies).then(function (v) { box.querySelector('[data-st=' + k + ']').textContent = v.toLocaleString('pl-PL'); });
+      get(k + '-' + mies).then(function (v) { box.querySelector('[data-st=' + k + ']').textContent = liczba(v); });
     });
     ['telefon', 'komputer'].forEach(function (k) {
-      get('urz-' + k + '-' + mies).then(function (v) { box.querySelector('[data-st=' + k + ']').textContent = v.toLocaleString('pl-PL'); });
+      get('urz-' + k + '-' + mies).then(function (v) { box.querySelector('[data-st=' + k + ']').textContent = liczba(v); });
     });
     var zr = [['Google', 'google'], ['Facebook', 'facebook'], ['Instagram', 'instagram'], ['Wpisany adres / zakładka', 'bezposrednio'],
               ['Inne wyszukiwarki', 'inne-wyszukiwarki'], ['Inne strony', 'inne-strony']];

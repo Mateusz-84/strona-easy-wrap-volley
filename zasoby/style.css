@@ -1313,3 +1313,6 @@ html.szybko :is(.hero,.ak-hero,.wybor) *:not(.sw):not(.sw *){animation-delay:0s!
 .mstr__fakty{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
 .mstr__fakty dd{font-size:21px;line-height:1.15}
 @media (min-width:900px){.mstr__plakat .mstr__wynik{margin-left:0}}
+.stopka__przyjaciele{margin:22px 0 0;font-size:14px;opacity:.85}
+.stopka__przyjaciele a{text-decoration:underline;text-underline-offset:3px}
+.stopka__przyjaciele + .stopka__lokalnie{margin-top:8px}

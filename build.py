@@ -1426,7 +1426,16 @@ class Budowa:
   <a href="{p}terminarz.html">Terminarz i wyniki</a>, a zapowiedzi i relacje w <a href="{p}aktualnosci.html">Aktualnościach</a>.</p>
   <p>Szkolimy też dziewczęta: <a href="{p}akademia.html">Akademia Siatkówki Volley</a> prowadzi treningi siatkówki
   dla dziewcząt w Kobyłce – blisko Wołomina, Marek, Zielonki i Radzymina.</p>
+  {self.przyjaciele_akapit()}
 </div></section>"""
+
+    def przyjaciele_akapit(self):
+        lista = getattr(C, "PRZYJACIELE", [])
+        if not lista:
+            return ""
+        linki = ", ".join(f'<a href="{e(x["www"])}" target="_blank" rel="noopener">{e(x["nazwa"])}</a> ({e(x["opis"].lower())})'
+                          for x in lista)
+        return f"<p>Sport i społeczność Kobyłki – zajrzyj też do: {linki}.</p>"
 
     # --- SKLEP -------------------------------------------------------------
     def sklep(self):

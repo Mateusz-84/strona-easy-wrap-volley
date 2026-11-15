@@ -382,6 +382,14 @@ Dziękujemy za wsparcie!
 # ---------------------------------------------------------------------
 #   logo: plik w img/sponsorzy/ (PNG/SVG/WebP), np. "sponsorzy/easy-wrap.webp" – dopóki brak, widać nazwę
 #   poziom: "tytularny", "strategiczny", "techniczny" (partner techniczny) albo "partner"
+# Lokalne organizacje z Kobyłki – linki w stopce i na stronie „O klubie”
+PRZYJACIELE = [
+    {"nazwa": "OSiR Wicher w Kobyłce", "opis": "Ośrodek Sportu i Rekreacji",
+     "www": "https://www.facebook.com/p/OSiR-Wicher-w-Koby%C5%82ce-61577562620462/"},
+    {"nazwa": "OSP Kobyłka", "opis": "Ochotnicza Straż Pożarna",
+     "www": "https://www.facebook.com/ospkobylka"},
+]
+
 SPONSORZY = {
     "easy-wrap":  {"nazwa": "Easy Wrap", "poziom": "tytularny", "logo": "sponsorzy/easy-wrap.webp", "www": "https://easywrap.pl", "prezentuje": None},
     "miasto":     {"nazwa": "Miasto Kobyłka", "poziom": "strategiczny", "logo": "sponsorzy/miasto.webp", "www": "https://kobylka.pl", "prezentuje": None},

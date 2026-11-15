@@ -418,7 +418,7 @@ def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja, pelny=None):
         <li><a href="{p}akademia.html">Akademia Siatkówki Volley →</a></li>
         <li><a href="{p}akademia.html#ochrona">Ochrona małoletnich</a></li></ul></div>
     </div>
-    <p class="stopka__lokalnie">{TEKST_LOKALNY}</p>
+    {przyjaciele_html()}<p class="stopka__lokalnie">{TEKST_LOKALNY}</p>
     <div class="stopka__dol"><span>© {rok} {e(C.KLUB['nazwa_prawna'])} · <a href="{p}index.html">volleykobylka.pl</a></span>
       {licznik_html()}
       <a href="{p}polityka-prywatnosci.html">Polityka prywatności i cookies</a></div>
@@ -477,7 +477,7 @@ def uklad_akademii(tytul, opis, tresc, p, wersja, aktualnosci=False):
         <li><a href="{k_}#ochrona">Standardy ochrony małoletnich</a></li>
         <li><a href="{p}{START_DRUZYNY}">Easy Wrap Volley Kobyłka →</a></li></ul></div>
     </div>
-    <p class="stopka__lokalnie">{TEKST_LOKALNY}</p>
+    {przyjaciele_html()}<p class="stopka__lokalnie">{TEKST_LOKALNY}</p>
     <div class="stopka__dol"><span>© {rok} {e(C.KLUB['nazwa_prawna'])} · <a href="{p}index.html">volleykobylka.pl</a></span>
       {licznik_html()}
       <a href="{p}polityka-prywatnosci.html">Polityka prywatności i cookies</a></div>
@@ -1024,3 +1024,12 @@ def faq_ld(pytania):
 
 TEKST_LOKALNY = ("Siatkówka kobiet i treningi siatkówki dla dziewcząt w Kobyłce (powiat wołomiński) – "
                  "blisko Wołomina, Marek, Zielonki, Radzymina i Warszawy.")
+
+
+def przyjaciele_html():
+    """Linki do lokalnych organizacji z Kobyłki (content.PRZYJACIELE) – do stopki."""
+    lista = getattr(C, "PRZYJACIELE", [])
+    if not lista:
+        return ""
+    linki = " · ".join(f'<a href="{e(x["www"])}" target="_blank" rel="noopener">{e(x["nazwa"])}</a>' for x in lista)
+    return f'<p class="stopka__przyjaciele">Zobacz też w Kobyłce: {linki}</p>'
