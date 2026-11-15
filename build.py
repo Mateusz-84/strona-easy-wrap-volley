@@ -242,6 +242,7 @@ def seo_glowa(sciezka, html):
             obraz = baza + ext["obraz"]
         dodatki = (f'<link rel="canonical" href="{url}">\n<meta property="og:url" content="{url}">\n'
                    f'<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">\n'
+                   f'<meta name="google-site-verification" content="QCK9CVR58j00dsLP-OrZPnkaL0-ostHmE8_tMVINryE">\n'
                    f'<meta property="og:locale" content="pl_PL">\n'
                    f'<meta property="og:type" content="{ext.get("typ", "website")}">\n'
                    f'<meta property="og:site_name" content="{"Akademia Siatkówki Volley" if akademia else C.KLUB["nazwa"]}">\n'
