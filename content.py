@@ -436,8 +436,7 @@ AKADEMIA = {
         {"co": "2 treningi w tygodniu", "cena": "180 zł / mies."},
         {"co": "1 trening w tygodniu", "cena": "130 zł / mies."},
     ],
-    "fakty": ["Dla dziewcząt z klas 3–6 SP", "Wtorki i czwartki 16:15–17:45", "Trening trwa 90 minut",
-              "Umowa na sezon (wrzesień–czerwiec)"],
+    "fakty": ["Dla dziewcząt z klas 3–6 SP", "Wtorki i czwartki 16:15–17:45", "Trening trwa 90 minut"],
     "formularz_google": "https://forms.gle/Wux1GhVqWcNHwuXZ6",   # formularz zgłoszeń (z posta o naborze na FB)
     "zdjecie": None,            # zdjęcie do nagłówka, np. "akademia/hero.webp"
     # Grupy – DO UZUPEŁNIENIA. Pusta lista = sekcja się nie pokazuje.

@@ -1080,7 +1080,7 @@ class Budowa:
   <div class="kontener">
     <h2 class="ak-h2" id="cennik-tytul">Cennik</h2>
     <ul class="ak-ceny">{cennik}</ul>
-    <p class="ak-przypis">Opłata miesięczna, umowa na sezon (wrzesień–czerwiec).</p>
+    <p class="ak-przypis">Opłata miesięczna.</p>
   </div>
 </section>
 
