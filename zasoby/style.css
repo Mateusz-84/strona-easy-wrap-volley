@@ -1279,3 +1279,37 @@ html.szybko :is(.hero,.ak-hero,.wybor) *:not(.sw):not(.sw *){animation-delay:0s!
 
 @media (prefers-reduced-motion:reduce){.ruch-gotowy .ruch{opacity:1!important;transform:none!important;filter:none!important}}
 @media print{.ruch-gotowy .ruch{opacity:1!important;transform:none!important;filter:none!important}}
+
+/* =====================================================================
+   POZYCJONOWANIE – strona meczu, FAQ, tekst lokalny w stopce
+   ===================================================================== */
+.mstr__plakat{background:var(--tlo-granat);color:#fff;padding:36px 0 40px}
+.mstr__plakat--wyjazd{background:var(--tlo-blekit);color:var(--granat-ciemny)}
+.mstr__plakat .plakat__tytul span{display:block;font-size:.62em;opacity:.85}
+.mstr__wynik{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px;margin:22px 0 10px;max-width:760px}
+.mstr__druzyna{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.mstr__druzyna strong{font-family:var(--font-naglowki);font-weight:400;font-size:clamp(22px,3vw,30px);line-height:1.05}
+.mstr__druzyna strong a{color:inherit}
+.mstr__druzyna b{font-family:var(--font-naglowki);font-weight:400;font-size:clamp(64px,10vw,110px);line-height:.9;color:var(--zolty)}
+.mstr__plakat--wyjazd .mstr__druzyna b{color:var(--granat-ciemny)}
+.mstr__herb{width:88px;height:88px;object-fit:contain}
+.mstr__druzyna svg{width:76px;height:88px}
+.mstr__vs{font-family:var(--font-naglowki);font-size:40px;opacity:.7}
+.mstr__mvp{margin:10px 0 0;font-size:18px}
+.mstr__mvp a{color:inherit}
+.mstr__fakty{background:var(--tlo-granat);border-radius:var(--r-l,22px);padding:16px;align-self:start}
+.mstr__grafika{margin:22px 0 0}
+.mstr__grafika img{width:100%;max-width:420px;height:auto;border-radius:16px;box-shadow:0 10px 30px rgba(0,26,63,.2)}
+.mecz__link--strona{font-weight:700}
+.faq__lista{display:grid;gap:10px;max-width:900px}
+.faq__poz{background:#fff;border-radius:16px;box-shadow:0 4px 14px rgba(0,26,63,.07);padding:0 20px}
+.faq__poz summary{cursor:pointer;list-style:none;padding:16px 28px 16px 0;font-weight:700;font-size:18px;color:var(--granat);position:relative}
+.faq__poz summary::-webkit-details-marker{display:none}
+.faq__poz summary::after{content:"+";position:absolute;right:0;top:12px;font-size:26px;color:var(--blekit-tekst)}
+.faq__poz[open] summary::after{content:"–"}
+.faq__odp{padding:0 0 16px;font-size:17px;line-height:1.55;color:var(--tekst)}
+.faq__odp a{color:var(--blekit-tekst);font-weight:600}
+.stopka__lokalnie{font-size:13px;opacity:.75;margin:18px 0 0;max-width:760px}
+.mstr__fakty{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.mstr__fakty dd{font-size:21px;line-height:1.15}
+@media (min-width:900px){.mstr__plakat .mstr__wynik{margin-left:0}}

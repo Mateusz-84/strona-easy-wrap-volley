@@ -418,6 +418,7 @@ def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja, pelny=None):
         <li><a href="{p}akademia.html">Akademia Siatkówki Volley →</a></li>
         <li><a href="{p}akademia.html#ochrona">Ochrona małoletnich</a></li></ul></div>
     </div>
+    <p class="stopka__lokalnie">{TEKST_LOKALNY}</p>
     <div class="stopka__dol"><span>© {rok} {e(C.KLUB['nazwa_prawna'])} · <a href="{p}index.html">volleykobylka.pl</a></span>
       {licznik_html()}
       <a href="{p}polityka-prywatnosci.html">Polityka prywatności i cookies</a></div>
@@ -476,6 +477,7 @@ def uklad_akademii(tytul, opis, tresc, p, wersja, aktualnosci=False):
         <li><a href="{k_}#ochrona">Standardy ochrony małoletnich</a></li>
         <li><a href="{p}{START_DRUZYNY}">Easy Wrap Volley Kobyłka →</a></li></ul></div>
     </div>
+    <p class="stopka__lokalnie">{TEKST_LOKALNY}</p>
     <div class="stopka__dol"><span>© {rok} {e(C.KLUB['nazwa_prawna'])} · <a href="{p}index.html">volleykobylka.pl</a></span>
       {licznik_html()}
       <a href="{p}polityka-prywatnosci.html">Polityka prywatności i cookies</a></div>
@@ -753,7 +755,10 @@ def karta_meczu(p, m):
         tlo = f'<img class="mecz__tlo" src="{p}img/{e(m["zdjecie_wygranej"])}" alt="" aria-hidden="true" loading="lazy" decoding="async">'
     dodatki = ""
     if m.get("mvp"):
-        dodatki += f'<div class="mecz__mvp">MVP: <strong>{e(m["mvp"])}</strong></div>'
+        dodatki += f'<div class="mecz__mvp">MVP: <strong>{link_zawodniczki(p, m["mvp"])}</strong></div>'
+    if adres_meczu(m):
+        dodatki += (f'<a class="mecz__link mecz__link--strona" href="{p}{adres_meczu(m)}">'
+                    f'{"Wynik i szczegóły" if m.get("wynik") else "Zapowiedź meczu"} →</a>')
     if m.get("relacja"):
         dodatki += f'<a class="mecz__link" href="{p}aktualnosci/{e(m["relacja"])}.html">Relacja →</a>'
     if m.get("grafika_wyniku") and jest_plik(m["grafika_wyniku"]):
@@ -793,7 +798,7 @@ def adres_profilu(z):
 
 
 def karta_zawodniczki(p, z):
-    zdjecie = img(p, z.get("zdjecie"), f"{z['imie']} {z['nazwisko']}", "zawodniczka__foto")
+    zdjecie = img(p, z.get("zdjecie"), f"{z['imie']} {z['nazwisko']} – {z['pozycja'].lower()}, {C.KLUB['nazwa']}", "zawodniczka__foto")
     if not zdjecie:  # NIGDY szara sylwetka – inicjały w barwach klubu
         zdjecie = f'<span class="zawodniczka__inicjaly" aria-hidden="true">{e(z["imie"][0] + z["nazwisko"][0])}</span>'
     szczegoly = []
@@ -953,3 +958,69 @@ def przed_meczem(p, m, wiersz_gosp, wiersz_gosc, forma_gosp, forma_gosc, bezposr
     {h2h}
   </div></div>
 </section>"""
+
+
+# ---------------------------------------------------------------------
+# POZYCJONOWANIE – adresy stron meczów, linki do profili, FAQ, tekst lokalny
+# ---------------------------------------------------------------------
+def adres_meczu(m):
+    """Stała strona meczu pierwszej drużyny: mecze/RRRR-MM-DD-rywal.html (adres nie zmienia się po meczu)."""
+    if m.get("druzyna") != "seniorki":
+        return None
+    gosp, gosc = m["strony"]
+    rywal = gosc if gosp.get("nasza") else gosp
+    if not rywal:
+        return None
+    import zrodla
+    return f"mecze/{m['data'].isoformat()}-{zrodla.slug(rywal['krotko'])[:40]}.html"
+
+
+def zawodniczka_po_nazwisku(tekst):
+    t = (tekst or "").strip().lower()
+    for z in C.KADRA:
+        if z.get("druzyna") == "seniorki" and f"{z['imie']} {z['nazwisko']}".lower() == t:
+            return z
+    return None
+
+
+def link_zawodniczki(p, nazwa):
+    z = zawodniczka_po_nazwisku(nazwa)
+    if z and adres_profilu(z):
+        return f'<a href="{p}{adres_profilu(z)}">{e(nazwa)}</a>'
+    return e(nazwa)
+
+
+def podlinkuj_zawodniczki(p, html):
+    """W treści newsa imię i nazwisko zawodniczki staje się linkiem do jej profilu (pierwsze wystąpienie)."""
+    import re as _re
+    for z in C.KADRA:
+        if z.get("druzyna") != "seniorki" or not adres_profilu(z):
+            continue
+        rdzen = lambda w: _re.escape(w[:-1] if len(w) > 4 else w) + r"\w{0,4}"     # też odmiana: „Adrianny Sitarskiej”
+        wzor = _re.compile(r"(?<![\w/=\"])(" + rdzen(z["imie"]) + r"\s+" + rdzen(z["nazwisko"]) + r")(?!\w)(?![^<]*</a>)", _re.I)
+        html = wzor.sub(lambda m_: f'<a href="{p}{adres_profilu(z)}">{m_.group(1)}</a>', html, count=1)
+    return html
+
+
+def faq_html(pytania, tytul_a="Najczęstsze", tytul_b="pytania", klasa=""):
+    if not pytania:
+        return ""
+    pozycje = "".join(f'<details class="faq__poz"><summary>{e(q)}</summary><div class="faq__odp">{a}</div></details>'
+                      for q, a in pytania)
+    return f"""
+<section class="sekcja faq {klasa}" aria-labelledby="faq-tytul"><div class="kontener">
+  <h2 class="sekcja__tytul" id="faq-tytul">{e(tytul_a)} <span>{e(tytul_b)}</span></h2>
+  <div class="faq__lista">{pozycje}</div>
+</div></section>"""
+
+
+def faq_ld(pytania):
+    import re as _re
+    return {"@context": "https://schema.org", "@type": "FAQPage",
+            "mainEntity": [{"@type": "Question", "name": q,
+                            "acceptedAnswer": {"@type": "Answer", "text": _re.sub(r"<[^>]+>", "", a).strip()}}
+                           for q, a in pytania]}
+
+
+TEKST_LOKALNY = ("Siatkówka kobiet i treningi siatkówki dla dziewcząt w Kobyłce (powiat wołomiński) – "
+                 "blisko Wołomina, Marek, Zielonki, Radzymina i Warszawy.")

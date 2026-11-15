@@ -302,3 +302,43 @@ def grafika_og(m, sciezka_img, plik_postaci, zawodniczka, dni, miesiace, inicjal
         dk.text((120, 106), zawodniczka["nazwisko"].upper(), font=bebas(48), fill=BIALY, anchor="lm")
         _cien(im, karta, (kx, ky - 30))
     return im.convert("RGB")
+
+
+# =====================================================================
+#  PODGLĄD LINKU PROFILU ZAWODNICZKI (og:image), 1200×630
+# =====================================================================
+def grafika_og_zawodniczki(z, plik_postaci, nazwa_klubu):
+    OW, OH = 1200, 630
+    im = _tlo_og(False, OW, OH).convert("RGBA")
+    # wielki numer w tle (półprzezroczysty – osobna warstwa)
+    warstwa = Image.new("RGBA", (OW, OH), (0, 0, 0, 0))
+    ImageDraw.Draw(warstwa).text((OW - 40, OH + 40), str(z["numer"]), font=bebas(620), fill=(255, 255, 255, 34), anchor="rs")
+    im.alpha_composite(warstwa)
+    post = Image.open(plik_postaci).convert("RGBA")
+    bb = post.getbbox()
+    if bb:
+        post = post.crop(bb)
+    skala = (OH - 20) / post.height
+    post = post.resize((int(post.width * skala), OH - 20), Image.LANCZOS)
+    _cien(im, post, (OW - post.width - 60, 20))
+    d = ImageDraw.Draw(im)
+    fe = barlow(28)
+    tekst = f"{z['pozycja'].upper()}  ·  #{z['numer']}"
+    sz = int(fe.getlength(tekst)) + 44
+    d.rounded_rectangle([64, 150, 64 + sz, 200], radius=25, fill=ZOLTY)
+    d.text((64 + sz // 2, 175), tekst, font=fe, fill=GRANAT_C, anchor="mm")
+    d.text((64, 300), z["imie"].upper(), font=bebas(80), fill=(207, 227, 255), anchor="ls")
+    fn = bebas(150)
+    nazw = z["nazwisko"].upper()
+    while fn.getlength(nazw) > 640 and fn.size > 80:
+        fn = bebas(fn.size - 8)
+    d.text((60, 300 + fn.size * 0.95), nazw, font=fn, fill=BIALY, anchor="ls")
+    dol = []
+    if z.get("wzrost"):
+        dol.append(f"{z['wzrost']} CM")
+    if z.get("u_nas"):
+        dol.append(f"W KOBYŁCE: {z['u_nas']}")
+    if dol:
+        d.text((64, 520), "   ·   ".join(dol), font=barlow(28), fill=BIALY, anchor="ls")
+    d.text((64, 585), nazwa_klubu.upper() + "  ·  VOLLEYKOBYLKA.PL", font=barlow(26), fill=ZOLTY, anchor="ls")
+    return im.convert("RGB")

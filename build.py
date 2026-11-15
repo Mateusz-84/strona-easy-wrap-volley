@@ -32,6 +32,7 @@ from szablony import e       # noqa: E402
 WYJSCIE = os.path.join(FOLDER, "strona")
 GLOWNA = "seniorki"          # drużyna pokazywana w belce i na plakacie
 DZIS = date.today()
+INDEXNOW_KLUCZ = "626555853380b51c3aa9050ff937c69a"   # klucz IndexNow (plik 626555853380b51c3aa9050ff937c69a.txt w katalogu głównym)
 OG_ZAPOWIEDZ = None          # obraz podglądu linku z najbliższym meczem (ustawia main(), gdy uda się go zrobić)
 
 
@@ -161,6 +162,28 @@ def ukryj_maile(html):
 
 # ---- SEO: adres kanoniczny, podgląd przy udostępnianiu, dane strukturalne, mapa strony ----
 STRONY_HTML = []          # wszystkie zapisane strony – z nich powstaje sitemap.xml
+DODATKI_SEO = {}          # sciezka → {"obraz", "typ", "ld": [...], "data", "obrazy"} ustawiane przez budowę strony
+GEO_HALI = {"@type": "GeoCoordinates", "latitude": 52.3422, "longitude": 21.2123}
+
+OKRUSZKI = [("aktualnosci/", "Aktualności", "aktualnosci.html"), ("zawodniczki/", "Kadra", "druzyny.html"),
+            ("mecze/", "Terminarz i wyniki", "terminarz.html"), ("akademia-aktualnosci/", "Akademia", "akademia.html")]
+
+
+def okruszki_ld(sciezka, html):
+    """Ścieżka nawigacji (Start › Sekcja › Strona) – Google pokazuje ją w wynikach zamiast adresu."""
+    if sciezka in ("index.html", "404.html", "statystyki.html"):
+        return None
+    baza = C.KLUB["adres_strony"].rstrip("/") + "/"
+    tytul = re.search(r"<title>([^<]*)</title>", html)
+    tytul = (tytul.group(1) if tytul else sciezka).split(" – ")[0].split(" | ")[0].strip()
+    elementy = [("Volley Kobyłka", baza)]
+    for prefiks, nazwa, adres in OKRUSZKI:
+        if sciezka.startswith(prefiks):
+            elementy.append((nazwa, baza + adres))
+    elementy.append((tytul, adres_pelny(sciezka)))
+    return {"@context": "https://schema.org", "@type": "BreadcrumbList",
+            "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": n, "item": u}
+                                for i, (n, u) in enumerate(elementy)]}
 
 
 def adres_pelny(sciezka):
@@ -174,24 +197,29 @@ def dane_strukturalne(sciezka):
     adres = {"@type": "PostalAddress", "streetAddress": "ul. ks. Marcina Załuskiego 57",
              "postalCode": "05-230", "addressLocality": "Kobyłka", "addressRegion": "mazowieckie",
              "addressCountry": "PL"}
+    hala = {"@type": "SportsActivityLocation", "@id": baza + "#hala", "name": C.HALA_DOMOWA["nazwa"],
+            "address": adres, "geo": GEO_HALI, "hasMap": C.HALA_DOMOWA.get("mapa")}
     klub = {"@context": "https://schema.org", "@type": "SportsOrganization", "@id": baza + "#klub",
             "name": C.KLUB["nazwa_prawna"] + " Kobyłka", "alternateName": [C.KLUB["nazwa"], "KS Volley Kobyłka", "Volley Kobyłka"],
             "url": baza, "logo": baza + "img/favicon-512.png", "sport": "Siatkówka",
-            "address": adres, "areaServed": "Kobyłka",
+            "address": adres, "location": hala, "email": C.KLUB.get("email"), "foundingDate": "2021",
+            "areaServed": ["Kobyłka", "Wołomin", "Marki", "Zielonka", "Radzymin", "powiat wołomiński"],
             "sameAs": [x for x in [C.KLUB.get("facebook"), C.KLUB.get("instagram"), C.KLUB.get("youtube"),
                                    C.KLUB.get("volleybox")] if x]}
     if sciezka in ("index.html", S.START_DRUZYNY, "kontakt.html", "o-klubie.html"):
         druzyna = {"@context": "https://schema.org", "@type": "SportsTeam", "name": C.KLUB["nazwa"],
                    "url": baza + S.START_DRUZYNY, "sport": "Siatkówka", "gender": "Female",
                    "memberOf": {"@type": "SportsOrganization", "name": "2. liga kobiet"},
-                   "parentOrganization": {"@id": baza + "#klub"}, "location": adres}
+                   "parentOrganization": {"@id": baza + "#klub"}, "location": hala,
+                   "coach": [{"@type": "Person", "name": "Mateusz Mosur"}]}
         return [klub, druzyna]
     if sciezka == "akademia.html":
         A = C.AKADEMIA
         return [{"@context": "https://schema.org", "@type": "SportsOrganization",
                  "name": A["nazwa"] + " Kobyłka", "url": baza + "akademia.html",
                  "logo": baza + "img/" + A["logo"] if A.get("logo") else None, "sport": "Siatkówka",
-                 "description": A.get("opis"), "address": adres, "areaServed": "Kobyłka",
+                 "description": A.get("opis"), "address": adres, "location": hala, "email": (A.get("koordynator") or {}).get("email"),
+                 "areaServed": ["Kobyłka", "Wołomin", "Marki", "Zielonka", "Radzymin"],
                  "parentOrganization": {"@type": "SportsOrganization", "name": C.KLUB["nazwa_prawna"] + " Kobyłka", "url": baza},
                  "sameAs": [x for x in [A.get("facebook")] if x]}]
     return []
@@ -209,12 +237,18 @@ def seo_glowa(sciezka, html):
         dodatki = '<meta name="robots" content="noindex">'
     else:
         url = adres_pelny(sciezka)
+        ext = DODATKI_SEO.get(sciezka, {})
+        if ext.get("obraz"):
+            obraz = baza + ext["obraz"]
         dodatki = (f'<link rel="canonical" href="{url}">\n<meta property="og:url" content="{url}">\n'
-                   f'<meta property="og:type" content="website">\n'
+                   f'<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">\n'
+                   f'<meta property="og:locale" content="pl_PL">\n'
+                   f'<meta property="og:type" content="{ext.get("typ", "website")}">\n'
                    f'<meta property="og:site_name" content="{"Akademia Siatkówki Volley" if akademia else C.KLUB["nazwa"]}">\n'
                    f'<meta property="og:image" content="{obraz}">\n<meta property="og:image:width" content="1200">\n'
                    f'<meta property="og:image:height" content="630">\n<meta name="twitter:card" content="summary_large_image">')
-        for d in dane_strukturalne(sciezka):
+        okr = okruszki_ld(sciezka, html)
+        for d in dane_strukturalne(sciezka) + ext.get("ld", []) + ([okr] if okr else []):
             d = {k: v for k, v in d.items() if v is not None}
             dodatki += ('\n<script type="application/ld+json">' +
                         json.dumps(d, ensure_ascii=False).replace("</", "<\\/") + "</script>")
@@ -278,6 +312,45 @@ def zmniejsz_zasoby(folder):
         open(sj, "w", encoding="utf-8").write(js)
     except Exception as blad:
         print(f"  UWAGA: zmniejszanie CSS/JS: {blad} – zostają pełne pliki")
+
+
+def zglos_indexnow(adresy):
+    """Po każdej przebudowie zgłasza Bingowi (i innym wyszukiwarkom IndexNow) strony, których treść się zmieniła.
+    Odciski stron trzymane w dane/indexnow.json (repozytorium zapamiętuje je między przebudowami)."""
+    if os.environ.get("GITHUB_ACTIONS") != "true":
+        return                                   # zgłaszamy tylko z serwera, nie z komputera
+    import urllib.request
+    plik = os.path.join(FOLDER, "dane", "indexnow.json")
+    try:
+        stare = json.load(open(plik, encoding="utf-8"))
+    except Exception:
+        stare = {}
+    nowe, zmienione = {}, []
+    baza = C.KLUB["adres_strony"].rstrip("/") + "/"
+    for url in adresy:
+        sciezka = "index.html" if url == baza else url[len(baza):]
+        try:
+            tekst = open(os.path.join(WYJSCIE, sciezka), encoding="utf-8").read()
+        except OSError:
+            continue
+        tekst = re.sub(r'\?v=[0-9a-f]+|data-start="[^"]*"|\d+<small>[dhms]</small>', "", tekst)   # zegary, wersje plików
+        h = hashlib.md5(tekst.encode("utf-8")).hexdigest()[:12]
+        nowe[url] = h
+        if stare.get(url) != h:
+            zmienione.append(url)
+    json.dump(nowe, open(plik, "w", encoding="utf-8"), ensure_ascii=False, indent=0)
+    if not zmienione:
+        return
+    klucz = INDEXNOW_KLUCZ
+    dane = json.dumps({"host": baza.split("/")[2], "key": klucz, "keyLocation": f"{baza}{klucz}.txt",
+                       "urlList": zmienione[:1000]}).encode("utf-8")
+    try:
+        zad = urllib.request.Request("https://api.indexnow.org/indexnow", data=dane,
+                                     headers={"Content-Type": "application/json; charset=utf-8"})
+        with urllib.request.urlopen(zad, timeout=20) as odp:
+            print(f"  IndexNow: zgłoszono {len(zmienione)} zmienionych stron (HTTP {odp.status})")
+    except Exception as blad:
+        print(f"  UWAGA: IndexNow: {blad}")
 
 
 def _sezon():
@@ -366,9 +439,9 @@ class Budowa:
     def forma(self, nazwa, ile=5):
         return self._forma.get(zrodla.norm(nazwa), [])[-ile:]
 
-    def przed_meczem(self, p):
+    def przed_meczem(self, p, m=None):
         """Blok „Przed meczem” pod plakatem: miejsca, forma, wcześniejsze mecze tych drużyn."""
-        m = self.najblizszy
+        m = m or self.najblizszy
         if not m or not m["strony"][1] or not self.tabela():
             return ""
         def wiersz(strona):
@@ -508,8 +581,11 @@ class Budowa:
         """Mecze jako wydarzenia sportowe (schema.org SportsEvent) – Google może pokazać terminy w wynikach."""
         from zoneinfo import ZoneInfo
         baza = C.KLUB["adres_strony"].rstrip("/") + "/"
-        mecze = [self.najblizszy] if tylko_najblizszy and self.najblizszy else \
-            [m for m in self.mecze if m["druzyna"] == GLOWNA and (m.get("wynik") or m["data"] >= DZIS - timedelta(days=60))]
+        if isinstance(tylko_najblizszy, dict):
+            mecze = [tylko_najblizszy]
+        else:
+            mecze = [self.najblizszy] if tylko_najblizszy and self.najblizszy else \
+                [m for m in self.mecze if m["druzyna"] == GLOWNA and (m.get("wynik") or m["data"] >= DZIS - timedelta(days=60))]
         lista = []
         for m in mecze:
             gosp, gosc = m["strony"]
@@ -529,6 +605,7 @@ class Budowa:
                 "sport": "Volleyball",
                 "startDate": start.isoformat() if m.get("godzina") else m["data"].isoformat(),
                 "eventStatus": "https://schema.org/EventScheduled",
+                "endDate": (start + timedelta(hours=2)).isoformat() if m.get("godzina") else m["data"].isoformat(),
                 "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
                 "location": {"@type": "Place", "name": hala,
                              "address": {"@type": "PostalAddress", "streetAddress": adres or hala, "addressCountry": "PL"}},
@@ -536,8 +613,9 @@ class Budowa:
                 "awayTeam": {"@type": "SportsTeam", "name": gosc["nazwa"]},
                 "competitor": [{"@type": "SportsTeam", "name": gosp["nazwa"]}, {"@type": "SportsTeam", "name": gosc["nazwa"]}],
                 "organizer": {"@type": "SportsOrganization", "name": C.KLUB["nazwa_prawna"], "url": baza},
-                "url": baza + "terminarz.html",
-                "image": baza + (OG_ZAPOWIEDZ or "img/og-klub.jpg"),
+                "url": baza + (S.adres_meczu(m) or "terminarz.html"),
+                "image": baza + (m.get("grafika_wyniku") and S.jest_plik(m["grafika_wyniku"]) and "img/" + m["grafika_wyniku"]
+                                 or OG_ZAPOWIEDZ or "img/og-klub.jpg"),
                 "description": f"Mecz {m['liga']}: {gosp['nazwa']} – {gosc['nazwa']}"
                                + (f", wynik {m['wynik']}" if m.get("wynik") else "") + ".",
             }
@@ -550,6 +628,117 @@ class Budowa:
             return ""
         dane = {"@context": "https://schema.org", "@graph": lista}
         return '<script type="application/ld+json">' + json.dumps(dane, ensure_ascii=False).replace("</", "<\\/") + "</script>"
+
+    def strony_meczow(self):
+        """Osobna strona każdego meczu pierwszej drużyny: zapowiedź → po meczu wynik, sety, MVP, relacja.
+        Adres stały (mecze/data-rywal.html) – Google łapie frazy typu „Volley Kobyłka Łask wynik”."""
+        mecze = sorted([m for m in self.mecze if S.adres_meczu(m)], key=lambda m: m["data"])
+        for i, m in enumerate(mecze):
+            adres = S.adres_meczu(m)
+            gosp, gosc = m["strony"]
+            rywal = gosc if gosp.get("nasza") else gosp
+            d = m["data"]
+            liga = m.get("liga") or C.DRUZYNY[GLOWNA]["liga"]
+            hala = m.get("hala") or (C.HALA_DOMOWA["nazwa"] if m["u_siebie"] else "")
+            adr = m.get("adres") or (C.HALA_DOMOWA["adres"] if m["u_siebie"] else "")
+            rozegrany = bool(m.get("wynik"))
+            if rozegrany:
+                tytul = f"{gosp['krotko']} – {gosc['krotko']} {m['wynik']} ({d.strftime('%d.%m.%Y')})"
+                opis = (f"Wynik meczu {liga}: {gosp['nazwa']} – {gosc['nazwa']} {m['wynik']}"
+                        + (f" (sety {', '.join(m.get('sety') or [])})" if m.get("sety") else "")
+                        + (f". MVP: {m['mvp']}" if m.get("mvp") else "") + f". {d.strftime('%d.%m.%Y')}"
+                        + (f", {hala}" if hala else "") + ".")
+                pelny = f"{gosp['krotko']} – {gosc['krotko']} {m['wynik']} – wynik meczu {d.strftime('%d.%m.%Y')} | Volley Kobyłka"
+            else:
+                tytul = f"{gosp['krotko']} – {gosc['krotko']}"
+                opis = (f"Zapowiedź meczu {liga}: {gosp['nazwa']} – {gosc['nazwa']}, {S.data_pl(d)}"
+                        + (f", godz. {m['godzina']}" if m.get("godzina") else "") + (f", {hala}" if hala else "")
+                        + (". Wstęp wolny" if m["u_siebie"] and C.KLUB.get("wstep_wolny") else "") + ".")
+                pelny = f"{gosp['krotko']} – {gosc['krotko']}, {d.strftime('%d.%m.%Y')} – zapowiedź meczu | Volley Kobyłka"
+            obraz = None
+            if rozegrany and m.get("grafika_wyniku") and S.jest_plik(m["grafika_wyniku"]):
+                obraz = "img/" + m["grafika_wyniku"]
+            elif m is self.najblizszy and OG_ZAPOWIEDZ:
+                obraz = OG_ZAPOWIEDZ
+            ld = self.wydarzenia_ld(m)
+            DODATKI_SEO[adres] = {"obraz": obraz, "data": (d if rozegrany else DZIS).isoformat(),
+                                  "obrazy": [obraz] if obraz else []}
+            poprz = mecze[i - 1] if i > 0 else None
+            nast = mecze[i + 1] if i + 1 < len(mecze) else None
+
+            def tresc(p, m=m, gosp=gosp, gosc=gosc, rywal=rywal, d=d, liga=liga, hala=hala, adr=adr,
+                      rozegrany=rozegrany, poprz=poprz, nast=nast, ld=ld):
+                a = b = ""
+                if rozegrany:
+                    a, b = m["wynik"].split(":")
+                def strona(s_, pkt):
+                    return (f'<div class="mstr__druzyna">{S.herb(p, s_, "mstr__herb")}'
+                            f'<strong>{S.nazwa_druzyny(s_)}</strong>{f"<b>{e(pkt)}</b>" if pkt != "" else ""}</div>')
+                wynik_html = (f'<div class="mstr__wynik">{strona(gosp, a)}<span class="mstr__vs">{"" if rozegrany else "vs"}</span>'
+                              f'{strona(gosc, b)}</div>')
+                fakty = [("Data", S.data_pl(d)), ("Godzina", m.get("godzina") or "wkrótce"), ("Rozgrywki", liga)]
+                if hala:
+                    fakty.append(("Hala", hala))
+                if adr:
+                    fakty.append(("Adres", adr))
+                if m["u_siebie"] and C.KLUB.get("wstep_wolny") and not rozegrany:
+                    fakty.append(("Wstęp", "wolny"))
+                fakty_html = "".join(f"<div><dt>{e(x)}</dt><dd>{e(y)}</dd></div>" for x, y in fakty)
+                if rozegrany:
+                    o_meczu = (f"{e(gosp['nazwa'])} – {e(gosc['nazwa'])} {e(m['wynik'])}"
+                               + (f" (sety: {e(', '.join(m.get('sety') or []))})" if m.get("sety") else "") + ". "
+                               + (f"Mecz {e(liga)} rozegrany {e(S.data_pl(d))}" + (f" w hali: {e(hala)}" if hala else "") + ". ")
+                               + (f"{'Wygrana' if m.get('wygrana') else 'Porażka'} {e(C.KLUB['nazwa'])}. ")
+                               + (f"MVP spotkania: {S.link_zawodniczki(p, m['mvp'])}." if m.get("mvp") else ""))
+                else:
+                    o_meczu = (f"{'Zapraszamy na mecz' if m['u_siebie'] else 'Mecz wyjazdowy'} {e(liga)}: "
+                               f"{e(gosp['nazwa'])} – {e(gosc['nazwa'])}, {e(S.data_pl(d))}"
+                               + (f", godz. {e(m['godzina'])}" if m.get("godzina") else "")
+                               + (f", {e(hala)}" if hala else "") + ". "
+                               + ("Wstęp wolny – przyjdź i dopinguj nasze siatkarki! " if m["u_siebie"] and C.KLUB.get("wstep_wolny") else "")
+                               + ("Wynik na żywo zobaczysz na tej stronie w dniu meczu." if C.KLUB.get("wyniki_na_zywo") else ""))
+                guziki = []
+                if not rozegrany and d >= DZIS:
+                    guziki.append(f'<a class="btn btn--zolty" href="{p}kalendarz/{e(m["plik_ics"])}" download>Dodaj do kalendarza</a>')
+                    if C.HALA_DOMOWA.get("mapa") and m["u_siebie"]:
+                        guziki.append(f'<a class="btn btn--obrys" href="{e(C.HALA_DOMOWA["mapa"])}" target="_blank" rel="noopener">Dojazd ↗</a>')
+                    elif adr:
+                        guziki.append(f'<a class="btn btn--obrys" href="https://www.google.com/maps/search/?api=1&amp;query={quote(adr)}" '
+                                      f'target="_blank" rel="noopener">Dojazd ↗</a>')
+                if m.get("relacja"):
+                    guziki.append(f'<a class="btn btn--zolty" href="{p}aktualnosci/{e(m["relacja"])}.html">Relacja z meczu →</a>')
+                grafika = ""
+                if rozegrany and m.get("grafika_wyniku") and S.jest_plik(m["grafika_wyniku"]):
+                    grafika = (f'<figure class="mstr__grafika"><img src="{e(S.src_img(p, m["grafika_wyniku"]))}" loading="lazy" '
+                               f'alt="Wynik meczu {e(gosp["krotko"])} – {e(gosc["krotko"])} {e(m["wynik"])}"></figure>')
+                przed = self.przed_meczem(p, m) if not rozegrany else ""
+                rywal_vb = (f'<p>Profil rywala: <a href="{e(rywal["volleybox"])}" target="_blank" rel="noopener">'
+                            f'{e(rywal["nazwa"])} na Volleybox ↗</a></p>') if rywal.get("volleybox") else ""
+                nawig = '<nav class="pm__nawig" aria-label="Inne mecze">'
+                if poprz:
+                    nawig += f'<a href="{p}{S.adres_meczu(poprz)}">← {e(poprz["strony"][0]["krotko"])} – {e(poprz["strony"][1]["krotko"])}</a>'
+                if nast:
+                    nawig += f'<a href="{p}{S.adres_meczu(nast)}">{e(nast["strony"][0]["krotko"])} – {e(nast["strony"][1]["krotko"])} →</a>'
+                nawig += "</nav>"
+                return f"""
+{ld}
+<header class="plakat mstr__plakat{' mstr__plakat--wyjazd' if not m['u_siebie'] else ''}"><div class="kontener">
+  <p class="plakat__nad">{'Mecz u siebie' if m['u_siebie'] else 'Mecz wyjazdowy'} · {e(liga)}</p>
+  <h1 class="plakat__tytul plakat__tytul--artykul">{e(gosp['nazwa'])} <span>– {e(gosc['nazwa'])}</span></h1>
+  {wynik_html}
+  {S.sety_html(m) if rozegrany else ''}
+  {f'<p class="mstr__mvp">MVP: <strong>{S.link_zawodniczki(p, m["mvp"])}</strong></p>' if m.get('mvp') else ''}
+</div></header>
+<section class="sekcja"><div class="kontener uklad-2">
+  <div class="artykul__tresc"><h2 class="pm__h2">{'Po meczu' if rozegrany else 'Zapowiedź'}</h2><p>{o_meczu}</p>{rywal_vb}
+    <div class="przyciski-cta">{''.join(guziki)}</div>{grafika}</div>
+  <dl class="pm__fakty mstr__fakty">{fakty_html}</dl>
+</div></section>
+{przed}
+<section class="sekcja sekcja--biala"><div class="kontener">{nawig}
+  <p><a class="sekcja__link" href="{p}terminarz.html">← Cały terminarz i tabela</a></p></div></section>"""
+
+            self.strona(adres, tytul, opis, tresc, aktywna="terminarz.html", pelny=pelny)
 
     def filtry_miejsca(self):
         przyciski = "".join(
@@ -726,7 +915,8 @@ class Budowa:
     <h1 class="plakat__tytul plakat__tytul--artykul">{e(n['tytul'])}</h1></div></header>
   <div class="kontener artykul__kontener">
     {f'<p class="artykul__zajawka">{e(n["zajawka"])}</p>' if n.get('zajawka') and n.get('zrodlo') != 'fb' else ''}
-    <div class="artykul__tresc">{S.akapity_fb(n['tresc']) if n.get('zrodlo') == 'fb' else S.akapity(n['tresc'])}</div>
+    <div class="artykul__tresc">{S.podlinkuj_zawodniczki(p, S.akapity_fb(n['tresc']) if n.get('zrodlo') == 'fb' else S.akapity(n['tresc']))}</div>
+    {''.join(f'<p><a class="btn btn--obrys" href="{p}{S.adres_meczu(m)}">Wynik i szczegóły meczu →</a></p>' for m in self.mecze if m.get('relacja') == n['adres'] and S.adres_meczu(m))}
     {S.przycisk_fb(n)}
     <p><a class="sekcja__link" href="{p}aktualnosci.html">← Wszystkie aktualności</a></p>
   </div>
@@ -734,6 +924,18 @@ class Budowa:
 <section class="sekcja sekcja--biala"><div class="kontener">
   {S.naglowek_sekcji('Czytaj', 'też')}
   <div class="newsy">{''.join(S.karta_newsa(p, x) for x in inne)}</div></div></section>"""
+            baza = C.KLUB["adres_strony"].rstrip("/") + "/"
+            obraz_n = ("img/" + n["zdjecie"]) if n.get("zdjecie") and S.jest_plik(n["zdjecie"]) else None
+            DODATKI_SEO[f"aktualnosci/{n['adres']}.html"] = {
+                "obraz": obraz_n, "typ": "article", "data": n["data"], "obrazy": [obraz_n] if obraz_n else [],
+                "ld": [{"@context": "https://schema.org", "@type": "NewsArticle", "headline": n["tytul"][:110],
+                        "datePublished": n["data"], "dateModified": n["data"],
+                        "image": [baza + (obraz_n or "img/og-klub.jpg")],
+                        "author": {"@type": "SportsOrganization", "name": C.KLUB["nazwa"], "url": baza},
+                        "publisher": {"@type": "Organization", "name": C.KLUB["nazwa_prawna"] + " Kobyłka",
+                                      "logo": {"@type": "ImageObject", "url": baza + "img/favicon-512.png"}},
+                        "mainEntityOfPage": baza + f"aktualnosci/{n['adres']}.html",
+                        "about": {"@type": "SportsTeam", "name": C.KLUB["nazwa"]}}]}
             self.strona(f"aktualnosci/{n['adres']}.html", n["tytul"], n.get("zajawka") or n["tytul"],
                         artykul, aktywna="aktualnosci.html")
 
@@ -899,9 +1101,12 @@ class Budowa:
     </div>
   </div>
 </section>"""
-        html = S.uklad_akademii("Akademia Siatkówki Volley Kobyłka – treningi siatkówki dla dziewcząt",
-                                "Akademia Siatkówki Volley w Kobyłce – treningi siatkówki dla dziewcząt i dzieci, "
-                                "hala przy ul. Załuskiego 57. Bez wpisowego. Cennik, plan treningów i zapisy.",
+        pytania_ak = self.faq_akademii()
+        DODATKI_SEO["akademia.html"] = {"ld": [S.faq_ld(pytania_ak)]}
+        tresc = tresc + S.faq_html(pytania_ak, "Pytania", "rodziców", "faq--akademia")
+        html = S.uklad_akademii("Akademia Siatkówki Volley Kobyłka – siatkówka dla dziewcząt i dzieci",
+                                "Treningi siatkówki dla dziewcząt w Kobyłce (blisko Wołomina, Marek i Zielonki) – "
+                                "Akademia Siatkówki Volley. Hala przy ul. Załuskiego 57, bez wpisowego. Cennik i zapisy.",
                                 tresc, p, self.wersja, aktualnosci=bool(na))
         zapisz("akademia.html", html)
 
@@ -1026,6 +1231,19 @@ class Budowa:
                     + (f", {z['wzrost']} cm" if z.get("wzrost") else "")
                     + (f". Poprzednio: {', '.join(dict.fromkeys(k for _, k in z['kluby']))[:80]}" if z.get("kluby") else "")
                     + ".")
+            og = None
+            try:
+                import grafika
+                if z.get("zdjecie") and S.jest_plik(z["zdjecie"]):
+                    og = f"img/og/zawodniczka-{S.adres_profilu(z).split('/')[-1][:-5]}.jpg"
+                    os.makedirs(os.path.join(WYJSCIE, "img", "og"), exist_ok=True)
+                    grafika.grafika_og_zawodniczki(z, os.path.join(FOLDER, "img", z["zdjecie"]), C.KLUB["nazwa"]) \
+                        .save(os.path.join(WYJSCIE, og), "JPEG", quality=85, optimize=True)
+            except Exception as blad:
+                print(f"  UWAGA: obraz profilu {imie_nazwisko}: {blad}")
+                og = None
+            DODATKI_SEO[S.adres_profilu(z)] = {"obraz": og, "typ": "profile",
+                                               "obrazy": ["img/" + z["zdjecie"]] if z.get("zdjecie") and S.jest_plik(z["zdjecie"]) else []}
             self.strona(S.adres_profilu(z), imie_nazwisko, opis, tresc, aktywna="druzyny.html",
                         pelny=f"{imie_nazwisko} – {z['pozycja'].lower()}, Easy Wrap Volley Kobyłka")
 
@@ -1124,7 +1342,90 @@ class Budowa:
     </dl>
   </div>
 </div></section>"""
-        self.strona("o-klubie.html", "O klubie", "Historia i sukcesy Klubu Sportowego Volley Kobyłka.", tresc)
+        pytania = self.faq_druzyny()
+        DODATKI_SEO["o-klubie.html"] = {"ld": [S.faq_ld(pytania)]}
+        tresc_z_faq = lambda p, t=tresc, q=pytania: t(p) + self.o_klubie_wiecej(p) + S.faq_html(q)
+        self.strona("o-klubie.html", "O klubie", "Historia i sukcesy Klubu Sportowego Volley Kobyłka.", tresc_z_faq)
+
+    def faq_akademii(self):
+        A = C.AKADEMIA
+        H = C.HALA_DOMOWA
+        fakty = " ".join(A.get("fakty", []))
+        pyt = []
+        if A.get("cennik"):
+            pyt.append(("Ile kosztują treningi siatkówki w Akademii?",
+                        "; ".join(f"{e(c['co'])} – {e(c['cena'])}" for c in A["cennik"]) +
+                        (". Bez wpisowego." if "wpisowego" in fakty else ".")))
+        pyt.append(("Gdzie odbywają się treningi siatkówki dla dziewcząt?",
+                    f"W hali: {e(H['nazwa'])}, {e(H['adres'])}. To Kobyłka w powiecie wołomińskim – blisko Wołomina, Marek i Zielonki."))
+        if "90" in fakty:
+            pyt.append(("Ile trwa trening?", "Jeden trening trwa 90 minut."))
+        if "dziewcząt" in fakty:
+            pyt.append(("Czy treningi są dla chłopców?", "Nie – zajęcia Akademii Siatkówki Volley są tylko dla dziewcząt."))
+        if "sezon" in fakty:
+            pyt.append(("Na jak długo zapisuje się dziecko?", "Umowę zawieramy na sezon: od września do czerwca."))
+        mail = (A.get("koordynator") or {}).get("email") or C.KLUB["email"]
+        pyt.append(("Jak zapisać dziecko na siatkówkę?",
+                    f'Napisz na <a href="mailto:{e(mail)}">{e(mail)}</a> – podaj imię i rok urodzenia dziecka. '
+                    'Szczegóły w sekcji <a href="#zapisy">Zapisy</a>.'))
+        if A.get("ochrona_maloletnich"):
+            pyt.append(("Czy dzieci są w Akademii bezpieczne?",
+                        "Tak. Klub stosuje Standardy Ochrony Małoletnich, a każda osoba pracująca z dziećmi ma aktualne "
+                        'zaświadczenie o niekaralności. Więcej w sekcji <a href="#ochrona">Bezpieczeństwo dzieci</a>.'))
+        return pyt
+
+    def faq_druzyny(self):
+        """Pytania i odpowiedzi z aktualnych danych strony (miejsce w tabeli, najbliższy mecz, hala)."""
+        H = C.HALA_DOMOWA
+        p = "/"
+        pyt = [("Gdzie gra Easy Wrap Volley Kobyłka?",
+                f"Mecze u siebie rozgrywamy w hali: {e(H['nazwa'])}, {e(H['adres'])}. "
+                f'<a href="{e(H.get("mapa", ""))}" target="_blank" rel="noopener">Pokaż na mapie</a>.')]
+        if C.KLUB.get("wstep_wolny"):
+            pyt.append(("Ile kosztuje wstęp na mecz siatkówki w Kobyłce?",
+                        "Wstęp na mecze Easy Wrap Volley Kobyłka u siebie jest wolny. Zapraszamy całe rodziny!"))
+        liga = C.DRUZYNY[GLOWNA]["liga"]
+        tekst = f"Easy Wrap Volley Kobyłka gra w rozgrywkach: {e(liga)} (siatkówka kobiet)."
+        nasz = next((w for w in self.tabela() if w["nasz"]), None)
+        if nasz:
+            tekst += f" Po {nasz['mecze']} meczach zajmujemy {nasz['lp']}. miejsce w tabeli ({nasz['pkt']} pkt)."
+        pyt.append(("W jakiej lidze gra Easy Wrap Volley Kobyłka?", tekst))
+        m = self.najblizszy
+        if m and m["strony"][1]:
+            g, h = m["strony"]
+            pyt.append(("Kiedy jest najbliższy mecz Easy Wrap Volley Kobyłka?",
+                        f"{e(S.data_pl(m['data']))}{', godz. ' + e(m['godzina']) if m.get('godzina') else ''}: "
+                        f"{e(g['nazwa'])} – {e(h['nazwa'])}"
+                        f"{' (' + e(S.skrot_hali(m.get('hala'))) + ')' if m.get('hala') else ''}. "
+                        f'Pełny terminarz: <a href="/terminarz.html">terminarz i wyniki</a>.'))
+        pyt += [("Jak mieć terminarz meczów w telefonie?",
+                 'Na stronie <a href="/terminarz.html#w-telefonie">Terminarz</a> dodaj kalendarz sezonu do telefonu '
+                 '(iPhone, Android, Outlook). Nowe godziny i wyniki pojawią się w nim same.'),
+                ("Jak zapisać córkę na siatkówkę w Kobyłce?",
+                 'Treningi dla dziewcząt prowadzi <a href="/akademia.html">Akademia Siatkówki Volley</a> – '
+                 'w hali przy ul. Załuskiego 57 w Kobyłce, bez wpisowego.'),
+                ("Jak zostać sponsorem Easy Wrap Volley Kobyłka?",
+                 f'Napisz do nas: <a href="mailto:{e(C.KLUB["email"])}">{e(C.KLUB["email"])}</a>. '
+                 'Zobacz też <a href="/sponsorzy.html">naszych sponsorów</a>.')]
+        return pyt
+
+    def o_klubie_wiecej(self, p):
+        """Stałe fakty o klubie z danych strony – więcej treści i linków dla wyszukiwarek."""
+        kadra = [z for z in C.KADRA if z["druzyna"] == GLOWNA]
+        linki = ", ".join(f'<a href="{p}{S.adres_profilu(z)}">{e(z["imie"])} {e(z["nazwisko"])}</a>'
+                          for z in sorted(kadra, key=lambda z: z["nazwisko"]) if S.adres_profilu(z))
+        tytularny = next((s_["nazwa"] for s_ in C.SPONSORZY.values() if s_.get("poziom") == "tytularny"), "Easy Wrap")
+        return f"""
+<section class="sekcja sekcja--biala"><div class="kontener artykul__tresc">
+  <h2 class="sekcja__tytul">Siatkówka kobiet <span>w Kobyłce</span></h2>
+  <p>{e(C.KLUB['nazwa_prawna'])} to klub siatkarski z Kobyłki w powiecie wołomińskim. Pierwsza drużyna – {e(C.KLUB['nazwa'])} –
+  gra w rozgrywkach: {e(C.DRUZYNY[GLOWNA]['liga'])}. Sponsorem tytularnym zespołu jest {e(tytularny)}.
+  Mecze u siebie rozgrywamy w hali przy ul. ks. Marcina Załuskiego 57 w Kobyłce{', wstęp jest wolny' if C.KLUB.get('wstep_wolny') else ''}.</p>
+  <p>W kadrze na sezon gra {len(kadra)} siatkarek: {linki}. Terminarz, wyniki i tabelę znajdziesz na stronie
+  <a href="{p}terminarz.html">Terminarz i wyniki</a>, a zapowiedzi i relacje w <a href="{p}aktualnosci.html">Aktualnościach</a>.</p>
+  <p>Szkolimy też dziewczęta: <a href="{p}akademia.html">Akademia Siatkówki Volley</a> prowadzi treningi siatkówki
+  dla dziewcząt w Kobyłce – blisko Wołomina, Marek, Zielonki i Radzymina.</p>
+</div></section>"""
 
     # --- SKLEP -------------------------------------------------------------
     def sklep(self):
@@ -1535,6 +1836,7 @@ def main():
     b.galeria()
     b.sponsorzy()
     b.profile()
+    b.strony_meczow()
     b.o_klubie()
     b.sklep()
     b.kontakt()
@@ -1551,10 +1853,18 @@ def main():
         puste.add("galeria.html")
     if not S.sklep_ma_produkty():
         puste.add("sklep.html")
-    wpisy = "".join(f"  <url><loc>{adres_pelny(s)}</loc><priority>{waga.get(s, '0.5')}</priority></url>\n"
-                    for s in sorted(set(STRONY_HTML) - puste, key=lambda s: (-float(waga.get(s, '0.5')), s)))
+    def wpis(s_):
+        ext = DODATKI_SEO.get(s_, {})
+        data = ext.get("data") or DZIS.isoformat()
+        obrazy = "".join(f"<image:image><image:loc>{baza}{o}</image:loc></image:image>" for o in ext.get("obrazy", []) if o)
+        return (f"  <url><loc>{adres_pelny(s_)}</loc><lastmod>{data[:10]}</lastmod>"
+                f"<priority>{waga.get(s_, '0.5')}</priority>{obrazy}</url>\n")
+    lista_map = sorted(set(STRONY_HTML) - puste, key=lambda s_: (-float(waga.get(s_, '0.5')), s_))
+    wpisy = "".join(wpis(s_) for s_ in lista_map)
     zapisz("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n'
-           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + wpisy + "</urlset>\n")
+           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
+           'xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n' + wpisy + "</urlset>\n")
+    zglos_indexnow([adres_pelny(s_) for s_ in lista_map])
     b.statystyki(sorted(set(STRONY_HTML)))   # po mapie strony – statystyki nie trafiają do Google
     # Ikona strony: favicon.ico w katalogu głównym (przeglądarki i Google szukają jej tam) + manifest
     if os.path.isfile(os.path.join(FOLDER, "img", "favicon.ico")):
@@ -1579,7 +1889,7 @@ def main():
     zapisz("sw.js", sw)
 
     # IndexNow (Bing, Yandex, Seznam): plik z kluczem w katalogu głównym – pozwala szybko zgłaszać zmiany strony
-    zapisz("626555853380b51c3aa9050ff937c69a.txt", "626555853380b51c3aa9050ff937c69a")
+    zapisz(f"{INDEXNOW_KLUCZ}.txt", INDEXNOW_KLUCZ)
 
     nm = b.najblizszy
     print(f"\nGotowe! Strona jest w folderze: {WYJSCIE}")
