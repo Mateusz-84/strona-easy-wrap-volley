@@ -1751,8 +1751,36 @@ def mecz_do_zapowiedzi(mecz):
     return {"data": mecz["data"], "godzina": mecz.get("godzina"), "nazwy_rywala": nazwy}
 
 
+def zapas_licznika(bez_internetu):
+    """Ostatnia znana liczba odwiedzin – pokazywana w stopce od razu, nawet gdy darmowy serwis liczników
+    (Abacus) nie odpowiada. Przy każdej przebudowie próbujemy pobrać świeżą liczbę i zapisujemy ją w dane/licznik.json."""
+    L = getattr(C, "LICZNIK", {}) or {}
+    if not L.get("wlaczony"):
+        return
+    plik = os.path.join(FOLDER, "dane", "licznik.json")
+    try:
+        zapis = json.load(open(plik, encoding="utf-8"))
+    except Exception:
+        zapis = {}
+    klucz = f'{L["przestrzen"]}/{L["klucz"]}'
+    if zapis.get("klucz") != klucz:
+        zapis = {}                                   # nowy klucz = licznik od zera
+    if not bez_internetu:
+        import urllib.request
+        try:
+            with urllib.request.urlopen(f"https://abacus.jasoncameron.dev/get/{klucz}", timeout=20) as odp:
+                wartosc = int(json.load(odp).get("value") or 0)
+            if wartosc >= int(zapis.get("wartosc") or 0):
+                zapis = {"klucz": klucz, "wartosc": wartosc, "data": DZIS.isoformat()}
+                json.dump(zapis, open(plik, "w", encoding="utf-8"), ensure_ascii=False)
+        except Exception as blad:
+            print("  UWAGA: licznik odwiedzin –", type(blad).__name__, "(zostaje ostatnia znana liczba)")
+    S.LICZNIK_ZAPAS = int(zapis.get("wartosc") or 0)
+
+
 def main():
     bez_internetu = "--bez-internetu" in sys.argv
+    zapas_licznika(bez_internetu)
     print("Pobieram dane ze stron związkowych..." if not bez_internetu else "Tryb bez internetu – używam kopii danych.")
     dane, uwagi = zrodla.pobierz_dane(C.ZRODLA_ZWIAZKOWE, C.RYWALE, bez_internetu=bez_internetu)
     for u in uwagi:

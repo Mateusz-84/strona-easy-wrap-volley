@@ -24,7 +24,11 @@ window.vkLicznik = (function () {
       setTimeout(function () { zapytaj(sciezka, proby - 1, gotowe); }, ms + Math.random() * 1500);
     }
     kolejka.push(function () {
-      fetch(BAZA + sciezka, { keepalive: true }).then(function (r) {
+      // Serwis potrafi „wisieć” kilkanaście sekund – po 8 s przerywamy i próbujemy ponownie
+      var stop = window.AbortController ? new AbortController() : null;
+      var zegar = stop && setTimeout(function () { stop.abort(); }, 8000);
+      fetch(BAZA + sciezka, stop ? { keepalive: true, signal: stop.signal } : { keepalive: true }).then(function (r) {
+        clearTimeout(zegar);
         if (r.ok) return r.json().then(gotowe, function () { gotowe(null); });
         if (r.status === 404) return gotowe({ value: 0 });            // licznik jeszcze nie istnieje = 0
         if (r.status === 429 || r.status >= 500) {
@@ -32,7 +36,7 @@ window.vkLicznik = (function () {
           return ponow(po > 0 ? Math.min(po, 10000) : 3000);
         }
         gotowe(null);
-      }).catch(function () { ponow(3000); });
+      }).catch(function () { clearTimeout(zegar); ponow(3000); });
     });
     pompa();
   }
@@ -201,7 +205,7 @@ window.vkLicznik = (function () {
      --------------------------------------------------------------- */
   /* ---------------------------------------------------------------
      LICZNIK WYŚWIETLEŃ (stopka) – każde wczytanie strony dolicza 1.
-     Gdy serwis nie odpowie, licznik po prostu się nie pokazuje.
+     Gdy serwis nie odpowie, zostaje ostatnia znana liczba z budowy strony.
      --------------------------------------------------------------- */
   var wysw = document.querySelector('[data-wyswietlenia]');
   if (wysw && window.fetch && location.protocol.indexOf('http') === 0) {
@@ -211,7 +215,8 @@ window.vkLicznik = (function () {
     try { wewnetrzne = !!document.referrer && new URL(document.referrer).host === location.host; } catch (e) {}
     window.vkLicznik((wewnetrzne ? 'get/' : 'hit/') + wysw.dataset.wyswietlenia)
       .then(function (d) {
-        if (!d || typeof d.value !== 'number' || d.value < 1) return;
+        // Gdy serwis nie odpowie, zostaje ostatnia znana liczba wpisana przy budowie strony (data-zapas)
+        if (!d || typeof d.value !== 'number' || d.value < 1 || d.value < (+wysw.dataset.zapas || 0)) return;
         wysw.querySelector('[data-wyswietlenia-liczba]').textContent = d.value.toLocaleString('pl-PL');
         wysw.title = 'Odwiedziny strony';
         wysw.hidden = false;
