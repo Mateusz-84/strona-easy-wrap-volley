@@ -27,6 +27,7 @@ sys.path.insert(0, FOLDER)
 import content as C          # noqa: E402  (wszystkie treści)
 import zrodla                # noqa: E402  (pobieranie ze stron związków)
 import szablony as S         # noqa: E402  (klocki HTML)
+import poradniki as PR       # noqa: E402  (poradnik dla rodziców – Akademia)
 from szablony import e       # noqa: E402
 
 WYJSCIE = os.path.join(FOLDER, "strona")
@@ -194,7 +195,8 @@ DODATKI_SEO = {}          # sciezka → {"obraz", "typ", "ld": [...], "data", "o
 GEO_HALI = {"@type": "GeoCoordinates", "latitude": 52.3422, "longitude": 21.2123}
 
 OKRUSZKI = [("aktualnosci/", "Aktualności", "aktualnosci.html"), ("zawodniczki/", "Kadra", "druzyny.html"),
-            ("mecze/", "Terminarz i wyniki", "terminarz.html"), ("akademia-aktualnosci/", "Akademia", "akademia.html")]
+            ("mecze/", "Terminarz i wyniki", "terminarz.html"), ("akademia-aktualnosci/", "Akademia", "akademia.html"),
+            ("akademia-poradnik/", "Akademia", "akademia.html")]
 
 
 def okruszki_ld(sciezka, html):
@@ -246,7 +248,7 @@ def dane_strukturalne(sciezka):
         return [{"@context": "https://schema.org", "@type": "SportsOrganization",
                  "name": A["nazwa"] + " Kobyłka", "url": baza + "akademia.html",
                  "logo": baza + "img/" + A["logo"] if A.get("logo") else None, "sport": "Siatkówka",
-                 "description": A.get("opis"), "address": adres, "location": hala, "email": (A.get("koordynator") or {}).get("email"),
+                 "description": A.get("opis"), "address": adres, "location": hala, "email": (A.get("koordynator") or {}).get("email"), "telephone": S.tel_link((A.get("koordynator") or {}).get("telefon")) if (A.get("koordynator") or {}).get("telefon") else None,
                  "areaServed": ["Kobyłka", "Wołomin", "Marki", "Zielonka", "Radzymin"],
                  "parentOrganization": {"@type": "SportsOrganization", "name": C.KLUB["nazwa_prawna"] + " Kobyłka", "url": baza},
                  "sameAs": [x for x in [A.get("facebook")] if x],
@@ -1030,7 +1032,7 @@ class Budowa:
         if k.get("imie"):
             kontakt += f'<p class="ak-osoba">{e(k["imie"])}</p>'
         if k.get("telefon"):
-            kontakt += f'<a class="ak-kontakt__duzy" href="tel:{e(k["telefon"].replace(" ", ""))}">{e(k["telefon"])}</a>'
+            kontakt += f'<a class="ak-kontakt__duzy" href="tel:{S.tel_link(k["telefon"])}">{e(k["telefon"])}</a>'
         if k.get("email"):
             kontakt += f'<a class="ak-kontakt__mail" href="mailto:{e(k["email"])}">{e(k["email"])}</a>'
         fb = (f'<a class="btn btn--fb" href="{e(A["facebook"])}" target="_blank" rel="noopener">Akademia na Facebooku ↗</a>'
@@ -1069,13 +1071,15 @@ class Budowa:
       <p class="ak-opis">{e(A['opis'])}</p>
       <ul class="ak-fakty">{fakty}</ul>
       <div class="ak-przyciski"><a class="btn btn--ak" href="#zapisy">Zapisz córkę →</a>
-        <a class="btn btn--obrys btn--jasny" href="#cennik">Zobacz cennik</a></div>
+        <a class="btn btn--obrys btn--jasny" href="#grupa">Darmowy trening próbny</a></div>
     </div>
     {logo}
   </div>
   {f'<div class="kontener">{sekcja_grupy}</div>' if sekcja_grupy else ''}
 </section>
 
+{self.ak_dlaczego(A)}
+{self.ak_wybor_klasy(A)}
 <section class="sekcja ak-sekcja" id="cennik" aria-labelledby="cennik-tytul">
   <div class="kontener">
     <h2 class="ak-h2" id="cennik-tytul">Cennik</h2>
@@ -1138,20 +1142,22 @@ class Budowa:
 </section>
 
 {sekcja_aktualnosci}
+{self.ak_poradnik_sekcja()}
 <section class="sekcja ak-sekcja ak-sekcja--biala" id="kontakt" aria-labelledby="kontakt-tytul">
   <div class="kontener ak-kontakt">
     <div>
       <h2 class="ak-h2" id="kontakt-tytul">Kontakt</h2>
       <p class="ak-rola">{e(k.get('rola') or 'Koordynator Akademii')}</p>
       {kontakt}
-      <p class="ak-kontakt__tekst">Masz pytanie o zajęcia, wolne miejsca albo pierwszy trening? Napisz e-mail
+      <p class="ak-kontakt__tekst">Masz pytanie o zajęcia, wolne miejsca albo trening próbny? {'Zadzwoń, napisz e-mail' if k.get('telefon') else 'Napisz e-mail'}
       albo wiadomość prywatną na Facebooku Akademii.</p>
-      <div class="ak-przyciski">{f'<a class="btn btn--ak" href="mailto:{e(mail)}?subject={quote("Pytanie o Akademię Siatkówki Volley")}">Napisz e-mail →</a>' if mail else ''}{fb}</div>
+      <div class="ak-przyciski">{f'<a class="btn btn--ak" href="tel:{S.tel_link(k["telefon"])}">Zadzwoń →</a>' if k.get('telefon') else ''}{f'<a class="btn btn--obrys" href="mailto:{e(mail)}?subject={quote("Pytanie o Akademię Siatkówki Volley")}">Napisz e-mail</a>' if mail else ''}{fb}</div>
     </div>
     <div class="ak-karta">
       <h3>Gdzie trenujemy</h3>
       <p>Hala przy PSP nr 3 w Kobyłce<br>ul. Załuskiego 57, 05-230 Kobyłka</p>
       {f'<a class="btn btn--ak" href="{e(mapa)}" rel="noopener" target="_blank">Pokaż na mapie →</a>' if mapa else ''}
+      {self.ak_dojazd()}
     </div>
   </div>
 </section>
@@ -1175,8 +1181,12 @@ class Budowa:
         tresc = tresc + S.faq_html(pytania_ak, "Pytania", "rodziców", "faq--akademia")
         cel_zapisu = (f'href="{e(A["formularz_google"])}" rel="noopener" target="_blank"' if A.get("formularz_google")
                       else 'href="#zapisy"')
+        tel = (A.get("koordynator") or {}).get("telefon")
         tresc += (f'<nav class="ak-pasek" aria-label="Szybkie zapisy"><a class="ak-pasek__zapis" {cel_zapisu}>Zapisz córkę →</a>'
-                  f'<a class="ak-pasek__plan" href="#plan">Plan treningów</a></nav>')
+                  + (f'<a class="ak-pasek__tel" href="tel:{S.tel_link(tel)}" aria-label="Zadzwoń: {e(tel)}">'
+                     '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>Zadzwoń</a>'
+                     if tel else '<a class="ak-pasek__plan" href="#plan">Plan treningów</a>')
+                  + '</nav>')
         html = S.uklad_akademii("Akademia Siatkówki Volley Kobyłka – siatkówka dla dziewcząt i dzieci",
                                 "Siatkówka dla dziewcząt z klas 3–6 SP w Kobyłce (blisko Wołomina, Marek i Zielonki) – "
                                 "Akademia Siatkówki Volley. Wtorki i czwartki 16:15–17:45. Cennik i zapisy online.",
@@ -1191,8 +1201,16 @@ class Budowa:
             d = date.fromisoformat(n["data"])
             inne = "".join(S.karta_newsa(pp, x, False, "akademia-aktualnosci", herb_ak) for x in [x for x in na if x is not n][:2])
             czytaj = (f'<section class="sekcja ak-sekcja"><div class="kontener"><h2 class="ak-h2">Czytaj też</h2>'
-                      f'<div class="newsy">{inne}</div></div></section>' if inne else "")
+                      f'<div class="newsy">{inne}</div></div></section>' if inne else "") + self.ak_poradnik_sekcja(pp)
             naglowek = f'<div class="plakat__tlo">{foto}</div>' if foto else ""
+            tekst_art, zrodlo = S.oczysc_post_akademii(S.akapity_fb(n['tresc']))
+            zrodlo_html = (f'<aside class="art-zrodla"><h2>Źródło</h2><p>{zrodlo}</p></aside>' if zrodlo else "")
+            sciezka_n = f"akademia-aktualnosci/{n['adres']}.html"
+            obraz_n = S.src_img("", n.get("zdjecie")).split("?")[0] if n.get("zdjecie") and S.img("", n.get("zdjecie"), "", "") else None
+            DODATKI_SEO[sciezka_n] = {"typ": "article", "data": n["data"], "obraz": obraz_n,
+                                      "ld": [self.ak_artykul_ld(sciezka_n, n["tytul"], n.get("zajawka") or n["tytul"],
+                                                                n["data"], obraz_n, None,
+                                                                [re.sub(r"<[^>]+>", "", zrodlo)] if zrodlo else [])]}
             tresc_n = f"""
 <article class="artykul artykul--akademia">
   <header class="plakat{' plakat--z-foto' if foto else ''}">
@@ -1201,7 +1219,9 @@ class Budowa:
     <p class="plakat__nad">Akademia · <time datetime="{d.isoformat()}">{e(S.data_pl(d))}</time></p>
     <h1 class="plakat__tytul plakat__tytul--artykul">{e(n['tytul'])}</h1></div></header>
   <div class="kontener artykul__kontener">
-    <div class="artykul__tresc">{S.akapity_fb(n['tresc'])}</div>
+    <div class="artykul__tresc">{tekst_art}</div>
+    {zrodlo_html}
+    {self.ak_ramka_zapisow(A, pp)}
     {S.przycisk_fb(n)}
     <p><a class="sekcja__link" href="{pp}akademia.html#aktualnosci">← Wszystkie aktualności Akademii</a></p>
   </div>
@@ -1210,6 +1230,175 @@ class Budowa:
             zapisz(f"akademia-aktualnosci/{n['adres']}.html",
                    S.uklad_akademii(f"{n['tytul']} – Akademia Siatkówki Volley", n.get("zajawka") or n["tytul"],
                                     tresc_n, pp, self.wersja, aktualnosci=True))
+
+
+    # --- AKADEMIA: dodatkowe sekcje -------------------------------------------
+    def ak_dlaczego(self, A):
+        k = A.get("koordynator") or {}
+        tr = (A.get("trenerzy") or [{}])[0]
+        kafle = [
+            ("dom", "Blisko domu", "Treningi w Kobyłce, w hali przy PSP nr 3 – bez dowożenia córki do innego miasta."),
+            ("serce", "Tylko dla dziewcząt", "Grupa dziewcząt z klas 3–6 SP. Trening dopasowany do ich wieku i poziomu."),
+            ("cena", "Jasny cennik", "Ceny podajemy wprost na stronie – wiesz, ile zapłacisz, zanim zapiszesz córkę."),
+            ("pilka", "Trenerka z 2. ligi",
+             f'Zajęcia prowadzi {e(tr.get("imie", ""))} {e(tr.get("nazwisko", ""))} – zawodniczka drużyny grającej w 2. lidze kobiet.'
+             if tr.get("imie") else "Zajęcia prowadzą osoby związane z drużyną grającą w 2. lidze kobiet."),
+            ("tarcza", "Bezpiecznie", 'Stosujemy <a href="#ochrona">Standardy Ochrony Małoletnich</a> – znasz zasady, które chronią Twoje dziecko.'),
+            ("start", "Darmowy trening próbny", "Pierwszy trening jest bezpłatny – córka sprawdzi, czy siatkówka jej się podoba."),
+        ]
+        ikony = {
+            "dom": '<path d="M3 11.5 12 4l9 7.5M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/>',
+            "serce": '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/>',
+            "cena": '<path d="M4 12V5a1 1 0 0 1 1-1h7l8 8-8 8-8-8Z"/><circle cx="8.5" cy="8.5" r="1.5"/>',
+            "pilka": '<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5c-2 3-2 6 0 8.5s2 5.5 0 8.5M4 9c3.5 1 7 .5 8 3M20 9c-3 1.5-5 3.5-8 3"/>',
+            "tarcza": '<path d="M12 3 5 6v5.5c0 4.3 3 7.7 7 9.5 4-1.8 7-5.2 7-9.5V6l-7-3Z"/><path d="m9 12 2 2 4-4"/>',
+            "start": '<path d="M5 12h12M13 7l5 5-5 5"/>',
+        }
+        html = "".join(
+            f'<li class="ak-why__kafel"><svg viewBox="0 0 24 24" aria-hidden="true">{ikony[i]}</svg>'
+            f'<h3>{t}</h3><p>{o}</p></li>' for i, t, o in kafle)
+        return f"""
+<section class="sekcja ak-sekcja ak-sekcja--biala" id="dlaczego" aria-labelledby="dlaczego-tytul">
+  <div class="kontener">
+    <h2 class="ak-h2" id="dlaczego-tytul">Dlaczego Akademia Volley</h2>
+    <ul class="ak-why">{html}</ul>
+  </div>
+</section>"""
+
+    def ak_wybor_klasy(self, A):
+        """„W której klasie jest córka?” – po wyborze klasy pokazuje grupę, dni, godziny, cenę i przyciski."""
+        grupy = A.get("grupy_klasy") or []
+        if not grupy:
+            return ""
+        k = A.get("koordynator") or {}
+        mail = k.get("email") or C.KLUB["email"]
+        tel = k.get("telefon")
+        form = A.get("formularz_google")
+        ceny = " lub ".join(f'{e(c["cena"])} ({e(c["co"])})' for c in A.get("cennik", []))
+        klasy = list(range(1, 9))
+        radia = "".join(f'<input type="radio" name="klasa" id="kl-{n}" class="ak-klasa__radio" value="{n}">'
+                        f'<label for="kl-{n}" class="ak-klasa__chip">{n}</label>' for n in klasy)
+        panele = ""
+        for g in grupy:
+            dni = [t for t in A.get("harmonogram", []) if t.get("grupa") == g["nazwa"]]
+            plan = "".join(f'<li><b>{e(t["dzien"].capitalize())}</b> {e(t["od"])}–{e(t["do"])}</li>' for t in dni)
+            temat = quote("Trening próbny – Akademia Siatkówki Volley")
+            tresc_maila = quote("Dzień dobry,\nchciał(a)bym umówić córkę na darmowy trening próbny.\n\n"
+                                "Imię córki:\nKlasa:\nTelefon do rodzica:\n")
+            przyciski = (f'<a class="btn btn--ak" href="{e(form)}" rel="noopener" target="_blank">Zapisz córkę →</a>' if form else
+                         '<a class="btn btn--ak" href="#zapisy">Zapisz córkę →</a>')
+            przyciski += f'<a class="btn btn--obrys" href="mailto:{e(mail)}?subject={temat}&amp;body={tresc_maila}">Umów trening próbny</a>'
+            if tel:
+                przyciski += f'<a class="btn btn--obrys" href="tel:{S.tel_link(tel)}">Zadzwoń: {e(tel)}</a>'
+            panele += (f'<div class="ak-klasa__panel" data-dla="{" ".join(str(x) for x in g["klasy"])}">'
+                       f'<p class="ak-klasa__nad">Grupa dla Twojej córki</p><h3>{e(g["nazwa"])}</h3>'
+                       f'<ul class="ak-klasa__plan">{plan}</ul>'
+                       f'<p class="ak-klasa__info">Hala przy PSP nr 3 w Kobyłce, ul. Załuskiego 57 · trening trwa 90 minut · {ceny}.</p>'
+                       f'<p class="ak-klasa__proba">Pierwszy trening jest <b>bezpłatny</b>.</p>'
+                       f'<div class="ak-przyciski">{przyciski}</div></div>')
+        obslugiwane = {x for g in grupy for x in g["klasy"]}
+        inne = " ".join(str(n) for n in klasy if n not in obslugiwane)
+        kontakt = (f'<a class="btn btn--ak" href="tel:{S.tel_link(tel)}">Zadzwoń: {e(tel)}</a>' if tel else "") + \
+                  f'<a class="btn btn--obrys" href="mailto:{e(mail)}?subject={quote("Pytanie o grupę – Akademia Siatkówki Volley")}">Napisz e-mail</a>'
+        panele += (f'<div class="ak-klasa__panel ak-klasa__panel--brak" data-dla="{inne}">'
+                   '<h3>Na razie nie mamy grupy dla tej klasy</h3>'
+                   '<p>Zadzwoń albo napisz – porozmawiamy o możliwościach i damy znać, gdy pojawi się grupa dla córki.</p>'
+                   f'<div class="ak-przyciski">{kontakt}</div></div>')
+        css = "".join(f'.ak-klasa:has(#kl-{n}:checked) .ak-klasa__panel[data-dla~="{n}"]{{display:block}}' for n in klasy)
+        css += "".join(f'.ak-klasa:has(#kl-{n}:checked) label[for="kl-{n}"]{{background:#1C6FD1;color:#fff;border-color:#1C6FD1}}' for n in klasy)
+        return f"""
+<section class="sekcja ak-sekcja" id="grupa" aria-labelledby="grupa-tytul">
+  <div class="kontener">
+    <h2 class="ak-h2" id="grupa-tytul">Sprawdź grupę dla córki</h2>
+    <style>{css}</style>
+    <div class="ak-klasa">
+      <fieldset class="ak-klasa__wybor"><legend>W której klasie jest córka?</legend><div class="ak-klasa__chipy">{radia}</div></fieldset>
+      <p class="ak-klasa__podpowiedz">Wybierz klasę, a pokażemy grupę, dni i godziny treningów.</p>
+      {panele}
+    </div>
+  </div>
+</section>"""
+
+    def ak_dojazd(self):
+        cel = quote("ul. ks. Marcina Załuskiego 57, 05-230 Kobyłka")
+        miasta = [("Wołomin", "Wołomina"), ("Zielonka", "Zielonki"), ("Marki", "Marek"), ("Radzymin", "Radzymina"),
+                  ("Warszawa Targówek", "Warszawy (Targówek)")]
+        linki = "".join(f'<li><a href="https://www.google.com/maps/dir/?api=1&amp;origin={quote(m)}&amp;destination={cel}" '
+                        f'rel="noopener" target="_blank">z {e(d)} →</a></li>' for m, d in miasta)
+        return f'<h3 class="ak-dojazd__tytul">Dojazd z okolicy</h3><ul class="ak-dojazd">{linki}</ul>'
+
+    def ak_poradnik_sekcja(self, p=""):
+        karty = "".join(
+            f'<li class="ak-poradnik__karta"><a href="{p}akademia-poradnik/{x["adres"]}.html">'
+            f'<span class="ak-poradnik__nad">Poradnik</span><h3>{e(x["tytul"])}</h3><p>{e(x["zajawka"])}</p>'
+            f'<span class="ak-poradnik__czytaj">Czytaj →</span></a></li>' for x in PR.PORADNIKI)
+        return f"""
+<section class="sekcja ak-sekcja ak-sekcja--biala" id="poradnik" aria-labelledby="poradnik-tytul">
+  <div class="kontener">
+    <h2 class="ak-h2" id="poradnik-tytul">Poradnik dla rodziców</h2>
+    <ul class="ak-poradnik">{karty}</ul>
+  </div>
+</section>"""
+
+    def ak_ramka_zapisow(self, A, p):
+        k = A.get("koordynator") or {}
+        tel = k.get("telefon")
+        form = A.get("formularz_google")
+        fakty = " · ".join(e(x) for x in A.get("fakty", [])[:2])
+        przyciski = (f'<a class="btn btn--ak" href="{e(form)}" rel="noopener" target="_blank">Zapisz córkę →</a>' if form
+                     else f'<a class="btn btn--ak" href="{p}akademia.html#zapisy">Zapisz córkę →</a>')
+        przyciski += f'<a class="btn btn--obrys" href="{p}akademia.html#grupa">Darmowy trening próbny</a>'
+        if tel:
+            przyciski += f'<a class="btn btn--obrys" href="tel:{S.tel_link(tel)}">Zadzwoń: {e(tel)}</a>'
+        return (f'<aside class="ak-ramka"><p class="ak-ramka__nad">Akademia Siatkówki Volley · Kobyłka</p>'
+                f'<h2>Zapisz córkę na siatkówkę</h2><p>{fakty}. Hala przy PSP nr 3 w Kobyłce, ul. Załuskiego 57.</p>'
+                f'<div class="ak-przyciski">{przyciski}</div></aside>')
+
+    def ak_artykul_ld(self, sciezka, tytul, opis, data_iso, obraz, autor=None, zrodla=()):
+        baza = C.KLUB["adres_strony"].rstrip("/") + "/"
+        A = C.AKADEMIA
+        ld = {"@context": "https://schema.org", "@type": "Article", "headline": tytul[:110], "description": opis,
+              "datePublished": data_iso, "dateModified": data_iso, "inLanguage": "pl-PL",
+              "mainEntityOfPage": baza + sciezka,
+              "publisher": {"@type": "SportsOrganization", "name": A.get("nazwa") or "Akademia Siatkówki Volley",
+                            "url": baza + "akademia.html"},
+              "author": ({"@type": "Person", "name": autor["imie"], "description": autor["opis"]} if autor else
+                         {"@type": "SportsOrganization", "name": A.get("nazwa") or "Akademia Siatkówki Volley",
+                          "url": baza + "akademia.html"})}
+        if obraz:
+            ld["image"] = baza + obraz
+        if zrodla:
+            ld["citation"] = [z[0] if isinstance(z, (list, tuple)) else z for z in zrodla]
+        return ld
+
+    def poradniki(self):
+        A = C.AKADEMIA
+        pp = "../"
+        for x in PR.PORADNIKI:
+            d = date.fromisoformat(x["data"])
+            zrodla = "".join(f'<li>{e(t)}' + (f' – <a href="{e(u)}" rel="noopener" target="_blank">link</a>' if u else "") + '</li>'
+                             for t, u in x.get("zrodla", []))
+            inne = "".join(f'<li><a href="{y["adres"]}.html">{e(y["tytul"])}</a></li>' for y in PR.PORADNIKI if y is not x)
+            tresc = f"""
+<article class="artykul artykul--akademia artykul--poradnik">
+  <header class="plakat"><div class="kontener">
+    <p class="plakat__nad">Poradnik dla rodziców · <time datetime="{d.isoformat()}">{e(S.data_pl(d))}</time></p>
+    <h1 class="plakat__tytul plakat__tytul--artykul">{e(x['tytul'])}</h1></div></header>
+  <div class="kontener artykul__kontener">
+    <div class="artykul__tresc">{x['tresc']}</div>
+    {f'<aside class="art-zrodla"><h2>Źródła</h2><ol>{zrodla}</ol></aside>' if zrodla else ''}
+    {self.ak_ramka_zapisow(A, pp)}
+    <nav class="art-inne" aria-label="Inne poradniki"><h2>Inne poradniki</h2><ul>{inne}</ul></nav>
+    <p><a class="sekcja__link" href="{pp}akademia.html#poradnik">← Wszystkie poradniki</a></p>
+  </div>
+</article>"""
+            sciezka = f"akademia-poradnik/{x['adres']}.html"
+            obraz = A.get("og_obraz")
+            DODATKI_SEO[sciezka] = {"typ": "article", "data": x["data"],
+                                    "ld": [self.ak_artykul_ld(sciezka, x["tytul"], x["opis"], x["data"], obraz,
+                                                              None, x.get("zrodla", []))]}
+            zapisz(sciezka, S.uklad_akademii(f"{x['tytul']} – Akademia Siatkówki Volley", x["opis"], tresc, pp,
+                                             self.wersja, aktualnosci=True))
 
     # --- STRONA WYBORU (volleykobylka.pl) -----------------------------------
     def wybor(self):
@@ -1444,6 +1633,9 @@ class Budowa:
                 opis_dni = ("we " if lista[0].startswith("wt") else "w ") + " i ".join(lista)
                 pyt.append(("Kiedy są treningi?", f"{opis_dni[0].upper() + opis_dni[1:]}, {od}–{do}. Pełny plan w sekcji "
                                                    '<a href="#plan">Plan treningów</a>.'))
+        pyt.append(("Czy można przyjść na trening próbny?",
+                    "Tak. Pierwszy trening jest bezpłatny – córka sprawdzi, czy siatkówka jej się podoba. "
+                    'Umów go w sekcji <a href="#grupa">Sprawdź grupę dla córki</a>.'))
         pyt.append(("Czy córka musi umieć grać w siatkówkę?",
                     "Nie. Zapraszamy też dziewczynki, które dopiero zaczynają – na treningach uczymy podstaw od zera."))
         pyt.append(("Co zabrać na trening?",
@@ -1982,6 +2174,7 @@ def main():
     b.druzyny()
     b.aktualnosci()
     b.akademia()
+    b.poradniki()
     b.galeria()
     b.sponsorzy()
     b.profile()

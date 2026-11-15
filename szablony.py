@@ -460,7 +460,7 @@ def uklad_akademii(tytul, opis, tresc, p, wersja, aktualnosci=False):
     k = A.get("koordynator") or {}
     kontakt = "<br>".join(x for x in [
         e(k.get("imie") or ""),
-        f'<a href="tel:{e((k.get("telefon") or "").replace(" ", ""))}">{e(k["telefon"])}</a>' if k.get("telefon") else "",
+        f'<a href="tel:{tel_link(k["telefon"])}">{e(k["telefon"])}</a>' if k.get("telefon") else "",
         f'<a href="mailto:{e(k["email"])}">{e(k["email"])}</a>' if k.get("email") else ""] if x)
     rok = date.today().year
     return f"""{glowa(f"{tytul}", opis, p, wersja, kolor="#1C6FD1", ikona=A.get("logo") and "img/" + A["logo"] or None)}
@@ -1047,3 +1047,28 @@ def przyjaciele_html():
         return ""
     linki = " · ".join(f'<a href="{e(x["www"])}" target="_blank" rel="noopener">{e(x["nazwa"])}</a>' for x in lista)
     return f'<p class="stopka__przyjaciele">Zobacz też w Kobyłce: {linki}</p>'
+
+
+def tel_link(numer):
+    """„501 458 966” → „+48501458966” (link tel: działa też z zagranicznej karty SIM)."""
+    cyfry = "".join(ch for ch in str(numer) if ch.isdigit() or ch == "+")
+    return "+48" + cyfry if len(cyfry) == 9 else cyfry
+
+
+def oczysc_post_akademii(html):
+    _re = re
+    """Z artykułu Akademii (post z FB) usuwa stopkę posta (zaproszenie, zapisy, pytania, hashtagi)
+    – zastępuje ją ramka zapisów na stronie – i wyciąga „Źródło: …” do osobnej ramki. Zwraca (html, źródło)."""
+    akapity = _re.findall(r"<p>.*?</p>", html, _re.S)
+    zostaw, zrodlo = [], ""
+    for a in akapity:
+        tekst = _re.sub(r"<[^>]+>", "", a).strip()
+        if tekst.startswith("🏐 Akademia Siatkówki Volley zaprasza") or tekst.startswith("#"):
+            continue
+        if tekst.startswith("Źródło:"):
+            zrodlo = a[3:-4].replace("Źródło:", "", 1).strip()
+            continue
+        zostaw.append(a)
+    if not akapity:
+        return html, ""
+    return "".join(zostaw), zrodlo

@@ -426,7 +426,7 @@ AKADEMIA = {
     "logo": "akademia/logo.webp",               # logo z profilu Akademii na Facebooku
     "facebook": "https://www.facebook.com/profile.php?id=100087224682607",
     # Koordynator projektu – kontakt w sekcji „Kontakt”. Puste pola się nie pokazują.
-    "koordynator": {"imie": None, "rola": "Koordynator Akademii", "telefon": None,
+    "koordynator": {"imie": None, "rola": "Koordynator Akademii", "telefon": "501 458 966",
                     "email": "akademia@volleykobylka.pl"},
     "haslo": "Dołącz do nas!",
     "opis": "Treningi siatkówki dla dziewcząt z klas 3–6 szkoły podstawowej – we wtorki i czwartki, 16:15–17:45, "
@@ -436,7 +436,12 @@ AKADEMIA = {
         {"co": "2 treningi w tygodniu", "cena": "180 zł / mies."},
         {"co": "1 trening w tygodniu", "cena": "130 zł / mies."},
     ],
-    "fakty": ["Dla dziewcząt z klas 3–6 SP", "Wtorki i czwartki 16:15–17:45", "Trening trwa 90 minut"],
+    "fakty": ["Dla dziewcząt z klas 3–6 SP", "Wtorki i czwartki 16:15–17:45", "Trening trwa 90 minut",
+              "Pierwszy trening za darmo"],
+    # Które klasy trafiają do której grupy (sekcja „Sprawdź grupę dla córki”); "nazwa" = "grupa" z harmonogramu
+    "grupy_klasy": [
+        {"klasy": [3, 4, 5, 6], "nazwa": "Dziewczęta, klasy 3–6 SP"},
+    ],
     "formularz_google": "https://forms.gle/Wux1GhVqWcNHwuXZ6",   # formularz zgłoszeń (z posta o naborze na FB)
     "zdjecie": None,            # zdjęcie do nagłówka, np. "akademia/hero.webp"
     # Grupy – DO UZUPEŁNIENIA. Pusta lista = sekcja się nie pokazuje.

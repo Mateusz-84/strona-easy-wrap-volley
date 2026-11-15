@@ -1379,3 +1379,64 @@ html.szybko :is(.hero,.ak-hero,.wybor) *:not(.sw):not(.sw *){animation-delay:0s!
 /* Nazwa hali → Google Maps */
 .link-hala{color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;text-decoration-style:dotted}
 .link-hala:hover{text-decoration-style:solid}
+@media (max-width:759px){
+  .ak-pasek__tel{flex:0 0 auto!important;gap:6px;padding:0 18px;background:#1C6FD1;color:#fff}
+}
+/* Akademia – Dlaczego my */
+.ak-why{list-style:none;margin:0;padding:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.ak-why__kafel{background:#EAF2FE;border-radius:20px;padding:22px 22px 20px}
+.ak-why__kafel svg{width:34px;height:34px;fill:none;stroke:#1C6FD1;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ak-why__kafel h3{font-size:28px;line-height:1;color:var(--ak-ciemny,#0E3C8C);margin:10px 0 6px}
+.ak-why__kafel p{margin:0;font-size:16.5px;line-height:1.5}
+.ak-why__kafel a{color:inherit;font-weight:700}
+/* Akademia – Sprawdź grupę */
+.ak-klasa__wybor{border:0;margin:0;padding:0}
+.ak-klasa__wybor legend{font-weight:700;font-size:19px;margin-bottom:12px;color:var(--ak-ciemny,#0E3C8C)}
+.ak-klasa__chipy{display:flex;flex-wrap:wrap;gap:10px}
+.ak-klasa__radio{position:absolute;opacity:0;width:1px;height:1px}
+.ak-klasa__chip{display:grid;place-items:center;width:56px;height:56px;border-radius:50%;border:2px solid #1C6FD1;color:#1C6FD1;
+  font-family:var(--font-naglowki);font-size:28px;cursor:pointer;transition:background .15s,color .15s;background:#fff}
+.ak-klasa__chip:hover{background:#EAF2FE}
+.ak-klasa__radio:focus-visible+.ak-klasa__chip{outline:3px solid var(--zolty);outline-offset:2px}
+.ak-klasa__podpowiedz{color:var(--tekst-szary);margin:12px 0 0}
+.ak-klasa:has(.ak-klasa__radio:checked) .ak-klasa__podpowiedz{display:none}
+.ak-klasa__panel{display:none;margin-top:18px;background:#fff;border-radius:22px;padding:24px 22px;box-shadow:0 10px 30px rgba(14,60,140,.10);border-left:6px solid #1C6FD1}
+.ak-klasa__panel--brak{border-left-color:var(--zolty)}
+.ak-klasa__nad{text-transform:uppercase;letter-spacing:.12em;font-size:13px;font-weight:700;color:#1C6FD1;margin:0}
+.ak-klasa__panel h3{font-size:clamp(30px,4vw,40px);line-height:1;color:var(--ak-ciemny,#0E3C8C);margin:6px 0 12px}
+.ak-klasa__plan{list-style:none;padding:0;margin:0 0 10px;display:flex;flex-wrap:wrap;gap:8px 22px;font-size:20px}
+.ak-klasa__info,.ak-klasa__proba{margin:0 0 8px;font-size:16.5px}
+.ak-klasa__panel .ak-przyciski{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+/* Akademia – dojazd */
+.ak-dojazd__tytul{font-size:22px;margin:18px 0 6px}
+.ak-dojazd{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 16px}
+.ak-dojazd a{color:inherit;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+/* Akademia – poradnik */
+.ak-poradnik{list-style:none;margin:0;padding:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.ak-poradnik__karta a{display:flex;flex-direction:column;height:100%;background:#EAF2FE;border-radius:20px;padding:22px;color:inherit;text-decoration:none;transition:transform .15s,box-shadow .15s}
+.ak-poradnik__karta a:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(14,60,140,.14)}
+.ak-poradnik__nad{text-transform:uppercase;letter-spacing:.12em;font-size:12px;font-weight:700;color:#1C6FD1}
+.ak-poradnik__karta h3{font-size:26px;line-height:1.02;color:var(--ak-ciemny,#0E3C8C);margin:8px 0}
+.ak-poradnik__karta p{margin:0 0 12px;font-size:16px;line-height:1.45;flex:1}
+.ak-poradnik__czytaj{font-weight:700;color:#1C6FD1}
+/* Artykuły Akademii – ramki */
+.artykul--poradnik .artykul__tresc h2{font-size:30px;margin:28px 0 8px;color:var(--ak-ciemny,#0E3C8C)}
+.artykul--poradnik .artykul__tresc .lead{font-size:20px;line-height:1.55}
+.artykul--poradnik .artykul__tresc ul{padding-left:22px}
+.art-zrodla,.art-autor{background:#F3F6FB;border-radius:16px;padding:16px 20px;margin:24px 0;font-size:15px;line-height:1.5}
+.art-zrodla h2{font-size:20px;margin:0 0 6px}
+.art-zrodla ol{margin:0;padding-left:20px}
+.art-zrodla p{margin:0}
+.art-autor__nad{text-transform:uppercase;letter-spacing:.12em;font-size:12px;font-weight:700;color:#1C6FD1;margin:0 0 4px}
+.art-autor p{margin:0}
+.ak-ramka{background:linear-gradient(135deg,#0E3C8C,#1C6FD1);color:#fff;border-radius:22px;padding:24px 22px;margin:28px 0}
+.ak-ramka__nad{text-transform:uppercase;letter-spacing:.12em;font-size:12px;font-weight:700;color:var(--zolty);margin:0}
+.ak-ramka h2{color:#fff;font-size:34px;margin:6px 0 8px}
+.ak-ramka p{margin:0}
+.ak-ramka .ak-przyciski{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.ak-ramka .btn--obrys{color:#fff;border-color:rgba(255,255,255,.7)}
+.art-inne h2{font-size:22px;margin:24px 0 6px}
+.art-inne ul{padding-left:20px;margin:0}
+.art-inne a{color:inherit;font-weight:600}
+@media (min-width:900px){.ak-why{grid-template-columns:repeat(3,1fr)}}
+.ak-dojazd__tytul{margin-top:26px}
