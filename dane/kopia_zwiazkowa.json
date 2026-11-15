@@ -47,7 +47,7 @@
   }
  },
  "seniorki": {
-  "pobrano": "2026-11-15T15:44",
+  "pobrano": "2026-11-15T16:39",
   "pzps_lista": [
    {
     "data": "2026-09-26",
@@ -264,6 +264,18 @@
     },
     {
      "lp": 2,
+     "male_minus": 617,
+     "male_plus": 735,
+     "mecze": 9,
+     "nasz": false,
+     "nazwa": "GKS Orlęta Raszyn",
+     "pkt": 21,
+     "sety_minus": 8,
+     "sety_plus": 23,
+     "zwyciestwa": 7
+    },
+    {
+     "lp": 3,
      "male_minus": 765,
      "male_plus": 808,
      "mecze": 9,
@@ -273,18 +285,6 @@
      "sety_minus": 14,
      "sety_plus": 22,
      "zwyciestwa": 7
-    },
-    {
-     "lp": 3,
-     "male_minus": 561,
-     "male_plus": 660,
-     "mecze": 8,
-     "nasz": false,
-     "nazwa": "GKS Orlęta Raszyn",
-     "pkt": 18,
-     "sety_minus": 8,
-     "sety_plus": 20,
-     "zwyciestwa": 6
     },
     {
      "lp": 4,
@@ -312,18 +312,6 @@
     },
     {
      "lp": 6,
-     "male_minus": 692,
-     "male_plus": 681,
-     "mecze": 8,
-     "nasz": false,
-     "nazwa": "PGE LTS Legionovia Legionowo II",
-     "pkt": 12,
-     "sety_minus": 16,
-     "sety_plus": 15,
-     "zwyciestwa": 4
-    },
-    {
-     "lp": 7,
      "male_minus": 709,
      "male_plus": 722,
      "mecze": 9,
@@ -332,6 +320,18 @@
      "pkt": 12,
      "sety_minus": 18,
      "sety_plus": 16,
+     "zwyciestwa": 4
+    },
+    {
+     "lp": 7,
+     "male_minus": 767,
+     "male_plus": 737,
+     "mecze": 9,
+     "nasz": false,
+     "nazwa": "PGE LTS Legionovia Legionowo II",
+     "pkt": 12,
+     "sety_minus": 19,
+     "sety_plus": 15,
      "zwyciestwa": 4
     },
     {
@@ -712,6 +712,12 @@
      "data": "2026-11-14",
      "gosc": "EASY WRAP Volley Kobyłka",
      "gospodarz": "SMS Ostrów Łaskovia Łask",
+     "wynik": "0:3"
+    },
+    {
+     "data": "2026-11-15",
+     "gosc": "GKS Orlęta Raszyn",
+     "gospodarz": "PGE LTS Legionovia Legionowo 2",
      "wynik": "0:3"
     }
    ],
