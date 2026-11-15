@@ -1318,3 +1318,54 @@ html.szybko :is(.hero,.ak-hero,.wybor) *:not(.sw):not(.sw *){animation-delay:0s!
 .stopka__przyjaciele{margin:22px 0 0;font-size:14px;opacity:.85}
 .stopka__przyjaciele a{text-decoration:underline;text-underline-offset:3px}
 .stopka__przyjaciele + .stopka__lokalnie{margin-top:8px}
+/* Akademia – kto prowadzi zajęcia */
+.ak-trenerzy{display:grid;gap:18px}
+.ak-trener{display:grid;grid-template-columns:1fr;background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 10px 30px rgba(14,60,140,.10)}
+.ak-trener__foto{position:relative;background:linear-gradient(160deg,#3A8DF0,#0E4FA8);background-image:repeating-linear-gradient(-55deg,rgba(255,255,255,.06) 0 14px,transparent 14px 28px),linear-gradient(160deg,#3A8DF0,#0E4FA8);min-height:260px;display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
+.ak-trener__img{display:block;width:auto;max-width:100%;height:300px;object-fit:contain;object-position:bottom}
+.ak-trener__inicjaly{font-family:var(--font-naglowki);font-size:96px;color:#fff;align-self:center}
+.ak-trener__opis{padding:22px 22px 26px}
+.ak-trener__rola{display:inline-block;background:var(--zolty);color:var(--ak-ciemny,#0E3C8C);font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:999px}
+.ak-trener h3{font-size:clamp(40px,6vw,56px);line-height:.95;color:var(--ak-ciemny,#0E3C8C);margin:12px 0 10px}
+.ak-trener p{font-size:18px;line-height:1.55;max-width:56ch;margin:0}
+.ak-trener__link{display:inline-block;margin-top:16px;font-weight:700;color:var(--ak-ciemny,#0E3C8C);text-decoration:underline;text-underline-offset:4px}
+@media (min-width:760px){
+  .ak-trener{grid-template-columns:minmax(260px,38%) 1fr;align-items:stretch}
+  .ak-trener__foto{min-height:340px}
+  .ak-trener__img{height:340px}
+  .ak-trener__opis{padding:36px 40px;align-self:center}
+}
+/* Akademia – ścieżka rozwoju */
+.ak-wstep{font-size:20px;max-width:60ch;margin:-6px 0 26px;color:var(--tekst-szary)}
+.ak-sciezka{list-style:none;margin:0;padding:0;display:grid;gap:16px;counter-reset:none}
+.ak-sciezka li{position:relative;background:#EAF2FE;border-radius:22px;padding:24px 22px 24px 86px}
+.ak-sciezka__nr{position:absolute;left:22px;top:22px;width:46px;height:46px;border-radius:50%;background:#1C6FD1;color:#fff;
+  display:grid;place-items:center;font-family:var(--font-naglowki);font-size:28px;line-height:1}
+.ak-sciezka h3{font-size:32px;line-height:1;color:var(--ak-ciemny,#0E3C8C);margin:4px 0 8px}
+.ak-sciezka p{margin:0;font-size:17px;line-height:1.55}
+.ak-sciezka__cel{background:linear-gradient(135deg,#0E3C8C,#1C6FD1)!important;color:#fff}
+.ak-sciezka__cel h3{color:var(--zolty)}
+.ak-sciezka__cel .ak-sciezka__nr{background:var(--zolty);color:#0E3C8C}
+.ak-sciezka__link{display:inline-block;margin-top:12px;color:#fff;font-weight:700;text-decoration:underline;text-underline-offset:4px}
+@media (min-width:900px){
+  .ak-sciezka{grid-template-columns:repeat(3,1fr);gap:20px}
+  .ak-sciezka li{padding:84px 26px 28px}
+  .ak-sciezka__nr{left:26px;top:24px}
+  .ak-sciezka li:not(:last-child)::after{content:"→";position:absolute;right:-17px;top:30px;font-size:26px;color:#1C6FD1;z-index:1}
+}
+/* Akademia – kontakt */
+.ak-kontakt__tekst{font-size:18px;line-height:1.55;max-width:44ch;margin:14px 0 4px}
+.ak-kontakt .ak-przyciski{display:flex;flex-wrap:wrap;gap:12px}
+/* Akademia – pasek zapisów na telefonie */
+.ak-pasek{display:none}
+@media (max-width:759px){
+  .ak-pasek{display:flex;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:60;padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+    background:rgba(255,255,255,.96);box-shadow:0 -6px 20px rgba(14,60,140,.15);transition:transform .3s ease}
+  .ak-pasek a{flex:1;display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:999px;
+    font-family:var(--font-naglowki);font-size:20px;letter-spacing:.04em;text-transform:uppercase;text-decoration:none}
+  .ak-pasek__zapis{background:var(--zolty);color:#0E3C8C}
+  .ak-pasek__plan{border:2px solid #1C6FD1;color:#1C6FD1;flex:0 0 auto!important;padding:0 18px}
+  .ak-pasek--ukryty{transform:translateY(110%)}
+  body.strefa-akademia:has(.ak-pasek){padding-bottom:76px}
+}
+@media print{.ak-pasek{display:none!important}}

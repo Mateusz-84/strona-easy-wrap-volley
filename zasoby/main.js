@@ -911,3 +911,15 @@ window.vkLicznik = (function () {
   window.addEventListener('resize', przesun);
   przesun();
 })();
+
+/* Akademia (telefon): pasek „Zapisz córkę” chowa się, gdy na ekranie jest sekcja Zapisy albo stopka */
+(function () {
+  var pasek = document.querySelector('.ak-pasek');
+  if (!pasek || !window.IntersectionObserver) return;
+  var widoczne = new Set();
+  var obs = new IntersectionObserver(function (wpisy) {
+    wpisy.forEach(function (w) { if (w.isIntersecting) widoczne.add(w.target); else widoczne.delete(w.target); });
+    pasek.classList.toggle('ak-pasek--ukryty', widoczne.size > 0);
+  });
+  ['#zapisy', 'footer'].forEach(function (s) { var el = document.querySelector(s); if (el) obs.observe(el); });
+})();

@@ -429,22 +429,30 @@ AKADEMIA = {
     "koordynator": {"imie": None, "rola": "Koordynator Akademii", "telefon": None,
                     "email": "akademia@volleykobylka.pl"},
     "haslo": "Dołącz do nas!",
-    "opis": "Treningi siatkówki dla dziewcząt w hali przy ul. Załuskiego 57 w Kobyłce. Bez wpisowego.",
+    "opis": "Treningi siatkówki dla dziewcząt z klas 3–6 szkoły podstawowej – we wtorki i czwartki, 16:15–17:45, "
+            "w hali przy ul. Załuskiego 57 w Kobyłce. Bez wpisowego.",
     # Cennik i najważniejsze zasady – pokazują się w pierwszym ekranie strony Akademii
     "cennik": [
         {"co": "2 treningi w tygodniu", "cena": "180 zł / mies."},
         {"co": "1 trening w tygodniu", "cena": "130 zł / mies."},
     ],
-    "fakty": ["Trening trwa 90 minut", "Bez wpisowego", "Zajęcia tylko dla dziewcząt", "Umowa na sezon (wrzesień–czerwiec)"],
-    "formularz_google": None,   # wklej link do formularza Google, np. "https://docs.google.com/forms/d/e/.../viewform"
+    "fakty": ["Dla dziewcząt z klas 3–6 SP", "Wtorki i czwartki 16:15–17:45", "Trening trwa 90 minut", "Bez wpisowego",
+              "Umowa na sezon (wrzesień–czerwiec)"],
+    "formularz_google": "https://forms.gle/Wux1GhVqWcNHwuXZ6",   # formularz zgłoszeń (z posta o naborze na FB)
     "zdjecie": None,            # zdjęcie do nagłówka, np. "akademia/hero.webp"
     # Grupy – DO UZUPEŁNIENIA. Pusta lista = sekcja się nie pokazuje.
     #   Wzór: {"nazwa": "Mini Volley", "wiek": "7–10 lat", "opis": "Zabawa z piłką i pierwsze odbicia."},
     "grupy": [
     ],
     # Trenerzy – DO UZUPEŁNIENIA. Pusta lista = sekcja się nie pokazuje.
-    #   Wzór: {"imie": "Jan", "nazwisko": "Kowalski", "opis": "Trener II klasy.", "zdjecie": None},
+    #   Wzór: {"imie": "Jan", "nazwisko": "Kowalski", "rola": "Trener", "opis": "Trener II klasy.", "zdjecie": None},
+    #   Jeśli osoba gra w pierwszej drużynie, pod opisem pojawi się link do jej profilu.
     "trenerzy": [
+        {"imie": "Natalia", "nazwisko": "Bielińska", "rola": "Prowadzi zajęcia Akademii",
+         "opis": "Na co dzień rozgrywająca Easy Wrap Volley Kobyłka w 2. lidze kobiet. Wcześniej grała m.in. "
+                 "w AZS UMCS Lublin, Nike Węgrów i WTS KDBS Włocławek. Na treningach przekazuje dziewczynkom to, "
+                 "czego sama uczyła się na parkiecie.",
+         "zdjecie": "zawodniczki/natalia-bielinska.webp"},
     ],
     # Harmonogram treningów – pojawi się też w kalendarium (w okresie sezonu)
     "sezon_od": "2026-09-01",
@@ -453,6 +461,8 @@ AKADEMIA = {
     # Harmonogram – DO UZUPEŁNIENIA. Pusta lista = sekcja się nie pokazuje.
     #   Wzór: {"grupa": "Mini Volley", "dzien": "poniedziałek", "od": "16:00", "do": "17:30", "hala": "Hala przy PSP nr 3"},
     "harmonogram": [
+        {"grupa": "Dziewczęta, klasy 3–6 SP", "dzien": "wtorek", "od": "16:15", "do": "17:45", "hala": "Hala przy PSP nr 3"},
+        {"grupa": "Dziewczęta, klasy 3–6 SP", "dzien": "czwartek", "od": "16:15", "do": "17:45", "hala": "Hala przy PSP nr 3"},
     ],
     "ochrona_maloletnich": {
         "tekst": "Klub stosuje Standardy Ochrony Małoletnich. Każda osoba pracująca z dziećmi "
