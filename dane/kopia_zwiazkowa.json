@@ -47,7 +47,7 @@
   }
  },
  "seniorki": {
-  "pobrano": "2026-11-16T17:43",
+  "pobrano": "2026-11-16T18:17",
   "pzps_lista": [
    {
     "data": "2026-09-26",
@@ -132,8 +132,8 @@
    },
    {
     "data": "2026-11-21",
-    "godzina": null,
-    "godzina_pewna": false,
+    "godzina": "18:00",
+    "godzina_pewna": true,
     "gosc": "PGE LTS Legionovia Legionowo II",
     "gospodarz": "EASY WRAP Volley Kobyłka",
     "id": "/system/mecz/188/",
