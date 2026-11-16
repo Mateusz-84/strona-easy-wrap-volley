@@ -1465,3 +1465,17 @@ html.szybko :is(.hero,.ak-hero,.wybor) *:not(.sw):not(.sw *){animation-delay:0s!
 .aplikacja-ios__okno li{margin-bottom:8px}
 .aplikacja-ios__ikona{display:inline-flex;vertical-align:-4px;color:#1C6FD1}
 .aplikacja-ios__x{position:absolute;top:8px;right:10px;border:0;background:none;font-size:30px;color:#5B6578;line-height:1;padding:4px 8px}
+/* „Aplikacja” w nagłówku – widoczna tylko tam, gdzie da się zainstalować */
+.app-przycisk{flex:none;display:inline-flex;align-items:center;gap:6px;height:48px;padding:0 13px;margin-left:auto;margin-right:10px;
+  border:0;border-radius:16px;background:var(--zolty);color:var(--granat);font-family:var(--font-naglowki);font-size:20px;
+  letter-spacing:.04em;text-transform:uppercase;cursor:pointer;line-height:1}
+.app-przycisk[hidden]{display:none}
+.app-przycisk:hover{filter:brightness(1.05)}
+.app-przycisk:focus-visible{outline:3px solid var(--granat);outline-offset:2px}
+.app-przycisk:not([hidden])~.czcionka-przycisk{margin-left:0}
+@media (max-width:420px){.app-przycisk__tekst{display:none}.app-przycisk{padding:0 12px}}
+@media (min-width:1024px){
+  .app-przycisk{order:3;margin:0 0 0 22px;height:42px}
+  .app-przycisk:not([hidden])~.czcionka-przycisk{margin-left:10px}
+}
+@media print{.app-przycisk{display:none}}
