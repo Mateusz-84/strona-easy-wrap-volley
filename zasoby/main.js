@@ -923,3 +923,85 @@ window.vkLicznik = (function () {
   });
   ['#zapisy', 'footer'].forEach(function (s) { var el = document.querySelector(s); if (el) obs.observe(el); });
 })();
+
+/* =====================================================================
+   „ZAINSTALUJ APLIKACJĘ” – przycisk w stopce + jednorazowa podpowiedź na telefonie.
+   Android/komputer (Chrome, Edge): instalacja jednym kliknięciem. iPhone/iPad: krótka instrukcja (Safari nie ma przycisku).
+   Po zainstalowaniu (strona otwarta jako aplikacja) nic się nie pokazuje.
+   ===================================================================== */
+(function () {
+  'use strict';
+  var juz = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+  if (juz) return;
+  var ua = navigator.userAgent || '';
+  var ios = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var iosSafari = ios && /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS|FBAN|FBAV|Instagram/.test(ua);
+  var monit = null;
+
+  function czytaj(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function zapisz(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+  function pokaz() {
+    document.querySelectorAll('[data-aplikacja]').forEach(function (el) { el.hidden = false; });
+    podpowiedz();
+  }
+  function schowaj() {
+    document.querySelectorAll('[data-aplikacja],.aplikacja-pasek').forEach(function (el) { el.hidden = true; });
+  }
+
+  function instrukcjaIos() {
+    var stare = document.querySelector('.aplikacja-ios');
+    if (stare) { stare.hidden = false; return; }
+    var d = document.createElement('div');
+    d.className = 'aplikacja-ios';
+    d.setAttribute('role', 'dialog');
+    d.setAttribute('aria-modal', 'true');
+    d.setAttribute('aria-label', 'Jak zainstalować aplikację na iPhonie');
+    d.innerHTML = '<div class="aplikacja-ios__okno"><button type="button" class="aplikacja-ios__x" aria-label="Zamknij">×</button>' +
+      '<h2>Zainstaluj na iPhonie</h2><ol>' +
+      '<li>Stuknij przycisk <b>Udostępnij</b> <span class="aplikacja-ios__ikona" aria-hidden="true">' +
+      '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11v9h12v-9"/></svg></span> na dole ekranu.</li>' +
+      '<li>Przewiń listę i wybierz <b>Do ekranu początkowego</b>.</li>' +
+      '<li>Stuknij <b>Dodaj</b> – ikona Volley Kobyłka pojawi się na ekranie telefonu.</li></ol></div>';
+    document.body.appendChild(d);
+    function zamknij() { d.hidden = true; }
+    d.addEventListener('click', function (e) { if (e.target === d || e.target.closest('.aplikacja-ios__x')) zamknij(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') zamknij(); });
+  }
+
+  function instaluj() {
+    if (monit) {
+      monit.prompt();
+      monit.userChoice.then(function (w) { if (w && w.outcome === 'accepted') schowaj(); monit = null; });
+    } else if (ios) {
+      instrukcjaIos();
+    }
+  }
+
+  // Jednorazowa podpowiedź na telefonie: od 2. odwiedzonej strony, potem nie częściej niż raz na 30 dni
+  function podpowiedz() {
+    if (!window.matchMedia || !matchMedia('(max-width: 759px)').matches) return;
+    if (document.querySelector('.ak-pasek') || document.querySelector('.aplikacja-pasek')) return;
+    var licz = (+czytaj('vk-strony') || 0) + 1;
+    zapisz('vk-strony', String(licz));
+    var odlozono = +czytaj('vk-app-odlozono') || 0;
+    if (licz < 2 || Date.now() - odlozono < 30 * 864e5) return;
+    var p = document.createElement('div');
+    p.className = 'aplikacja-pasek';
+    p.innerHTML = '<img src="' + (document.querySelector('link[rel="apple-touch-icon"]') || {}).href + '" alt="" width="40" height="40">' +
+      '<span><b>Volley Kobyłka</b> jako aplikacja na telefonie</span>' +
+      '<button type="button" class="aplikacja-pasek__tak">Zainstaluj</button>' +
+      '<button type="button" class="aplikacja-pasek__nie" aria-label="Nie teraz">×</button>';
+    document.body.appendChild(p);
+    p.querySelector('.aplikacja-pasek__tak').addEventListener('click', function () { instaluj(); p.hidden = true; zapisz('vk-app-odlozono', String(Date.now())); });
+    p.querySelector('.aplikacja-pasek__nie').addEventListener('click', function () { p.hidden = true; zapisz('vk-app-odlozono', String(Date.now())); });
+  }
+
+  document.addEventListener('click', function (e) { if (e.target.closest('[data-instaluj]')) instaluj(); });
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); monit = e; pokaz(); });
+  window.addEventListener('appinstalled', schowaj);
+  if (iosSafari) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', pokaz); else pokaz();
+  }
+})();

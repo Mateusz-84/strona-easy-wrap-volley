@@ -433,7 +433,7 @@ def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja, pelny=None):
         <li><a href="{p}akademia.html">Akademia Siatkówki Volley →</a></li>
         <li><a href="{p}akademia.html#ochrona">Ochrona małoletnich</a></li></ul></div>
     </div>
-    {przyjaciele_html()}<p class="stopka__lokalnie">{TEKST_LOKALNY}</p>
+    {APLIKACJA_HTML}{przyjaciele_html()}<p class="stopka__lokalnie">{TEKST_LOKALNY}</p>
     <div class="stopka__dol"><span>© {rok} {e(C.KLUB['nazwa_prawna'])} · <a href="{p}index.html">volleykobylka.pl</a></span>
       {licznik_html()}
       <a href="{p}polityka-prywatnosci.html">Polityka prywatności i cookies</a></div>
@@ -492,7 +492,7 @@ def uklad_akademii(tytul, opis, tresc, p, wersja, aktualnosci=False):
         <li><a href="{k_}#ochrona">Standardy ochrony małoletnich</a></li>
         <li><a href="{p}{START_DRUZYNY}">Easy Wrap Volley Kobyłka →</a></li></ul></div>
     </div>
-    {przyjaciele_html()}<p class="stopka__lokalnie">{TEKST_LOKALNY}</p>
+    {APLIKACJA_HTML}{przyjaciele_html()}<p class="stopka__lokalnie">{TEKST_LOKALNY}</p>
     <div class="stopka__dol"><span>© {rok} {e(C.KLUB['nazwa_prawna'])} · <a href="{p}index.html">volleykobylka.pl</a></span>
       {licznik_html()}
       <a href="{p}polityka-prywatnosci.html">Polityka prywatności i cookies</a></div>
@@ -1072,3 +1072,13 @@ def oczysc_post_akademii(html):
     if not akapity:
         return html, ""
     return "".join(zostaw), zrodlo
+
+
+# Przycisk „Zainstaluj aplikację” w stopce – pokazuje go main.js tylko tam, gdzie instalacja jest możliwa
+APLIKACJA_HTML = (
+    '<div class="aplikacja" data-aplikacja hidden>'
+    '<svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" '
+    'stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M12 7v7m-3-3 3 3 3-3M10 18.5h4"/></svg>'
+    '<div><strong>Volley Kobyłka w telefonie</strong><span>Mecze, wyniki i tabela jednym dotknięciem – także bez internetu.</span></div>'
+    '<button type="button" class="aplikacja__btn" data-instaluj>Zainstaluj aplikację</button></div>'
+)

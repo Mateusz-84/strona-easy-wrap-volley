@@ -2222,7 +2222,8 @@ def main():
                   {"src": "img/favicon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}],
         "shortcuts": [{"name": "Terminarz", "url": "./terminarz.html"},
                       {"name": "Tabela", "url": "./terminarz.html#tabela"},
-                      {"name": "Kadra", "url": "./druzyny.html"}],
+                      {"name": "Kadra", "url": "./druzyny.html"},
+                      {"name": "Akademia Siatkówki", "url": "./akademia.html"}],
     }, ensure_ascii=False))
     # Service worker: strona działa też bez internetu (ostatnio odwiedzone podstrony + terminarz)
     sw = open(os.path.join(FOLDER, "zasoby", "sw-szablon.js"), encoding="utf-8").read()

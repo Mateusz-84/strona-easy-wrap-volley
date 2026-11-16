@@ -1440,3 +1440,28 @@ html.szybko :is(.hero,.ak-hero,.wybor) *:not(.sw):not(.sw *){animation-delay:0s!
 .art-inne a{color:inherit;font-weight:600}
 @media (min-width:900px){.ak-why{grid-template-columns:repeat(3,1fr)}}
 .ak-dojazd__tytul{margin-top:26px}
+/* „Zainstaluj aplikację” */
+.aplikacja{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:26px 0 0;padding:16px 18px;border-radius:18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16)}
+.aplikacja[hidden]{display:none}
+.aplikacja svg{flex:none;color:var(--zolty)}
+.aplikacja div{flex:1 1 220px;display:flex;flex-direction:column;gap:2px}
+.aplikacja strong{font-size:18px}
+.aplikacja span{font-size:15px;opacity:.85}
+.aplikacja__btn{flex:none;border:0;border-radius:999px;background:var(--zolty);color:#0B2E5E;font:inherit;font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;padding:12px 20px;cursor:pointer}
+.aplikacja__btn:hover{filter:brightness(1.05)}
+.aplikacja-pasek{position:fixed;left:10px;right:10px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:70;display:flex;align-items:center;gap:10px;
+  background:#fff;color:#0B2E5E;border-radius:16px;padding:10px 10px 10px 12px;box-shadow:0 10px 30px rgba(0,0,0,.25);animation:apl-wjazd .35s ease}
+.aplikacja-pasek[hidden]{display:none}
+.aplikacja-pasek img{border-radius:10px;flex:none}
+.aplikacja-pasek span{flex:1;font-size:15px;line-height:1.25}
+.aplikacja-pasek__tak{border:0;border-radius:999px;background:#0B2E5E;color:#fff;font:inherit;font-weight:700;font-size:14px;padding:10px 14px}
+.aplikacja-pasek__nie{border:0;background:none;font-size:26px;line-height:1;color:#5B6578;padding:4px 6px}
+@keyframes apl-wjazd{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
+.aplikacja-ios{position:fixed;inset:0;z-index:100;background:rgba(5,20,45,.55);display:flex;align-items:flex-end;justify-content:center;padding:12px}
+.aplikacja-ios[hidden]{display:none}
+.aplikacja-ios__okno{position:relative;background:#fff;color:#0B2E5E;border-radius:22px;padding:22px 22px 14px;max-width:420px;width:100%;margin-bottom:env(safe-area-inset-bottom)}
+.aplikacja-ios__okno h2{font-size:30px;margin:0 0 10px}
+.aplikacja-ios__okno ol{margin:0;padding-left:20px;font-size:17px;line-height:1.5}
+.aplikacja-ios__okno li{margin-bottom:8px}
+.aplikacja-ios__ikona{display:inline-flex;vertical-align:-4px;color:#1C6FD1}
+.aplikacja-ios__x{position:absolute;top:8px;right:10px;border:0;background:none;font-size:30px;color:#5B6578;line-height:1;padding:4px 8px}
