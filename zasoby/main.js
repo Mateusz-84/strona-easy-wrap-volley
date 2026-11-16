@@ -925,9 +925,11 @@ window.vkLicznik = (function () {
 })();
 
 /* =====================================================================
-   „ZAINSTALUJ APLIKACJĘ” – przycisk w stopce + jednorazowa podpowiedź na telefonie.
-   Android/komputer (Chrome, Edge): instalacja jednym kliknięciem. iPhone/iPad: krótka instrukcja (Safari nie ma przycisku).
-   Po zainstalowaniu (strona otwarta jako aplikacja) nic się nie pokazuje.
+   „ZAINSTALUJ APLIKACJĘ” – przycisk w nagłówku i stopce + jednorazowa podpowiedź na telefonie.
+   Na każdym telefonie przycisk jest widoczny zawsze (poza już zainstalowaną aplikacją):
+   - Chrome/Edge/Samsung na Androidzie, gdy przeglądarka pozwala – okno instalacji jednym kliknięciem,
+   - w pozostałych przypadkach – krótka instrukcja dopasowana do telefonu i przeglądarki.
+   Na komputerze przycisk pokazuje się tylko wtedy, gdy przeglądarka pozwala na instalację.
    ===================================================================== */
 (function () {
   'use strict';
@@ -935,53 +937,94 @@ window.vkLicznik = (function () {
   if (juz) return;
   var ua = navigator.userAgent || '';
   var ios = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  var iosSafari = ios && /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS|FBAN|FBAV|Instagram/.test(ua);
+  var android = /Android/.test(ua);
+  var telefon = ios || android;
   var monit = null;
 
   function czytaj(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function zapisz(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
 
-  function pokaz() {
-    document.querySelectorAll('[data-aplikacja]').forEach(function (el) { el.hidden = false; });
-    podpowiedz();
-  }
-  function schowaj() {
-    document.querySelectorAll('[data-aplikacja],.aplikacja-pasek').forEach(function (el) { el.hidden = true; });
+  var IK_UDOST = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11v9h12v-9"/></svg>';
+  var IK_MENU = '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>';
+  function ik(svg) { return ' <span class="aplikacja-ios__ikona" aria-hidden="true">' + svg + '</span>'; }
+
+  // Kroki instalacji dla danego telefonu i przeglądarki
+  function kroki() {
+    if (/FBAN|FBAV|FB_IAB|Instagram|Messenger|Line\/|TikTok|Snapchat/.test(ua)) {
+      return { t: 'Otwórz stronę w przeglądarce', k: [
+        'Jesteś w przeglądarce Facebooka lub Instagrama – stąd nie da się zainstalować aplikacji.',
+        'Stuknij menu' + ik(IK_MENU) + ' (w rogu ekranu) i wybierz <b>Otwórz w przeglądarce</b>' + (ios ? ' (Safari)' : ' (Chrome)') + '.',
+        'Na stronie volleykobylka.pl stuknij żółtą ikonkę telefonu u góry ekranu.'] };
+    }
+    if (ios && /CriOS|EdgiOS|FxiOS/.test(ua)) {
+      return { t: 'Zainstaluj na iPhonie', k: [
+        'Stuknij przycisk <b>Udostępnij</b>' + ik(IK_UDOST) + ' w pasku adresu (u góry lub na dole ekranu).',
+        'Wybierz <b>Dodaj do ekranu głównego</b> lub <b>Do ekranu początkowego</b>.',
+        'Stuknij <b>Dodaj</b>. Jeśli tej opcji nie ma, otwórz volleykobylka.pl w Safari.'] };
+    }
+    if (ios) {
+      return { t: 'Zainstaluj na iPhonie', k: [
+        'Stuknij przycisk <b>Udostępnij</b>' + ik(IK_UDOST) + ' na dole ekranu.',
+        'Przewiń listę i wybierz <b>Do ekranu początkowego</b>.',
+        'Stuknij <b>Dodaj</b> – ikona Volley Kobyłka pojawi się na ekranie telefonu.'] };
+    }
+    if (/SamsungBrowser/.test(ua)) {
+      return { t: 'Zainstaluj na telefonie', k: [
+        'Stuknij menu <b>☰</b> na dole ekranu.',
+        'Wybierz <b>Dodaj stronę do</b>, a potem <b>Ekran startowy</b>.',
+        'Potwierdź <b>Dodaj</b> – ikona Volley Kobyłka pojawi się na ekranie telefonu.'] };
+    }
+    if (/Firefox/.test(ua)) {
+      return { t: 'Zainstaluj na telefonie', k: [
+        'Stuknij menu' + ik(IK_MENU) + ' w rogu ekranu.',
+        'Wybierz <b>Zainstaluj</b> lub <b>Dodaj do ekranu głównego</b>.',
+        'Potwierdź – ikona Volley Kobyłka pojawi się na ekranie telefonu.'] };
+    }
+    return { t: 'Zainstaluj na telefonie', k: [
+      'Stuknij menu' + ik(IK_MENU) + ' w prawym górnym rogu przeglądarki.',
+      'Wybierz <b>Zainstaluj aplikację</b> lub <b>Dodaj do ekranu głównego</b>.',
+      'Potwierdź <b>Zainstaluj</b> – ikona Volley Kobyłka pojawi się na ekranie telefonu.'] };
   }
 
-  function instrukcjaIos() {
+  function instrukcja() {
     var stare = document.querySelector('.aplikacja-ios');
-    if (stare) { stare.hidden = false; return; }
+    if (stare) stare.remove();
+    var x = kroki();
     var d = document.createElement('div');
     d.className = 'aplikacja-ios';
     d.setAttribute('role', 'dialog');
     d.setAttribute('aria-modal', 'true');
-    d.setAttribute('aria-label', 'Jak zainstalować aplikację na iPhonie');
+    d.setAttribute('aria-label', x.t);
     d.innerHTML = '<div class="aplikacja-ios__okno"><button type="button" class="aplikacja-ios__x" aria-label="Zamknij">×</button>' +
-      '<h2>Zainstaluj na iPhonie</h2><ol>' +
-      '<li>Stuknij przycisk <b>Udostępnij</b> <span class="aplikacja-ios__ikona" aria-hidden="true">' +
-      '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
-      '<path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11v9h12v-9"/></svg></span> na dole ekranu.</li>' +
-      '<li>Przewiń listę i wybierz <b>Do ekranu początkowego</b>.</li>' +
-      '<li>Stuknij <b>Dodaj</b> – ikona Volley Kobyłka pojawi się na ekranie telefonu.</li></ol></div>';
+      '<h2>' + x.t + '</h2><ol>' + x.k.map(function (s) { return '<li>' + s + '</li>'; }).join('') + '</ol>' +
+      '<p class="aplikacja-ios__dol">Aplikacja jest bezpłatna i nie wymaga sklepu Google Play ani App Store.</p></div>';
     document.body.appendChild(d);
-    function zamknij() { d.hidden = true; }
+    function zamknij() { d.remove(); document.removeEventListener('keydown', esc); }
+    function esc(e) { if (e.key === 'Escape') zamknij(); }
     d.addEventListener('click', function (e) { if (e.target === d || e.target.closest('.aplikacja-ios__x')) zamknij(); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') zamknij(); });
+    document.addEventListener('keydown', esc);
+    var x2 = d.querySelector('.aplikacja-ios__x'); if (x2) x2.focus();
+  }
+
+  function pokaz() {
+    document.querySelectorAll('[data-aplikacja]').forEach(function (el) { el.hidden = false; });
+  }
+  function schowaj() {
+    document.querySelectorAll('[data-aplikacja],.aplikacja-pasek').forEach(function (el) { el.hidden = true; });
   }
 
   function instaluj() {
     if (monit) {
       monit.prompt();
       monit.userChoice.then(function (w) { if (w && w.outcome === 'accepted') schowaj(); monit = null; });
-    } else if (ios) {
-      instrukcjaIos();
+    } else {
+      instrukcja();
     }
   }
 
   // Jednorazowa podpowiedź na telefonie: od 2. odwiedzonej strony, potem nie częściej niż raz na 30 dni
   function podpowiedz() {
-    if (!window.matchMedia || !matchMedia('(max-width: 759px)').matches) return;
+    if (!telefon || !window.matchMedia || !matchMedia('(max-width: 759px)').matches) return;
     if (document.querySelector('.ak-pasek') || document.querySelector('.aplikacja-pasek')) return;
     var licz = (+czytaj('vk-strony') || 0) + 1;
     zapisz('vk-strony', String(licz));
@@ -989,19 +1032,27 @@ window.vkLicznik = (function () {
     if (licz < 2 || Date.now() - odlozono < 30 * 864e5) return;
     var p = document.createElement('div');
     p.className = 'aplikacja-pasek';
-    p.innerHTML = '<img src="' + (document.querySelector('link[rel="apple-touch-icon"]') || {}).href + '" alt="" width="40" height="40">' +
+    p.innerHTML = '<img src="' + ((document.querySelector('link[rel="apple-touch-icon"]') || {}).href || '') + '" alt="" width="40" height="40">' +
       '<span><b>Volley Kobyłka</b> jako aplikacja na telefonie</span>' +
-      '<button type="button" class="aplikacja-pasek__tak">Zainstaluj</button>' +
+      '<button type="button" class="aplikacja-pasek__tak">Pobierz</button>' +
       '<button type="button" class="aplikacja-pasek__nie" aria-label="Nie teraz">×</button>';
     document.body.appendChild(p);
     p.querySelector('.aplikacja-pasek__tak').addEventListener('click', function () { instaluj(); p.hidden = true; zapisz('vk-app-odlozono', String(Date.now())); });
     p.querySelector('.aplikacja-pasek__nie').addEventListener('click', function () { p.hidden = true; zapisz('vk-app-odlozono', String(Date.now())); });
   }
 
-  document.addEventListener('click', function (e) { if (e.target.closest('[data-instaluj]')) instaluj(); });
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-instaluj]');
+    if (!el) return;
+    e.preventDefault();
+    instaluj();
+  });
   window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); monit = e; pokaz(); });
   window.addEventListener('appinstalled', schowaj);
-  if (iosSafari) {
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', pokaz); else pokaz();
+  function start() {
+    if (telefon) pokaz();
+    podpowiedz();
+    if (/[?&]instaluj\b/.test(location.search)) setTimeout(instaluj, 400);
   }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();

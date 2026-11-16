@@ -415,7 +415,7 @@ def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja, pelny=None):
     <button class="app-przycisk" type="button" data-instaluj data-aplikacja hidden aria-label="Zainstaluj aplikację Volley Kobyłka" title="Zainstaluj aplikację"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M12 7v7m-3-3 3 3 3-3"/></svg><span class="app-przycisk__tekst">Aplikacja</span></button>
     <button class="czcionka-przycisk" type="button" aria-label="Powiększ tekst na stronie" title="Powiększ tekst"><span class="czcionka-przycisk__a" aria-hidden="true">A</span><span class="czcionka-przycisk__plus" aria-hidden="true">+</span></button>
     <button class="menu-przycisk" aria-expanded="false" aria-controls="menu"><span></span><span></span><span></span><span class="ukryte">Menu</span></button>
-    <nav class="menu" id="menu" aria-label="Menu główne"><ul>{menu}</ul></nav>
+    <nav class="menu" id="menu" aria-label="Menu główne"><ul>{menu}<li class="menu__app" data-aplikacja hidden><a href="#" data-instaluj>Pobierz aplikację na telefon</a></li></ul></nav>
   </div>
 </header>
 <main id="tresc">
@@ -477,7 +477,7 @@ def uklad_akademii(tytul, opis, tresc, p, wersja, aktualnosci=False):
     <button class="app-przycisk" type="button" data-instaluj data-aplikacja hidden aria-label="Zainstaluj aplikację Volley Kobyłka" title="Zainstaluj aplikację"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M12 7v7m-3-3 3 3 3-3"/></svg><span class="app-przycisk__tekst">Aplikacja</span></button>
     <button class="czcionka-przycisk" type="button" aria-label="Powiększ tekst na stronie" title="Powiększ tekst"><span class="czcionka-przycisk__a" aria-hidden="true">A</span><span class="czcionka-przycisk__plus" aria-hidden="true">+</span></button>
     <button class="menu-przycisk" aria-expanded="false" aria-controls="menu"><span></span><span></span><span></span><span class="ukryte">Menu</span></button>
-    <nav class="menu" id="menu" aria-label="Menu Akademii"><ul>{menu}</ul></nav>
+    <nav class="menu" id="menu" aria-label="Menu Akademii"><ul>{menu}<li class="menu__app" data-aplikacja hidden><a href="#" data-instaluj>Pobierz aplikację na telefon</a></li></ul></nav>
   </div>
 </header>
 <main id="tresc">

@@ -1479,3 +1479,8 @@ html.szybko :is(.hero,.ak-hero,.wybor) *:not(.sw):not(.sw *){animation-delay:0s!
   .app-przycisk:not([hidden])~.czcionka-przycisk{margin-left:10px}
 }
 @media print{.app-przycisk{display:none}}
+/* „Pobierz aplikację” w rozwijanym menu na telefonie */
+.menu__app[hidden]{display:none!important}
+.menu__app a{display:inline-flex!important;align-items:center;gap:8px;background:var(--zolty);color:var(--granat)!important;border-radius:999px;padding:10px 18px!important;margin-top:8px}
+@media (min-width:1024px){.menu__app{display:none!important}}
+.aplikacja-ios__dol{font-size:14px;color:#5B6578;margin:6px 0 0}
