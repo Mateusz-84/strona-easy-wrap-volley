@@ -179,17 +179,28 @@ def skrot_hali(nazwa):
 LICZNIK_ZAPAS = 0      # ostatnia znana liczba odwiedzin – ustawia build.py (dane/licznik.json)
 
 
+LICZNIK_MIESIAC = ""    # „RRRRMM” miesiąca, z którego pochodzi LICZNIK_ZAPAS – ustawia build.py
+LICZNIK_DZIENNIK = {}
+
+
 def licznik_html():
-    """Mały licznik wyświetleń w stopce – liczbę wstawia main.js; bez JS/sieci element zostaje ukryty."""
+    """Licznik wejść w stopce – od zera każdego miesiąca. Liczbę odświeża main.js; do tego czasu (albo gdy
+    serwis liczników nie odpowiada) widać ostatnią znaną liczbę z bieżącego miesiąca."""
     L = getattr(C, "LICZNIK", {}) or {}
     if not L.get("wlaczony"):
         return ""
     zapas = LICZNIK_ZAPAS
-    return (f'<span class="licznik-wysw" data-wyswietlenia="{e(L["przestrzen"])}/{e(L["klucz"])}"'
-            f'{f" data-zapas={zapas}" if zapas else " hidden"}>'
+    mies = LICZNIK_MIESIAC
+    nazwa = ""
+    if mies:
+        nazwa = ["styczniu", "lutym", "marcu", "kwietniu", "maju", "czerwcu", "lipcu", "sierpniu", "wrześniu",
+                 "październiku", "listopadzie", "grudniu"][int(mies[4:]) - 1]
+    return (f'<span class="licznik-wysw" data-wyswietlenia="{e(L["przestrzen"])}/{e(L["klucz"])}" data-zapas-mies="{e(mies)}"'
+            f'{f" data-zapas={zapas}" if zapas else " hidden"} title="Wejścia na stronę w tym miesiącu">'
             f'<svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path fill="currentColor" '
             f'd="M12 5C6.5 5 2.7 9.3 1.5 12c1.2 2.7 5 7 10.5 7s9.3-4.3 10.5-7C21.3 9.3 17.5 5 12 5zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg>'
-            f'<span class="ukryte">Odwiedziny strony: </span><span data-wyswietlenia-liczba>{f"{zapas:,}".replace(",", " ") if zapas else ""}</span></span>')
+            f'<span data-wyswietlenia-liczba>{f"{zapas:,}".replace(",", " ") if zapas else ""}</span>'
+            f'<span class="licznik-wysw__mies" data-wyswietlenia-mies> wejść w {nazwa}</span></span>')
 
 
 WSTEP_WOLNY_HTML = ('<span class="hero__wstep"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" '

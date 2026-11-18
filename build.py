@@ -652,6 +652,8 @@ class Budowa:
                 "homeTeam": {"@type": "SportsTeam", "name": gosp["nazwa"]},
                 "awayTeam": {"@type": "SportsTeam", "name": gosc["nazwa"]},
                 "competitor": [{"@type": "SportsTeam", "name": gosp["nazwa"]}, {"@type": "SportsTeam", "name": gosc["nazwa"]}],
+                # „performer” – Google Search Console zgłasza brak tego pola przy wydarzeniach (występują obie drużyny)
+                "performer": [{"@type": "SportsTeam", "name": gosp["nazwa"]}, {"@type": "SportsTeam", "name": gosc["nazwa"]}],
                 "organizer": {"@type": "SportsOrganization", "name": C.KLUB["nazwa_prawna"], "url": baza},
                 "url": baza + (S.adres_meczu(m) or "terminarz.html"),
                 "image": baza + (m.get("grafika_wyniku") and S.jest_plik(m["grafika_wyniku"]) and "img/" + m["grafika_wyniku"]
@@ -1510,6 +1512,21 @@ class Budowa:
                         pelny=f"{imie_nazwisko} – {z['pozycja'].lower()}, Easy Wrap Volley Kobyłka")
 
     # --- STATYSTYKI (ukryta strona, bez linku w menu) --------------------------
+    def dziennik_wejsc_html(self):
+        dz = getattr(S, "LICZNIK_DZIENNIK", {}) or {}
+        if not dz:
+            return ""
+        maks = max(dz.values()) or 1
+        wiersze = "".join(
+            f'<div class="st-wiersz"><span class="st-nazwa">{MIESIACE_PL[int(m[5:]) - 1].capitalize()} {m[:4]}</span>'
+            f'<span class="st-pasek"><i style="width:{round(w / maks * 100)}%"></i></span><b>{w:,}</b></div>'.replace(",", " ")
+            for m, w in sorted(dz.items(), reverse=True))
+        return (f'<h2 class="statystyki__h">Dziennik wejść – miesiąc po miesiącu</h2>'
+                f'<div class="statystyki__lista">{wiersze}</div>'
+                f'<p class="statystyki__przypis">Licznik w stopce strony liczy od zera od 1. dnia każdego miesiąca. '
+                f'Wynik każdego miesiąca zostaje zapisany tutaj (aktualizacja kilka razy dziennie) oraz w pliku '
+                f'dane/dziennik-wejsc.csv, który otworzysz w Excelu.</p>')
+
     def statystyki(self, strony):
         klucze = []
         for s in strony:
@@ -1527,6 +1544,7 @@ class Budowa:
     <div class="statystyki__kafel"><span data-st="telefon">–</span>wejść z telefonu</div>
     <div class="statystyki__kafel"><span data-st="komputer">–</span>wejść z komputera</div>
   </div>
+  {self.dziennik_wejsc_html()}
   <h2 class="statystyki__h">Skąd przychodzą</h2><div class="statystyki__lista" data-st-zrodla></div>
   <h2 class="statystyki__h">Najczęściej oglądane</h2><div class="statystyki__lista" data-st-strony></div>
   <p class="statystyki__przypis">Liczone od 3 listopada 2026. Bez ciasteczek i bez zapisywania danych osobowych –
@@ -2054,9 +2072,17 @@ def mecz_do_zapowiedzi(mecz):
     return {"data": mecz["data"], "godzina": mecz.get("godzina"), "nazwy_rywala": nazwy}
 
 
+MIESIACE_PL = ["styczeń", "luty", "marzec", "kwiecień", "maj", "czerwiec", "lipiec", "sierpień", "wrzesień",
+               "październik", "listopad", "grudzień"]
+MIESIACE_PL_MIEJSC = ["styczniu", "lutym", "marcu", "kwietniu", "maju", "czerwcu", "lipcu", "sierpniu", "wrześniu",
+                      "październiku", "listopadzie", "grudniu"]
+
+
 def zapas_licznika(bez_internetu):
-    """Ostatnia znana liczba odwiedzin – pokazywana w stopce od razu, nawet gdy darmowy serwis liczników
-    (Abacus) nie odpowiada. Przy każdej przebudowie próbujemy pobrać świeżą liczbę i zapisujemy ją w dane/licznik.json."""
+    """Licznik wejść w stopce liczy od zera każdego miesiąca (klucz „wejscia-RRRRMM” w serwisie Abacus).
+    Przy każdej przebudowie (ok. 9 razy dziennie) pobieramy liczbę z bieżącego i poprzedniego miesiąca
+    i zapisujemy w dzienniku: dane/licznik.json + dane/dziennik-wejsc.csv. Bieżąca liczba jest też zapasem
+    pokazywanym w stopce, gdy darmowy serwis liczników nie odpowiada."""
     L = getattr(C, "LICZNIK", {}) or {}
     if not L.get("wlaczony"):
         return
@@ -2065,20 +2091,42 @@ def zapas_licznika(bez_internetu):
         zapis = json.load(open(plik, encoding="utf-8"))
     except Exception:
         zapis = {}
-    klucz = f'{L["przestrzen"]}/{L["klucz"]}'
-    if zapis.get("klucz") != klucz:
-        zapis = {}                                   # nowy klucz = licznik od zera
+    dziennik = zapis.get("miesiace") or {}
+    teraz = DZIS
+    biezacy = f"{teraz.year}-{teraz.month:02d}"
+    pop = date(teraz.year - (teraz.month == 1), 12 if teraz.month == 1 else teraz.month - 1, 1)
+    poprzedni = f"{pop.year}-{pop.month:02d}"
+    zmiana = False
     if not bez_internetu:
         import urllib.request
-        try:
-            with urllib.request.urlopen(f"https://abacus.jasoncameron.dev/get/{klucz}", timeout=20) as odp:
-                wartosc = int(json.load(odp).get("value") or 0)
-            if wartosc >= int(zapis.get("wartosc") or 0):
-                zapis = {"klucz": klucz, "wartosc": wartosc, "data": DZIS.isoformat()}
-                json.dump(zapis, open(plik, "w", encoding="utf-8"), ensure_ascii=False)
-        except Exception as blad:
-            print("  UWAGA: licznik odwiedzin –", type(blad).__name__, "(zostaje ostatnia znana liczba)")
-    S.LICZNIK_ZAPAS = int(zapis.get("wartosc") or 0)
+        for mies in (poprzedni, biezacy):
+            klucz = f'{L["przestrzen"]}/{L["klucz"]}-{mies.replace("-", "")}'
+            try:
+                with urllib.request.urlopen(f"https://abacus.jasoncameron.dev/get/{klucz}", timeout=20) as odp:
+                    wartosc = int(json.load(odp).get("value") or 0)
+            except Exception as blad:
+                if getattr(blad, "code", None) == 404:
+                    wartosc = 0                         # w tym miesiącu jeszcze nikt nie wszedł
+                else:
+                    print(f"  UWAGA: licznik wejść {mies} –", type(blad).__name__, "(zostaje ostatnia znana liczba)")
+                    continue
+            if mies == poprzedni and mies not in dziennik and wartosc == 0:
+                continue                                 # nie dopisujemy pustych miesięcy sprzed startu licznika
+            if wartosc > int(dziennik.get(mies) or 0):
+                dziennik[mies] = wartosc
+                zmiana = True
+    if zmiana:
+        zapis = {"miesiace": dict(sorted(dziennik.items())), "aktualizacja": DZIS.isoformat(),
+                 "opis": "Liczba wejść na volleykobylka.pl w każdym miesiącu (wejście = przyjście na stronę z zewnątrz)."}
+        json.dump(zapis, open(plik, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        with open(os.path.join(FOLDER, "dane", "dziennik-wejsc.csv"), "w", encoding="utf-8-sig") as f:
+            f.write("Miesiąc;Rok;Wejścia\n")
+            for m, w in sorted(dziennik.items()):
+                r, mm = m.split("-")
+                f.write(f"{MIESIACE_PL[int(mm) - 1]};{r};{w}\n")
+    S.LICZNIK_ZAPAS = int(dziennik.get(biezacy) or 0)
+    S.LICZNIK_MIESIAC = biezacy.replace("-", "")
+    S.LICZNIK_DZIENNIK = dict(sorted(dziennik.items()))
 
 
 def main():

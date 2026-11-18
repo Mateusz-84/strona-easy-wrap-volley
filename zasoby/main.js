@@ -204,21 +204,26 @@ window.vkLicznik = (function () {
      FILTRY MECZÓW – działają na wszystkie karty w obszarze [data-filtrowanie]
      --------------------------------------------------------------- */
   /* ---------------------------------------------------------------
-     LICZNIK WYŚWIETLEŃ (stopka) – każde wczytanie strony dolicza 1.
-     Gdy serwis nie odpowie, zostaje ostatnia znana liczba z budowy strony.
+     LICZNIK WEJŚĆ (stopka) – od zera każdego miesiąca (klucz „wejscia-RRRRMM”, ten sam co w statystykach).
+     Wejście = przyjście na stronę z zewnątrz; przejście między podstronami tylko odczytuje licznik.
+     Gdy serwis nie odpowie, zostaje ostatnia znana liczba z budowy strony (tylko z tego samego miesiąca).
      --------------------------------------------------------------- */
   var wysw = document.querySelector('[data-wyswietlenia]');
   if (wysw && window.fetch && location.protocol.indexOf('http') === 0) {
-    // Liczymy tylko WEJŚCIE na stronę: przejście z podstrony na podstronę (ten sam adres w „skąd”)
-    // tylko odczytuje licznik, bez zwiększania. Nic nie zapisujemy w przeglądarce.
+    var dzis = new Date(), miesL = dzis.getFullYear() + ('0' + (dzis.getMonth() + 1)).slice(-2);
+    var nazwyM = ['styczniu', 'lutym', 'marcu', 'kwietniu', 'maju', 'czerwcu', 'lipcu', 'sierpniu', 'wrześniu',
+                  'październiku', 'listopadzie', 'grudniu'];
+    var zapas = wysw.dataset.zapasMies === miesL ? (+wysw.dataset.zapas || 0) : 0;
+    if (wysw.dataset.zapasMies !== miesL) wysw.hidden = true;   // nowy miesiąc – stara liczba nieaktualna
+    var opisM = wysw.querySelector('[data-wyswietlenia-mies]');
+    if (opisM) opisM.textContent = ' wejść w ' + nazwyM[dzis.getMonth()];
     var wewnetrzne = false;
     try { wewnetrzne = !!document.referrer && new URL(document.referrer).host === location.host; } catch (e) {}
-    window.vkLicznik((wewnetrzne ? 'get/' : 'hit/') + wysw.dataset.wyswietlenia)
+    window.vkLicznikWejscie = !wewnetrzne;
+    window.vkLicznik((wewnetrzne ? 'get/' : 'hit/') + wysw.dataset.wyswietlenia + '-' + miesL)
       .then(function (d) {
-        // Gdy serwis nie odpowie, zostaje ostatnia znana liczba wpisana przy budowie strony (data-zapas)
-        if (!d || typeof d.value !== 'number' || d.value < 1 || d.value < (+wysw.dataset.zapas || 0)) return;
+        if (!d || typeof d.value !== 'number' || d.value < 1 || d.value < zapas) return;
         wysw.querySelector('[data-wyswietlenia-liczba]').textContent = d.value.toLocaleString('pl-PL');
-        wysw.title = 'Odwiedziny strony';
         wysw.hidden = false;
       });
   }
@@ -493,7 +498,9 @@ window.vkLicznik = (function () {
       : /bing\.|duckduckgo|yahoo|ecosia|brave/.test(skad) ? 'inne-wyszukiwarki'
       : 'inne-strony';
     var tel = window.matchMedia && matchMedia('(pointer: coarse)').matches;
-    hity.push('wejscia-' + mies, 'zrodlo-' + zrodlo + '-' + mies, 'urz-' + (tel ? 'telefon' : 'komputer') + '-' + mies);
+    // „wejscia-RRRRMM” dolicza już licznik w stopce – tu tylko gdy stopki z licznikiem nie ma
+    if (!document.querySelector('[data-wyswietlenia]')) hity.push('wejscia-' + mies);
+    hity.push('zrodlo-' + zrodlo + '-' + mies, 'urz-' + (tel ? 'telefon' : 'komputer') + '-' + mies);
   }
   // Statystyki chwilę po liczniku w stopce, żeby licznik w stopce był zawsze pierwszy w kolejce
   setTimeout(function () {
