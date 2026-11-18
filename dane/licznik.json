@@ -1,1 +1,7 @@
-{"klucz": "volleykobylka-pl/odwiedziny", "wartosc": 352, "data": "2026-11-18"}
+{
+ "miesiace": {
+  "2026-11": 206
+ },
+ "aktualizacja": "2026-11-18",
+ "opis": "Liczba wejść na volleykobylka.pl w każdym miesiącu (wejście = przyjście na stronę z zewnątrz)."
+}
