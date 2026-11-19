@@ -217,14 +217,28 @@ window.vkLicznik = (function () {
     if (wysw.dataset.zapasMies !== miesL) wysw.hidden = true;   // nowy miesiąc – stara liczba nieaktualna
     var opisM = wysw.querySelector('[data-wyswietlenia-mies]');
     if (opisM) opisM.textContent = ' wejść w ' + nazwyM[dzis.getMonth()];
-    var wewnetrzne = false;
+    // Jedno wejście = jedna wizyta: liczymy tylko pierwszą stronę w danej karcie przeglądarki.
+    // Odświeżenie (F5) i przechodzenie po podstronach już nie dolicza – wcześniej każde odświeżenie
+    // podbijało licznik, więc liczba „skakała”.
+    var kluczSesji = 'vk-wejscie-' + miesL, kluczMax = 'vk-licznik-' + miesL, wewnetrzne = false;
     try { wewnetrzne = !!document.referrer && new URL(document.referrer).host === location.host; } catch (e) {}
+    try { if (sessionStorage.getItem(kluczSesji)) wewnetrzne = true; sessionStorage.setItem(kluczSesji, '1'); } catch (e) {}
     window.vkLicznikWejscie = !wewnetrzne;
+    // Licznik nigdy nie cofa się na ekranie: pokazujemy największą znaną liczbę z tego miesiąca
+    // (z budowy strony, z serwisu albo zapamiętaną w tej przeglądarce). Wcześniej, gdy serwis
+    // nie odpowiedział, wracała starsza liczba z budowy strony i wynik zmieniał się w kółko.
+    var pamiec = 0;
+    try { pamiec = +localStorage.getItem(kluczMax) || 0; } catch (e) {}
+    var pokazLiczbe = function (n) {
+      if (!(n >= 1)) return;
+      try { localStorage.setItem(kluczMax, String(n)); } catch (e) {}
+      wysw.querySelector('[data-wyswietlenia-liczba]').textContent = n.toLocaleString('pl-PL');
+      wysw.hidden = false;
+    };
+    pokazLiczbe(Math.max(zapas, pamiec));
     window.vkLicznik((wewnetrzne ? 'get/' : 'hit/') + wysw.dataset.wyswietlenia + '-' + miesL)
       .then(function (d) {
-        if (!d || typeof d.value !== 'number' || d.value < 1 || d.value < zapas) return;
-        wysw.querySelector('[data-wyswietlenia-liczba]').textContent = d.value.toLocaleString('pl-PL');
-        wysw.hidden = false;
+        if (d && typeof d.value === 'number') pokazLiczbe(Math.max(d.value, zapas, pamiec));
       });
   }
 
@@ -490,6 +504,8 @@ window.vkLicznik = (function () {
   var hity = ['s-' + klucz + '-' + mies, 'wszystko-' + mies];
   var skad = '', wewn = false;
   try { var r = new URL(document.referrer); wewn = r.host === location.host; skad = r.host.toLowerCase(); } catch (e) {}
+  // Ta sama decyzja co licznik w stopce (odświeżenie strony nie jest nowym wejściem)
+  if (typeof window.vkLicznikWejscie === 'boolean') wewn = !window.vkLicznikWejscie;
   if (!wewn) {
     var zrodlo = !skad ? 'bezposrednio'
       : /google\./.test(skad) ? 'google'

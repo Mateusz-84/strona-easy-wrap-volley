@@ -192,7 +192,7 @@ def linkuj_hale(html):
 # ---- SEO: adres kanoniczny, podgląd przy udostępnianiu, dane strukturalne, mapa strony ----
 STRONY_HTML = []          # wszystkie zapisane strony – z nich powstaje sitemap.xml
 DODATKI_SEO = {}          # sciezka → {"obraz", "typ", "ld": [...], "data", "obrazy"} ustawiane przez budowę strony
-GEO_HALI = {"@type": "GeoCoordinates", "latitude": 52.3422, "longitude": 21.2123}
+GEO_HALI = {"@type": "GeoCoordinates", "latitude": 52.342153, "longitude": 21.213106}
 
 OKRUSZKI = [("aktualnosci/", "Aktualności", "aktualnosci.html"), ("zawodniczki/", "Kadra", "druzyny.html"),
             ("mecze/", "Terminarz i wyniki", "terminarz.html"), ("akademia-aktualnosci/", "Akademia", "akademia.html"),

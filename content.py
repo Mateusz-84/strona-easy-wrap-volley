@@ -54,7 +54,7 @@ KLUB = {
 HALA_DOMOWA = {
     "nazwa": "Hala przy PSP nr 3 w Kobyłce",
     "adres": "ul. ks. Marcina Załuskiego 57, Kobyłka",
-    "mapa": "https://www.google.com/maps/search/?api=1&query=ul.+ks.+Marcina+Za%C5%82uskiego+57+Kobyłka",
+    "mapa": "https://www.google.com/maps?cid=16948559004742983537",   # profil „Klub Sportowy Volley” w Mapach Google
 }
 
 # Zdjęcia w nagłówkach stron (ścieżki względem img/).
