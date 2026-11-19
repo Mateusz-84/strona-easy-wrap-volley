@@ -430,8 +430,8 @@ AKADEMIA = {
     # Koordynator projektu – kontakt w sekcji „Kontakt”. Puste pola się nie pokazują.
     "koordynator": {"imie": None, "rola": "Koordynator Akademii", "telefon": "501 458 966",
                     "email": "akademia@volleykobylka.pl"},
-    "haslo": "Dołącz do nas!",
-    "opis": "Treningi siatkówki dla dziewcząt z klas 3–6 szkoły podstawowej – we wtorki i czwartki, 16:15–17:45, "
+    "haslo": "Siatkówka w Kobyłce dla dzieci",
+    "opis": "Treningi siatkówki dla dzieci – dziewcząt z klas 3–6 szkoły podstawowej – we wtorki i czwartki, 16:15–17:45, "
             "w hali przy PSP nr 3 w Kobyłce, ul. Załuskiego 57.",
     # Cennik i najważniejsze zasady – pokazują się w pierwszym ekranie strony Akademii
     "cennik": [
