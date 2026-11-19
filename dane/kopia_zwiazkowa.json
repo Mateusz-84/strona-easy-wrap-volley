@@ -44,10 +44,15 @@
    "adres": "Kobyłka, ul. ks. Marcina Załuskiego 57",
    "godzina": null,
    "hala": "Hala Sportowa przy PSP nr 3 w Kobyłce"
+  },
+  "/system/mecz/221/": {
+   "adres": "ul. 11 Listopada 6, Bielsk Podlaski",
+   "godzina": null,
+   "hala": "Hala 1LO Bielsk Podlaski"
   }
  },
  "seniorki": {
-  "pobrano": "2026-11-18T21:24",
+  "pobrano": "2026-11-19T03:29",
   "pzps_lista": [
    {
     "data": "2026-09-26",
