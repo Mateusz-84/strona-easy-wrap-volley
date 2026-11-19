@@ -252,13 +252,13 @@ def dane_strukturalne(sciezka):
                  "areaServed": ["Kobyłka", "Wołomin", "Marki", "Zielonka", "Radzymin"],
                  "audience": {"@type": "PeopleAudience", "audienceType": "Dzieci – dziewczęta z klas 3–6 szkoły podstawowej",
                               "suggestedGender": "Female", "suggestedMinAge": 8, "suggestedMaxAge": 12},
-                 "keywords": "siatkówka dla dzieci, siatkówka dla dziewczynek, treningi siatkówki dla dzieci Kobyłka, "
+                 "keywords": "siatkówka w Kobyłce dla dzieci, siatkówka dla dzieci, siatkówka dla dziewczynek, treningi siatkówki dla dzieci Kobyłka, "
                              "zajęcia sportowe dla dzieci Kobyłka, Wołomin, Marki, Zielonka",
                  "parentOrganization": {"@type": "SportsOrganization", "name": C.KLUB["nazwa_prawna"] + " Kobyłka", "url": baza},
                  "sameAs": [x for x in [A.get("facebook")] if x],
                  "member": [{"@type": "Person", "name": f'{t["imie"]} {t["nazwisko"]}', "jobTitle": t.get("rola") or "Trener"}
                             for t in A.get("trenerzy", [])] or None,
-                 "makesOffer": [{"@type": "Offer", "name": "Siatkówka dla dzieci (dziewczęta) – " + c["co"],
+                 "makesOffer": [{"@type": "Offer", "name": "Siatkówka w Kobyłce dla dzieci (dziewczęta) – " + c["co"],
                                  "price": re.sub(r"[^0-9]", "", c["cena"].split("/")[0]), "priceCurrency": "PLN",
                                  "url": A.get("formularz_google") or baza + "akademia.html#zapisy",
                                  "priceSpecification": {"@type": "UnitPriceSpecification",
@@ -413,8 +413,8 @@ SEO_PODSTRON = {
     "aktualnosci.html": ("Aktualności – Volley Kobyłka, siatkówka kobiet",
                          "Najnowsze wiadomości Easy Wrap Volley Kobyłka: zapowiedzi i relacje meczów II ligi kobiet, "
                          "MVP, wydarzenia klubu i Akademii Siatkówki Volley."),
-    "o-klubie.html": ("O klubie – KS Volley Kobyłka, siatkówka dla dzieci i kobiet",
-                      "Klub Sportowy Volley z Kobyłki: siatkówka dla dzieci w Akademii Siatkówki Volley (dziewczęta, "
+    "o-klubie.html": ("O klubie – KS Volley Kobyłka: siatkówka w Kobyłce dla dzieci i kobiet",
+                      "Siatkówka w Kobyłce dla dzieci – Klub Sportowy Volley: Akademia Siatkówki Volley (dziewczęta, "
                       "klasy 3–6) i drużyna kobiet Easy Wrap Volley w II lidze. Historia, wartości i dane klubu."),
     "sponsorzy.html": ("Sponsorzy i partnerzy – Easy Wrap Volley Kobyłka",
                        "Firmy, które wspierają siatkówkę kobiet w Kobyłce – sponsorzy i partnerzy Easy Wrap Volley "
@@ -1193,8 +1193,8 @@ class Budowa:
                      '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>Zadzwoń</a>'
                      if tel else '<a class="ak-pasek__plan" href="#plan">Plan treningów</a>')
                   + '</nav>')
-        html = S.uklad_akademii("Siatkówka dla dzieci Kobyłka – Akademia Siatkówki Volley (dziewczęta, klasy 3–6)",
-                                "Siatkówka dla dzieci w Kobyłce (blisko Wołomina, Marek i Zielonki) – Akademia Siatkówki Volley: "
+        html = S.uklad_akademii("Siatkówka w Kobyłce dla dzieci – Akademia Siatkówki Volley (dziewczęta, klasy 3–6)",
+                                "Siatkówka w Kobyłce dla dzieci (blisko Wołomina, Marek i Zielonki) – Akademia Siatkówki Volley: "
                                 "treningi dla dziewcząt z klas 3–6 SP, wtorki i czwartki 16:15–17:45. "
                                 "Pierwszy trening za darmo, zapisy online.",
                                 tresc, p, self.wersja, aktualnosci=bool(na))

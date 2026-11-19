@@ -417,7 +417,7 @@ def uklad(tytul, opis, tresc, aktywna, p, belka_html, wersja, pelny=None):
 <a class="przeskocz" href="#tresc">Przejdź do treści</a>
 <div class="belka belka--przejscie"><div class="kontener">
   <a class="belka__wroc" href="{p}index.html">← volleykobylka.pl</a>
-  <a class="belka__druga" href="{p}akademia.html">Akademia Siatkówki Volley<span class="belka__dopisek"> – siatkówka dla dzieci</span> ↗</a>
+  <a class="belka__druga" href="{p}akademia.html">Akademia Siatkówki Volley<span class="belka__dopisek"> – siatkówka w Kobyłce dla dzieci</span> ↗</a>
 </div></div>
 {belka_html}
 <header class="naglowek">
@@ -524,13 +524,13 @@ def strona_wyboru(p, wersja):
     logo_dr = (f'<img class="wybor__logo" src="{p}img/{e(C.KLUB["herb"])}" alt="" height="220">'
                if jest_plik(C.KLUB["herb"]) else herb_nasz_svg("wybor__logo"))
     rok = date.today().year
-    return f"""{glowa("Siatkówka dla dzieci Kobyłka – Akademia Siatkówki Volley | Volley Kobyłka",
-                 "Siatkówka dla dzieci w Kobyłce: Akademia Siatkówki Volley – treningi dla dziewcząt z klas 3–6 SP, "
+    return f"""{glowa("Siatkówka w Kobyłce dla dzieci – Akademia Siatkówki Volley | Volley Kobyłka",
+                 "Siatkówka w Kobyłce dla dzieci: Akademia Siatkówki Volley – treningi dla dziewcząt z klas 3–6 SP, "
                  "wtorki i czwartki, pierwszy trening za darmo. Klub Volley Kobyłka i drużyna Easy Wrap Volley (2. liga kobiet).",
                  p, wersja)}
 <body class="strefa-wybor">
 <main class="wybor" id="tresc">
-  <h1 class="ukryte">Siatkówka dla dzieci w Kobyłce – Akademia Siatkówki Volley i Volley Kobyłka</h1>
+  <h1 class="ukryte">Siatkówka w Kobyłce dla dzieci – Akademia Siatkówki Volley i Volley Kobyłka</h1>
   <a class="wybor__pole wybor__pole--druzyna" href="{p}{START_DRUZYNY}">
     {logo_dr}
     <span class="wybor__nazwa">Easy Wrap Volley<small>Kobyłka</small></span>
@@ -540,10 +540,10 @@ def strona_wyboru(p, wersja):
   <a class="wybor__pole wybor__pole--akademia" href="{p}akademia.html">
     {logo_ak}
     <span class="wybor__nazwa">Akademia Siatkówki<small>Volley</small></span>
-    <span class="wybor__opis">Siatkówka dla dzieci</span>
+    <span class="wybor__opis">Siatkówka w Kobyłce dla dzieci</span>
     <span class="wybor__strzalka" aria-hidden="true">→</span>
   </a>
-  <p class="wybor__seo">Siatkówka dla dzieci w Kobyłce – Akademia Siatkówki Volley: treningi siatkówki dla dziewcząt z klas 3–6
+  <p class="wybor__seo">Siatkówka w Kobyłce dla dzieci – Akademia Siatkówki Volley: treningi siatkówki dla dziewcząt z klas 3–6
     szkoły podstawowej w hali przy PSP nr 3 w Kobyłce, ul. Załuskiego 57 (blisko Wołomina, Marek i Zielonki). Volley Kobyłka
     ({e(C.KLUB['nazwa_prawna'])}) to także drużyna kobiet Easy Wrap Volley w 2. lidze.</p>
   <p class="wybor__dol"><span>© {rok} {e(C.KLUB['nazwa_prawna'])}</span>{licznik_html()}<a href="{p}polityka-prywatnosci.html">Polityka prywatności</a></p>
@@ -1051,7 +1051,7 @@ def faq_ld(pytania):
                            for q, a in pytania]}
 
 
-TEKST_LOKALNY = ("Siatkówka dla dzieci (treningi dla dziewcząt z klas 3–6) i siatkówka kobiet w Kobyłce (powiat wołomiński) – "
+TEKST_LOKALNY = ("Siatkówka w Kobyłce dla dzieci (treningi dla dziewcząt z klas 3–6) i siatkówka kobiet (powiat wołomiński) – "
                  "blisko Wołomina, Marek, Zielonki, Radzymina i Warszawy.")
 
 
