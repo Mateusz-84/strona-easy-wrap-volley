@@ -52,7 +52,7 @@
   }
  },
  "seniorki": {
-  "pobrano": "2026-11-21T18:21",
+  "pobrano": "2026-11-22T00:03",
   "pzps_lista": [
    {
     "data": "2026-09-26",
@@ -257,27 +257,27 @@
    "tabela": [
     {
      "lp": 1,
-     "male_minus": 581,
-     "male_plus": 744,
-     "mecze": 9,
+     "male_minus": 647,
+     "male_plus": 840,
+     "mecze": 10,
      "nasz": true,
      "nazwa": "EASY WRAP Volley Kobyłka",
-     "pkt": 24,
-     "sety_minus": 6,
-     "sety_plus": 26,
-     "zwyciestwa": 8
+     "pkt": 27,
+     "sety_minus": 7,
+     "sety_plus": 29,
+     "zwyciestwa": 9
     },
     {
      "lp": 2,
-     "male_minus": 617,
-     "male_plus": 735,
-     "mecze": 9,
+     "male_minus": 719,
+     "male_plus": 843,
+     "mecze": 10,
      "nasz": false,
      "nazwa": "GKS Orlęta Raszyn",
-     "pkt": 21,
-     "sety_minus": 8,
-     "sety_plus": 23,
-     "zwyciestwa": 7
+     "pkt": 23,
+     "sety_minus": 10,
+     "sety_plus": 26,
+     "zwyciestwa": 8
     },
     {
      "lp": 3,
@@ -293,87 +293,87 @@
     },
     {
      "lp": 4,
-     "male_minus": 716,
-     "male_plus": 767,
-     "mecze": 9,
+     "male_minus": 809,
+     "male_plus": 858,
+     "mecze": 10,
      "nasz": false,
      "nazwa": "SMS Ostrów Łaskovia Łask",
      "pkt": 18,
-     "sety_minus": 13,
-     "sety_plus": 20,
+     "sety_minus": 16,
+     "sety_plus": 21,
      "zwyciestwa": 6
     },
     {
      "lp": 5,
-     "male_minus": 843,
-     "male_plus": 854,
-     "mecze": 9,
+     "male_minus": 951,
+     "male_plus": 956,
+     "mecze": 10,
      "nasz": false,
      "nazwa": "AZS AWF Varsovia",
-     "pkt": 15,
-     "sety_minus": 18,
-     "sety_plus": 22,
+     "pkt": 16,
+     "sety_minus": 21,
+     "sety_plus": 24,
      "zwyciestwa": 5
     },
     {
      "lp": 6,
-     "male_minus": 709,
-     "male_plus": 722,
-     "mecze": 9,
+     "male_minus": 771,
+     "male_plus": 802,
+     "mecze": 10,
      "nasz": false,
      "nazwa": "MAPEI BARYCZ Janków Przygodzki",
-     "pkt": 12,
+     "pkt": 15,
      "sety_minus": 18,
-     "sety_plus": 16,
-     "zwyciestwa": 4
+     "sety_plus": 19,
+     "zwyciestwa": 5
     },
     {
      "lp": 7,
-     "male_minus": 767,
-     "male_plus": 737,
-     "mecze": 9,
+     "male_minus": 810,
+     "male_plus": 795,
+     "mecze": 10,
      "nasz": false,
-     "nazwa": "PGE LTS Legionovia Legionowo II",
-     "pkt": 12,
+     "nazwa": "Libero VIP Gwarant Aleksandrów Łódzki",
+     "pkt": 15,
      "sety_minus": 19,
-     "sety_plus": 15,
-     "zwyciestwa": 4
+     "sety_plus": 17,
+     "zwyciestwa": 5
     },
     {
      "lp": 8,
-     "male_minus": 719,
-     "male_plus": 702,
-     "mecze": 9,
+     "male_minus": 819,
+     "male_plus": 775,
+     "mecze": 10,
      "nasz": false,
-     "nazwa": "Libero VIP Gwarant Aleksandrów Łódzki",
+     "nazwa": "ŁKS AZS UMED Łódź",
      "pkt": 12,
-     "sety_minus": 18,
-     "sety_plus": 14,
-     "zwyciestwa": 4
-    },
-    {
-     "lp": 9,
-     "male_minus": 783,
-     "male_plus": 783,
-     "mecze": 9,
-     "nasz": false,
-     "nazwa": "MOS Wola AZS Warszawa",
-     "pkt": 11,
      "sety_minus": 21,
      "sety_plus": 17,
      "zwyciestwa": 4
     },
     {
-     "lp": 10,
-     "male_minus": 774,
-     "male_plus": 700,
-     "mecze": 9,
+     "lp": 9,
+     "male_minus": 863,
+     "male_plus": 803,
+     "mecze": 10,
      "nasz": false,
-     "nazwa": "ŁKS AZS UMED Łódź",
-     "pkt": 9,
-     "sety_minus": 21,
-     "sety_plus": 14,
-     "zwyciestwa": 3
+     "nazwa": "PGE LTS Legionovia Legionowo II",
+     "pkt": 12,
+     "sety_minus": 22,
+     "sety_plus": 16,
+     "zwyciestwa": 4
+    },
+    {
+     "lp": 10,
+     "male_minus": 863,
+     "male_plus": 845,
+     "mecze": 10,
+     "nasz": false,
+     "nazwa": "MOS Wola AZS Warszawa",
+     "pkt": 11,
+     "sety_minus": 24,
+     "sety_plus": 17,
+     "zwyciestwa": 4
     },
     {
      "lp": 11,
@@ -389,13 +389,13 @@
     },
     {
      "lp": 12,
-     "male_minus": 734,
-     "male_plus": 528,
-     "mecze": 9,
+     "male_minus": 809,
+     "male_plus": 573,
+     "mecze": 10,
      "nasz": false,
      "nazwa": "MKS Kalisz II",
      "pkt": 0,
-     "sety_minus": 27,
+     "sety_minus": 30,
      "sety_plus": 3,
      "zwyciestwa": 0
     }
@@ -724,6 +724,36 @@
      "gosc": "GKS Orlęta Raszyn",
      "gospodarz": "PGE LTS Legionovia Legionowo 2",
      "wynik": "0:3"
+    },
+    {
+     "data": "2026-11-21",
+     "gosc": "GKS Orlęta Raszyn",
+     "gospodarz": "AZS AWF Varsovia",
+     "wynik": "2:3"
+    },
+    {
+     "data": "2026-11-21",
+     "gosc": "PGE LTS Legionovia Legionowo 2",
+     "gospodarz": "EASY WRAP Volley Kobyłka",
+     "wynik": "3:1"
+    },
+    {
+     "data": "2026-11-21",
+     "gosc": "SMS Ostrów Łaskovia Łask",
+     "gospodarz": "Libero VIP Gwarant Aleksandrów Łódzki",
+     "wynik": "3:1"
+    },
+    {
+     "data": "2026-11-21",
+     "gosc": "MAPEI BARYCZ Janków Przygodzki",
+     "gospodarz": "MOS Wola AZS Warszawa",
+     "wynik": "0:3"
+    },
+    {
+     "data": "2026-11-21",
+     "gosc": "MKS Kalisz II",
+     "gospodarz": "ŁKS AZS UMED Łódź",
+     "wynik": "3:0"
     }
    ],
    "wyniki": {
@@ -812,6 +842,16 @@
       "21:25"
      ],
      "wynik": "0:3"
+    },
+    "/system/mecz/188/": {
+     "data": "2026-11-21",
+     "sety": [
+      "21:25",
+      "25:14",
+      "25:13",
+      "25:14"
+     ],
+     "wynik": "3:1"
     }
    }
   },
