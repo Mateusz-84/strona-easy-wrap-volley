@@ -423,7 +423,7 @@ Sam test pobierania ze związków: `python zrodla.py`.
 ## 13. Do uzupełnienia przed startem
 
 - [ ] Kolor żółty z księgi znaku → `zasoby/style.css`, linia `--zolty:` (teraz tymczasowy `#FFC72C`).
-- [ ] Herb klubu w wysokiej jakości z księgi znaku → `img/herby/easy-wrap-volley.svg`. Do tego czasu używany jest herb pobrany z VolleyStation (`img/herby/easy-wrap-volley.png`).
+- [ ] Herb klubu w wysokiej jakości z księgi znaku → `img/herby/easy-wrap-volley.svg`. Do tego czasu używany jest herb pobrany z VolleyStation (`img/herby/easy-wrap-volley.webp`).
 - [x] Kadra seniorek 2026/27 (13 zawodniczek, kapitan: Klaudia Kucharska).
 - [ ] Sztab szkoleniowy seniorek → `SZTAB` w `content.py`.
 - [ ] Opcjonalnie przy zawodniczkach: zdjęcia, data urodzenia, „w klubie od”, wzrost.

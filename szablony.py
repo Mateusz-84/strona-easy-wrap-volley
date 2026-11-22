@@ -524,13 +524,13 @@ def strona_wyboru(p, wersja):
     logo_dr = (f'<img class="wybor__logo" src="{p}img/{e(C.KLUB["herb"])}" alt="" height="220">'
                if jest_plik(C.KLUB["herb"]) else herb_nasz_svg("wybor__logo"))
     rok = date.today().year
-    return f"""{glowa("Siatkówka w Kobyłce dla dzieci – Akademia Siatkówki Volley | Volley Kobyłka",
-                 "Siatkówka w Kobyłce dla dzieci: Akademia Siatkówki Volley – treningi dla dziewcząt z klas 3–6 SP, "
-                 "wtorki i czwartki, pierwszy trening za darmo. Klub Volley Kobyłka i drużyna Easy Wrap Volley (2. liga kobiet).",
+    return f"""{glowa("Volley Kobyłka – siatkówka kobiet i dzieci w Kobyłce",
+                 "Klub Sportowy Volley z Kobyłki: drużyna Easy Wrap Volley Kobyłka w 2. lidze kobiet – mecze, wyniki "
+                 "i tabela – oraz Akademia Siatkówki Volley, czyli treningi siatkówki dla dzieci (dziewczęta, klasy 3–6).",
                  p, wersja)}
 <body class="strefa-wybor">
 <main class="wybor" id="tresc">
-  <h1 class="ukryte">Siatkówka w Kobyłce dla dzieci – Akademia Siatkówki Volley i Volley Kobyłka</h1>
+  <h1 class="ukryte">Volley Kobyłka – Easy Wrap Volley w 2. lidze kobiet i Akademia Siatkówki Volley</h1>
   <a class="wybor__pole wybor__pole--druzyna" href="{p}{START_DRUZYNY}">
     {logo_dr}
     <span class="wybor__nazwa">Easy Wrap Volley<small>Kobyłka</small></span>
@@ -543,9 +543,9 @@ def strona_wyboru(p, wersja):
     <span class="wybor__opis">Siatkówka w Kobyłce dla dzieci</span>
     <span class="wybor__strzalka" aria-hidden="true">→</span>
   </a>
-  <p class="wybor__seo">Siatkówka w Kobyłce dla dzieci – Akademia Siatkówki Volley: treningi siatkówki dla dziewcząt z klas 3–6
-    szkoły podstawowej w hali przy PSP nr 3 w Kobyłce, ul. Załuskiego 57 (blisko Wołomina, Marek i Zielonki). Volley Kobyłka
-    ({e(C.KLUB['nazwa_prawna'])}) to także drużyna kobiet Easy Wrap Volley w 2. lidze.</p>
+  <p class="wybor__seo">Volley Kobyłka ({e(C.KLUB['nazwa_prawna'])}) to drużyna kobiet Easy Wrap Volley Kobyłka grająca w 2. lidze
+    oraz Akademia Siatkówki Volley – treningi siatkówki dla dzieci (dziewczęta z klas 3–6). Mecze i treningi odbywają się w hali
+    przy PSP nr 3 w Kobyłce, ul. Załuskiego 57 (blisko Wołomina, Marek i Zielonki).</p>
   <p class="wybor__dol"><span>© {rok} {e(C.KLUB['nazwa_prawna'])}</span>{licznik_html()}<a href="{p}polityka-prywatnosci.html">Polityka prywatności</a></p>
 </main>
 </body>
@@ -680,7 +680,7 @@ def hero(p, m):
     </div>
     <div class="hero__data">
       <span class="hero__dzien">{d.day}</span>
-      <span class="hero__dzien-opis">{DNI[d.weekday()]}<span>{MIESIACE_DOP[d.month - 1]}</span></span>
+      <span class="hero__dzien-opis">{DNI[d.weekday()]} <span>{MIESIACE_DOP[d.month - 1]}</span></span>
     </div>
     <div class="hero__szczegoly">
       {godzina}
@@ -871,9 +871,10 @@ def kropki_formy(forma, opis_druzyny=None):
     for f in forma:
         rywal = opis_druzyny(f["rywal"])["krotko"] if opis_druzyny else f["rywal"]
         opis = f'{"Wygrana" if f["w"] else "Porażka"} {f["wynik"]} z {rywal}, {f["data"][8:10]}.{f["data"][5:7]}'
-        kropki.append(f'<span class="forma__k forma__k--{"w" if f["w"] else "p"}" title="{e(opis)}">'
-                      f'<span class="ukryte">{e(opis)}</span></span>')
-    return f'<span class="forma" aria-label="Forma: ostatnie mecze">{"".join(kropki)}</span>'
+        # Opis tylko w atrybutach (dymek po najechaniu + czytnik ekranu) – nie jako tekst strony dla Google
+        kropki.append(f'<span class="forma__k forma__k--{"w" if f["w"] else "p"}" role="img" '
+                      f'title="{e(opis)}" aria-label="{e(opis)}"></span>')
+    return f'<span class="forma" role="group" aria-label="Forma: ostatnie mecze">{"".join(kropki)}</span>'
 
 
 def tabela_html(p, wiersze, opis_druzyny, podpis, forma=None):
@@ -903,7 +904,7 @@ def tabela_html(p, wiersze, opis_druzyny, podpis, forma=None):
 # ---------------------------------------------------------------------
 # Karta aktualności
 # ---------------------------------------------------------------------
-def karta_newsa(p, n, duza=False, folder="aktualnosci", herb="herby/easy-wrap-volley.png"):
+def karta_newsa(p, n, duza=False, folder="aktualnosci", herb="herby/easy-wrap-volley.webp"):
     d = date.fromisoformat(n["data"])
     foto = img(p, n.get("zdjecie"), n["tytul"], "news__img")
     if not foto:  # brak zdjęcia: herb klubu + kategoria zamiast pustego pola
@@ -1051,7 +1052,7 @@ def faq_ld(pytania):
                            for q, a in pytania]}
 
 
-TEKST_LOKALNY = ("Siatkówka w Kobyłce dla dzieci (treningi dla dziewcząt z klas 3–6) i siatkówka kobiet (powiat wołomiński) – "
+TEKST_LOKALNY = ("Siatkówka kobiet i treningi siatkówki dla dzieci w Kobyłce (powiat wołomiński) – "
                  "blisko Wołomina, Marek, Zielonki, Radzymina i Warszawy.")
 
 

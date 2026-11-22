@@ -62,7 +62,7 @@ def _herb(strona, rozmiar, sciezka_img, inicjaly=None):
     """Herb jako obraz RGBA o wysokości `rozmiar`."""
     plik = None
     if strona.get("nasza"):
-        for kandydat in ("favicon-512.png", "herby/easy-wrap-volley.png"):
+        for kandydat in ("favicon-512.png", "herby/easy-wrap-volley.webp"):
             if os.path.isfile(os.path.join(sciezka_img, kandydat)):
                 plik = os.path.join(sciezka_img, kandydat)
                 break
@@ -198,6 +198,14 @@ def zapisz_grafiki_wynikow(mecze, sciezka_img, liga, dni, miesiace, dopisek=None
             except Exception as blad:
                 print(f"  UWAGA: grafika wyniku {nazwa}: {type(blad).__name__}: {blad}")
                 continue
+        # Lżejsza kopia WebP do pokazywania na stronie (JPG zostaje do pobrania i na Facebooka)
+        webp = cel[:-4] + ".webp"
+        if os.path.isfile(cel) and not os.path.isfile(webp):
+            try:
+                with Image.open(cel) as obraz:
+                    obraz.save(webp, "WEBP", quality=84, method=6)
+            except Exception as blad:
+                print(f"  UWAGA: WebP grafiki {nazwa}: {blad}")
         m["grafika_wyniku"] = f"grafiki/{nazwa}"
 
 

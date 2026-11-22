@@ -220,7 +220,7 @@ def pobierz_obraz(podfolder, klucz, url, rozmiar):
     Zwraca ścieżkę względem img/ (np. "herby/kalisz.webp") albo None.
     """
     folder = os.path.join(FOLDER, "img", podfolder)
-    for rozszerzenie in set(ROZSZERZENIA.values()):
+    for rozszerzenie in (".svg", ".webp", ".png", ".jpg"):     # najpierw lekkie WebP
         if os.path.isfile(os.path.join(folder, klucz + rozszerzenie)):
             return f"{podfolder}/{klucz}{rozszerzenie}"   # już pobrany wcześniej
     if not url:

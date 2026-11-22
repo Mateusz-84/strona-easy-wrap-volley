@@ -236,12 +236,16 @@ def dane_strukturalne(sciezka):
             "areaServed": ["Kobyłka", "Wołomin", "Marki", "Zielonka", "Radzymin", "powiat wołomiński"],
             "sameAs": [x for x in [C.KLUB.get("facebook"), C.KLUB.get("instagram"), C.KLUB.get("youtube"),
                                    C.KLUB.get("volleybox")] if x]}
-    if sciezka in ("index.html", S.START_DRUZYNY, "kontakt.html", "o-klubie.html"):
+    if sciezka in ("index.html", S.START_DRUZYNY, "kontakt.html", "o-klubie.html", "druzyny.html"):
         druzyna = {"@context": "https://schema.org", "@type": "SportsTeam", "name": C.KLUB["nazwa"],
                    "url": baza + S.START_DRUZYNY, "sport": "Siatkówka", "gender": "Female",
                    "memberOf": {"@type": "SportsOrganization", "name": "2. liga kobiet"},
                    "parentOrganization": {"@id": baza + "#klub"}, "location": hala,
                    "coach": [{"@type": "Person", "name": "Mateusz Mosur"}]}
+        if sciezka == "druzyny.html":                   # strona kadry: lista zawodniczek z linkami do profili
+            druzyna["athlete"] = [{"@type": "Person", "name": f'{z["imie"]} {z["nazwisko"]}',
+                                   **({"url": baza + S.adres_profilu(z)} if S.adres_profilu(z) else {})}
+                                  for z in sorted((z for z in C.KADRA if z["druzyna"] == GLOWNA), key=lambda z: z["numer"])]
         return [klub, druzyna]
     if sciezka == "akademia.html":
         A = C.AKADEMIA
@@ -299,9 +303,107 @@ def seo_glowa(sciezka, html):
     return html.replace("</head>", dodatki + "\n</head>", 1)
 
 
+# Obrazki w pierwszym ekranie (pasek u góry, logo, zdjęcie główne) ładują się od razu – reszta „leniwie”
+OBRAZKI_OD_RAZU = {"belka__herb", "wybor__logo", "ak-hero__logo", "hero__postac-img", "mstr__herb", "zapowiedz__img"}
+_WYMIARY = {}
+
+
+def wymiary_obrazka(sciezka):
+    """(szerokość, wysokość) pliku z img/ – czytane raz i zapamiętywane. None, gdy się nie da."""
+    if sciezka not in _WYMIARY:
+        _WYMIARY[sciezka] = None
+        pelna = os.path.join(FOLDER, "img", sciezka)
+        try:
+            if sciezka.lower().endswith(".svg"):
+                naglowek = open(pelna, encoding="utf-8", errors="ignore").read(3000)
+                m = re.search(r'viewBox="\s*[-\d.]+[ ,]+[-\d.]+[ ,]+([\d.]+)[ ,]+([\d.]+)', naglowek)
+                if m:
+                    _WYMIARY[sciezka] = (round(float(m.group(1))), round(float(m.group(2))))
+            else:
+                from PIL import Image
+                with Image.open(pelna) as im:
+                    _WYMIARY[sciezka] = im.size
+        except Exception:
+            pass
+    return _WYMIARY[sciezka]
+
+
+def popraw_obrazki(html):
+    """Każdy <img> z folderu img/ dostaje width/height (przeglądarka rezerwuje miejsce – strona nie „skacze”),
+    obrazki poza pierwszym ekranem ładują się leniwie, a grafiki wyników pokazujemy w lżejszym WebP
+    (JPG zostaje do pobrania i do podglądu linku na Facebooku)."""
+    def jeden(m):
+        tag = m.group(0)
+        src = re.search(r'\ssrc="([^"]+)"', tag)
+        if (not src or "img/" not in src.group(1) or src.group(1).startswith("data:")
+                or (src.group(1).startswith("http") and not src.group(1).startswith(C.KLUB["adres_strony"].rstrip("/")))):
+            return tag
+        adres = src.group(1)
+        sciezka = adres.split("img/", 1)[1].split("?")[0]
+        if sciezka.startswith("grafiki/") and sciezka.endswith(".jpg"):
+            webp = sciezka[:-4] + ".webp"
+            if os.path.isfile(os.path.join(FOLDER, "img", webp)):
+                tag = tag.replace(adres, adres.replace(sciezka, webp), 1)
+                sciezka = webp
+        szer = re.search(r'\swidth="(\d+)"', tag)
+        wys = re.search(r'\sheight="(\d+)"', tag)
+        if not (szer and wys):
+            wym = wymiary_obrazka(sciezka)
+            if wym and wym[0] and wym[1]:
+                w, h = wym
+                if wys and not szer:
+                    dodaj = f' width="{max(1, round(int(wys.group(1)) * w / h))}"'
+                elif szer and not wys:
+                    dodaj = f' height="{max(1, round(int(szer.group(1)) * h / w))}"'
+                else:
+                    dodaj = f' width="{w}" height="{h}"'
+                tag = tag[:4] + dodaj + tag[4:]
+        klasy = set((re.search(r'\sclass="([^"]*)"', tag) or [None, ""])[1].split())
+        if "loading=" not in tag and "fetchpriority" not in tag and not (klasy & OBRAZKI_OD_RAZU) and klasy:
+            tag = tag[:4] + ' loading="lazy" decoding="async"' + tag[4:]
+        return tag
+    return re.sub(r"<img\b[^>]*>", jeden, html)
+
+
+_INLINE = "span|a|strong|small|b|em|i|time|label|button|abbr|mark"
+_SKLEJONE = [
+    # </span><span> → </span> <span>: sąsiednie napisy w osobnych znacznikach nie zlewają się w jedno słowo
+    (re.compile(rf"(</(?:{_INLINE})>)(?=<(?:{_INLINE})\b)"), r"\1 "),
+    # </span>Nazwisko → </span> Nazwisko
+    (re.compile(rf"(</(?:{_INLINE})>)(?=[A-Za-zÀ-ž])"), r"\1 "),       # tylko litery – wynik „3<span>:</span>1” zostaje
+    # Volley<small>Kobyłka → Volley <small>Kobyłka
+    (re.compile(r"(?<=[0-9A-Za-zÀ-ž.,:;!?)→])(?=<(?:small|time)\b)"), " "),
+    # herb między napisami w pasku wyników: „3:1<img><span>Sob…” → odstęp po obrazku
+    (re.compile(rf"(<img\b[^>]*>)(?=<(?:{_INLINE})\b)"), r"\1 "),
+]
+
+
+def rozdziel_napisy(html):
+    """Czytniki ekranu i Google czytają tekst sąsiednich znaczników bez odstępu, jeśli w kodzie nie ma spacji
+    („KlaudiaKucharska”, „501 458 966akademia@…”). Dokładamy spację między znacznikami w treści strony
+    (poza <head>, skryptami, stylami i SVG). Na wygląd nie wpływa – odstępy i tak ustala CSS."""
+    poczatek = html.find("<body")
+    if poczatek < 0:
+        return html
+    czesci = re.split(r"(<(script|style|svg|textarea|pre)\b.*?</\2>)", html[poczatek:], flags=re.S | re.I)
+    wynik = []
+    i = 0
+    while i < len(czesci):
+        kawalek = czesci[i]
+        if i % 3 == 0:
+            for wzor, zamiana in _SKLEJONE:
+                kawalek = wzor.sub(zamiana, kawalek)
+            wynik.append(kawalek)
+            i += 1
+        else:
+            wynik.append(kawalek)        # blok skryptu/stylu/SVG bez zmian
+            i += 2                       # pomijamy nazwę znacznika z grupy
+    return html[:poczatek] + "".join(wynik)
+
+
 def zapisz(sciezka, tekst):
     if sciezka.endswith(".html"):
-        tekst = ukryj_maile(linkuj_hale(seo_glowa(sciezka, tekst)))
+        tekst = rozdziel_napisy(popraw_obrazki(ukryj_maile(linkuj_hale(seo_glowa(sciezka, tekst)))))
         if sciezka != "404.html":
             STRONY_HTML.append(sciezka)
     pelna = os.path.join(WYJSCIE, sciezka)
@@ -356,6 +458,37 @@ def zmniejsz_zasoby(folder):
         open(sj, "w", encoding="utf-8").write(js)
     except Exception as blad:
         print(f"  UWAGA: zmniejszanie CSS/JS: {blad} – zostają pełne pliki")
+
+
+def daty_zmian_stron(strony):
+    """Data ostatniej PRAWDZIWEJ zmiany treści każdej podstrony – do <lastmod> w sitemap.xml.
+    Google ufa dacie lastmod tylko wtedy, gdy nie zmienia się przy każdej przebudowie, więc porównujemy
+    treść strony (bez licznika wejść, zegarów i wersji plików) z zapamiętanym odciskiem w dane/lastmod.json.
+    Plik aktualizuje tylko serwer (GitHub Actions) – na komputerze tylko go czytamy."""
+    plik = os.path.join(FOLDER, "dane", "lastmod.json")
+    try:
+        stare = json.load(open(plik, encoding="utf-8"))
+    except Exception:
+        stare = {}
+    nowe, daty = {}, {}
+    for s_ in sorted(set(strony)):
+        try:
+            tekst = open(os.path.join(WYJSCIE, s_), encoding="utf-8").read()
+        except OSError:
+            continue
+        tekst = re.sub(r'\?v=[0-9a-f]+|data-start="[^"]*"|\d+<small>[dhms]</small>|data-zapas(-mies)?=\S+'
+                       r'|<span data-wyswietlenia-liczba>[^<]*</span>|\d+ wejść', "", tekst)
+        h = hashlib.md5(tekst.encode("utf-8")).hexdigest()[:12]
+        poprz = stare.get(s_) or {}
+        data = poprz.get("d") if poprz.get("h") == h and poprz.get("d") else DZIS.isoformat()
+        nowe[s_] = {"h": h, "d": data}
+        daty[s_] = data
+    if os.environ.get("GITHUB_ACTIONS") == "true":
+        try:
+            json.dump(nowe, open(plik, "w", encoding="utf-8"), ensure_ascii=False, indent=0, sort_keys=True)
+        except OSError as blad:
+            print(f"  UWAGA: dane/lastmod.json: {blad}")
+    return daty
 
 
 def zglos_indexnow(adresy):
@@ -413,9 +546,9 @@ SEO_PODSTRON = {
     "aktualnosci.html": ("Aktualności – Volley Kobyłka, siatkówka kobiet",
                          "Najnowsze wiadomości Easy Wrap Volley Kobyłka: zapowiedzi i relacje meczów II ligi kobiet, "
                          "MVP, wydarzenia klubu i Akademii Siatkówki Volley."),
-    "o-klubie.html": ("O klubie – KS Volley Kobyłka: siatkówka w Kobyłce dla dzieci i kobiet",
-                      "Siatkówka w Kobyłce dla dzieci – Klub Sportowy Volley: Akademia Siatkówki Volley (dziewczęta, "
-                      "klasy 3–6) i drużyna kobiet Easy Wrap Volley w II lidze. Historia, wartości i dane klubu."),
+    "o-klubie.html": ("O klubie – KS Volley Kobyłka: siatkówka kobiet i dzieci",
+                      "Klub Sportowy Volley z Kobyłki: drużyna kobiet Easy Wrap Volley w II lidze i Akademia Siatkówki "
+                      "Volley dla dzieci (dziewczęta, klasy 3–6). Historia, wartości i dane klubu."),
     "sponsorzy.html": ("Sponsorzy i partnerzy – Easy Wrap Volley Kobyłka",
                        "Firmy, które wspierają siatkówkę kobiet w Kobyłce – sponsorzy i partnerzy Easy Wrap Volley "
                        "Kobyłka. Sprawdź, jak zostać sponsorem klubu."),
@@ -443,17 +576,23 @@ def ladny_tytul(tytul, dlugosc=70):
             for w in re.findall(r"\w+", tekst):
                 if len(w) > 2:
                     wlasne.add(w.lower()[:5])
+        # zwykłe słowa z nazw klubów i sponsorów („Akademia Siatkówki”, „Klub Sportowy”) zostają małą literą
+        wlasne -= {"siatk", "klub", "sport", "szkoł", "akade", "fundac"[:5], "stowa", "miast", "drużyn"[:5],
+                   "liga", "salon", "studi", "fitne", "trans", "okien", "drzwi", "kosme", "fizjo", "radio"}
         slowa = []
         for i, w in enumerate(re.split(r"(\s+)", tytul.lower())):
             czyste = re.sub(r"\W", "", w)
             if czyste.upper() in skroty and czyste.upper() not in ("EASY", "WRAP"):
                 w = w.upper()
-            elif czyste and (czyste[:5] in wlasne and len(czyste) > 2):
+            elif czyste and len(czyste) > 2 and (czyste[:5] in wlasne or any(
+                    len(st) < 5 and czyste.startswith(st) and len(czyste) - len(st) <= 2 for st in wlasne)):
+                # krótkie nazwy odmienione też wielką literą: Łask → „do Łasku”, Łódź → „z Łodzi” nie (inny rdzeń)
                 w = w[:1].upper() + w[1:] if w[:1].isalpha() else w[:1] + w[1:2].upper() + w[2:]
             slowa.append(w)
         tytul = "".join(slowa)
         tytul = re.sub(r"^(\W*)(\w)", lambda m: m.group(1) + m.group(2).upper(), tytul)
-        tytul = re.sub(r"([.!?]\s+)(\w)", lambda m: m.group(1) + m.group(2).upper(), tytul)
+        # wielka litera po końcu zdania – ale nie po liczebniku porządkowym („po 9. kolejce”)
+        tytul = re.sub(r"((?<!\d)[.!?]\s+|(?<=\d)[!?]\s+)(\w)", lambda m: m.group(1) + m.group(2).upper(), tytul)
     if len(tytul) > dlugosc:
         zdanie = re.split(r"(?<=[.!?])\s", tytul, maxsplit=1)[0]
         if 25 <= len(zdanie) <= dlugosc:
@@ -1364,7 +1503,8 @@ class Budowa:
     def ak_artykul_ld(self, sciezka, tytul, opis, data_iso, obraz, autor=None, zrodla=()):
         baza = C.KLUB["adres_strony"].rstrip("/") + "/"
         A = C.AKADEMIA
-        ld = {"@context": "https://schema.org", "@type": "Article", "headline": tytul[:110], "description": opis,
+        typ = "NewsArticle" if sciezka.startswith("akademia-aktualnosci/") else "Article"   # aktualności vs poradniki
+        ld = {"@context": "https://schema.org", "@type": typ, "headline": tytul[:110], "description": opis,
               "datePublished": data_iso, "dateModified": data_iso, "inLanguage": "pl-PL",
               "mainEntityOfPage": baza + sciezka,
               "publisher": {"@type": "SportsOrganization", "name": A.get("nazwa") or "Akademia Siatkówki Volley",
@@ -2248,9 +2388,10 @@ def main():
         puste.add("galeria.html")
     if not S.sklep_ma_produkty():
         puste.add("sklep.html")
+    daty_zmian = daty_zmian_stron(STRONY_HTML)
     def wpis(s_):
         ext = DODATKI_SEO.get(s_, {})
-        data = ext.get("data") or DZIS.isoformat()
+        data = ext.get("data") or daty_zmian.get(s_) or DZIS.isoformat()
         obrazy = "".join(f"<image:image><image:loc>{baza}{o}</image:loc></image:image>" for o in ext.get("obrazy", []) if o)
         return (f"  <url><loc>{adres_pelny(s_)}</loc><lastmod>{data[:10]}</lastmod>"
                 f"<priority>{waga.get(s_, '0.5')}</priority>{obrazy}</url>\n")
