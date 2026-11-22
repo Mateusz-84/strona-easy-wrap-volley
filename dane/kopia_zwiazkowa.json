@@ -52,7 +52,7 @@
   }
  },
  "seniorki": {
-  "pobrano": "2026-11-22T16:13",
+  "pobrano": "2026-11-22T22:42",
   "pzps_lista": [
    {
     "data": "2026-09-26",
@@ -281,15 +281,15 @@
     },
     {
      "lp": 3,
-     "male_minus": 765,
-     "male_plus": 808,
-     "mecze": 9,
+     "male_minus": 814,
+     "male_plus": 884,
+     "mecze": 10,
      "nasz": false,
      "nazwa": "TPS Bielsk Podlaski",
-     "pkt": 19,
+     "pkt": 22,
      "sety_minus": 14,
-     "sety_plus": 22,
-     "zwyciestwa": 7
+     "sety_plus": 25,
+     "zwyciestwa": 8
     },
     {
      "lp": 4,
@@ -377,13 +377,13 @@
     },
     {
      "lp": 11,
-     "male_minus": 750,
-     "male_plus": 678,
-     "mecze": 9,
+     "male_minus": 826,
+     "male_plus": 727,
+     "mecze": 10,
      "nasz": false,
      "nazwa": "MUKS Krótka",
      "pkt": 9,
-     "sety_minus": 21,
+     "sety_minus": 24,
      "sety_plus": 12,
      "zwyciestwa": 2
     },
@@ -748,6 +748,12 @@
      "gosc": "MAPEI BARYCZ Janków Przygodzki",
      "gospodarz": "MOS Wola AZS Warszawa",
      "wynik": "0:3"
+    },
+    {
+     "data": "2026-11-21",
+     "gosc": "MUKS Krótka",
+     "gospodarz": "TPS Bielsk Podlaski",
+     "wynik": "3:0"
     },
     {
      "data": "2026-11-21",
