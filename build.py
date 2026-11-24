@@ -2145,7 +2145,10 @@ def newsy_z_fb(posty, kategoria):
     """Posty z FB → wpisy aktualności (tytuł, zajawka, treść, zdjęcie, link do posta)."""
     nazwy = [s["nazwa"] for s in C.SPONSORZY.values()]
     wynik, adresy = [], set()
+    ukryte = {str(x).split("_")[-1] for x in C.POSTY_FB.get("ukryj", [])}
     for post in posty:
+        if str(post.get("id", "")).split("_")[-1] in ukryte:
+            continue                                  # post schowany ręcznie w content.py
         opis = zrodla.oczysc_opis(post.get("opis"), nazwy, C.POSTY_FB.get("usun_hashtagi", True))
         tytul, tresc, zajawka = zrodla.podziel_post(opis)
         if not tytul:

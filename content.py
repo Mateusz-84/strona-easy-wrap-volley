@@ -98,6 +98,10 @@ POSTY_FB = {
     "godziny": [2, 4, 7, 9, 12, 14, 16, 18, 22],  # o której sprawdzać nowe posty (czas polski)
     "ile": 12,                          # ile ostatnich postów pokazywać
     "usun_hashtagi": True,              # hashtagi na końcu opisu nie trafiają na stronę
+    # Posty z FB, których NIE pokazywać na stronie (numer posta = koniec linku do posta na FB)
+    "ukryj": [
+        "101162122310332_1153563727060994",   # „FORTIS GO MVP MECZU!” – dubel posta „FortisGO Zdrowa Energia MVP meczu!” (22.11.2026)
+    ],
     # "strona" = fragment nazwy strony na Facebooku – po nim strona rozpoznaje, który token jest czyj
     # "id" = numer strony na Facebooku (potrzebny, gdy dostęp do strony jest przez konto firmowe Meta)
     "druzyna":  {"kategoria": "Seniorki", "strona": "Easy Wrap Volley", "id": "101162122310332"},
