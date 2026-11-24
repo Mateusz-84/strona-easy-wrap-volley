@@ -52,7 +52,7 @@
   }
  },
  "seniorki": {
-  "pobrano": "2026-11-24T11:50",
+  "pobrano": "2026-11-24T21:15",
   "pzps_lista": [
    {
     "data": "2026-09-26",
@@ -155,8 +155,8 @@
    },
    {
     "data": "2026-12-05",
-    "godzina": null,
-    "godzina_pewna": false,
+    "godzina": "18:00",
+    "godzina_pewna": true,
     "gosc": "EASY WRAP Volley Kobyłka",
     "gospodarz": "AZS AWF Varsovia",
     "id": "/system/mecz/199/",
