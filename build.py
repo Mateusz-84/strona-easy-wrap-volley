@@ -1502,7 +1502,7 @@ class Budowa:
         return f"""
 <section class="ak-final" aria-labelledby="final-tytul">
   <div class="kontener">
-    <h2 class="ak-final__tytul" id="final-tytul">Pierwszy trening jest na nas</h2>
+    <h2 class="ak-final__tytul" id="final-tytul">Trening próbny gratis</h2>
     <p class="ak-final__tekst">Wtorek albo czwartek, 16:15, hala przy PSP nr 3 w Kobyłce. Córka przychodzi, gra, a potem sama decyduje,
     czy chce zostać. Ty niczego nie płacisz i niczego nie podpisujesz.</p>
     <div class="ak-przyciski"><a class="btn btn--ak" href="{cel}">{e(cta)}</a></div>
