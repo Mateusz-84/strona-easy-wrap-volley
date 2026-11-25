@@ -1485,3 +1485,53 @@ html.szybko :is(.hero,.ak-hero,.wybor) *:not(.sw):not(.sw *){animation-delay:0s!
 @media (min-width:1024px){.menu__app{display:none!important}}
 .aplikacja-ios__dol{font-size:14px;color:#5B6578;margin:6px 0 0}
 .licznik-wysw__mies{letter-spacing:.02em}
+
+/* Akademia – korzyści, wezwania do zapisu, formularz, sekcja przed stopką, strony lokalne */
+.ak-hero__tel{margin:14px 0 0;font-size:18px}
+.ak-hero__tel a{color:inherit;font-weight:700}
+.ak-hero__male{margin:8px 0 0;font-size:15px;opacity:.85}
+.ak-korzysci{list-style:none;margin:0;padding:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.ak-korzysc{background:#EAF2FE;border-radius:20px;padding:20px 22px;border-left:6px solid var(--ak-zolty,#FFC629)}
+.ak-korzysc h3{font-size:26px;line-height:1.05;color:var(--ak-ciemny,#0E3C8C);margin:0 0 6px}
+.ak-korzysc p{margin:0;font-size:16.5px;line-height:1.5}
+.ak-korzysci__dopisek{font-size:19px;font-weight:600;color:var(--ak-ciemny,#0E3C8C);margin:22px 0 10px}
+.ak-cta{background:linear-gradient(135deg,#0E3C8C,#1C6FD1);color:#fff;padding:34px 0}
+.ak-cta__tytul{font-family:var(--font-naglowki);font-size:clamp(30px,5vw,44px);line-height:1.05;margin:0 0 8px;color:#fff}
+.ak-cta__tekst{font-size:18px;max-width:60ch;margin:0 0 10px}
+.ak-cta .btn--obrys{color:#fff;border-color:rgba(255,255,255,.7)}
+.ak-zapis{display:grid;gap:22px;align-items:start}
+@media (min-width:960px){.ak-zapis{grid-template-columns:1fr 1.15fr;gap:40px}}
+.ak-form{background:#fff;border-radius:22px;padding:24px 22px;box-shadow:0 10px 30px rgba(14,60,140,.10)}
+.ak-form__tytul{font-size:32px;line-height:1.05;color:var(--ak-ciemny,#0E3C8C);margin:0 0 6px}
+.ak-form__wstep{margin:0 0 16px;color:var(--tekst-szary)}
+.ak-form__pola{display:grid;gap:14px}
+@media (min-width:640px){.ak-form__pola{grid-template-columns:1fr 1fr}.ak-form__pole--szer{grid-column:1/-1}}
+.ak-form__pole{display:flex;flex-direction:column;gap:6px;font-weight:600;font-size:16px}
+.ak-form__pole input,.ak-form__pole textarea{font:inherit;font-weight:400;font-size:17px;padding:12px 14px;border:2px solid #C9D8EE;border-radius:12px;background:#fff;color:inherit;width:100%;box-sizing:border-box}
+.ak-form__pole input:focus,.ak-form__pole textarea:focus{outline:3px solid rgba(28,111,209,.35);border-color:#1C6FD1}
+.ak-form [aria-invalid="true"]{border-color:#C62828}
+.ak-form__blad{color:#C62828;font-weight:600;font-size:15px}
+.ak-form__zgoda{display:flex;gap:10px;align-items:flex-start;margin:16px 0;font-size:14.5px;line-height:1.45;flex-wrap:wrap}
+.ak-form__zgoda input{width:22px;height:22px;flex:0 0 auto;margin-top:1px;accent-color:#1C6FD1}
+.ak-form__zgoda > span:first-of-type{flex:1;min-width:0}
+.ak-form__zgoda .ak-form__blad{width:100%}
+.ak-form__wyslij{width:100%;justify-content:center;font-size:20px;min-height:56px}
+.ak-form__wyslij[disabled]{opacity:.6;cursor:wait}
+.ak-form__obietnica{margin:12px 0 0;font-weight:600;color:var(--ak-ciemny,#0E3C8C);text-align:center}
+.ak-form__status{margin:8px 0 0;text-align:center;font-weight:600}
+.ak-form__status:empty{display:none}
+.ak-form-dziekujemy{background:#E5F4E4;border-radius:22px;padding:26px 22px;outline:none}
+.ak-form-dziekujemy h3{font-size:32px;color:#1B5E20;margin:0 0 8px}
+.ak-final{background:var(--ak-ciemny,#0E3C8C);color:#fff;padding:56px 0;text-align:center}
+.ak-final__tytul{font-size:clamp(40px,7vw,64px);color:#fff;margin:0 0 12px}
+.ak-final__tekst{font-size:19px;max-width:56ch;margin:0 auto 18px}
+.ak-final .ak-przyciski{justify-content:center}
+.ak-final__kontakt{margin:16px 0 0;font-size:17px}
+.ak-final a:not(.btn){color:var(--zolty,#FFC629)}
+.ak-final__miasta{margin:10px 0 0;font-size:15px;opacity:.9}
+.ak-hero--lokalna .ak-opis{max-width:60ch}
+.ak-lokalna{display:grid;gap:26px}
+@media (min-width:960px){.ak-lokalna{grid-template-columns:repeat(3,1fr)}}
+.ak-lokalna__blok h2{font-size:32px;line-height:1.05;color:var(--ak-ciemny,#0E3C8C);margin:0 0 8px}
+.ak-lokalna__blok p,.ak-lokalna__blok li{font-size:17px;line-height:1.55}
+.ak-lokalna__blok .ak-kroki li{padding:12px 12px 12px 64px}

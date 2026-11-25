@@ -461,11 +461,11 @@ MENU_AKADEMII = [("o-akademii", "O Akademii"), ("cennik", "Cennik"), ("plan", "P
                  ("zapisy", "Zapisy"), ("aktualnosci", "Aktualności"), ("kontakt", "Kontakt")]
 
 
-def uklad_akademii(tytul, opis, tresc, p, wersja, aktualnosci=False):
+def uklad_akademii(tytul, opis, tresc, p, wersja, aktualnosci=False, kotwice=None):
     """Część AKADEMII SIATKÓWKI VOLLEY: własne logo, menu, stopka i tylko Facebook.
     p = "" dla akademia.html, "../" dla podstron (np. aktualności Akademii)."""
     A = C.AKADEMIA
-    k_ = "" if not p else f"{p}akademia.html"      # kotwice prowadzą do strony głównej Akademii
+    k_ = kotwice if kotwice is not None else ("" if not p else f"{p}akademia.html")   # kotwice → strona główna Akademii
     menu = "".join(f'<li><a href="{k_}#{k}">{e(n)}</a></li>' for k, n in MENU_AKADEMII
                    if k != "aktualnosci" or aktualnosci)
     logo = (f'<img src="{p}img/{e(A["logo"])}" alt="" width="52" height="52">' if jest_plik(A.get("logo")) else "")
@@ -501,8 +501,11 @@ def uklad_akademii(tytul, opis, tresc, p, wersja, aktualnosci=False):
       <div><h2>Kontakt</h2><p>{kontakt}</p></div>
       <div><h2>Obserwuj</h2><ul class="stopka__social">{social_linki("stopka", True, {"facebook": A.get("facebook")}, "Akademii")}</ul></div>
       <div><h2>Na skróty</h2><ul>
-        <li><a href="{k_}#zapisy">Zapisy</a></li>
+        <li><a href="{k_}#zapisy">Zapisy na trening próbny</a></li>
         <li><a href="{k_}#ochrona">Standardy ochrony małoletnich</a></li>
+        {"".join(f'<li><a href="{p}siatkowka-dla-dzieci-{k}.html">Siatkówka dla dzieci – {n}</a></li>' for k, n in
+                 [("kobylka", "Kobyłka"), ("wolomin", "Wołomin"), ("marki", "Marki"), ("zielonka", "Zielonka")]
+                 if k in (A.get("strony_lokalne") or []))}
         <li><a href="{p}{START_DRUZYNY}">Easy Wrap Volley Kobyłka →</a></li></ul></div>
     </div>
     {APLIKACJA_HTML}{przyjaciele_html()}<p class="stopka__lokalnie">{TEKST_LOKALNY}</p>

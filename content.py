@@ -448,7 +448,14 @@ AKADEMIA = {
     "grupy_klasy": [
         {"klasy": [3, 4, 5, 6], "nazwa": "Dziewczęta, klasy 3–6 SP"},
     ],
-    "formularz_google": "https://forms.gle/Wux1GhVqWcNHwuXZ6",   # formularz zgłoszeń (z posta o naborze na FB)
+    "formularz_google": "https://forms.gle/Wux1GhVqWcNHwuXZ6",   # stary formularz – używany tylko, gdy "zapis_email" = None
+    # Formularz zapisu na trening próbny – NA STRONIE (5 pól, bez Google Forms). Zgłoszenie przychodzi e-mailem
+    # na ten adres przez darmowy serwis FormSubmit (formsubmit.co). Przy PIERWSZYM zgłoszeniu FormSubmit wyśle
+    # na ten adres wiadomość „Action required: Activate Form” – trzeba raz kliknąć „Activate Form”.
+    "zapis_email": "akademia@volleykobylka.pl",
+    "cta": "Zapisz dziecko na darmowy trening próbny",      # jeden napis na wszystkich przyciskach zapisu
+    # Strony lokalne (SEO): siatkowka-dla-dzieci-<adres>.html – teksty w build.py (ak_strony_lokalne)
+    "strony_lokalne": ["kobylka", "wolomin", "marki", "zielonka"],
     "zdjecie": None,            # zdjęcie do nagłówka, np. "akademia/hero.webp"
     # Grupy – DO UZUPEŁNIENIA. Pusta lista = sekcja się nie pokazuje.
     #   Wzór: {"nazwa": "Mini Volley", "wiek": "7–10 lat", "opis": "Zabawa z piłką i pierwsze odbicia."},

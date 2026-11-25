@@ -264,7 +264,7 @@ def dane_strukturalne(sciezka):
                             for t in A.get("trenerzy", [])] or None,
                  "makesOffer": [{"@type": "Offer", "name": "Siatkówka w Kobyłce dla dzieci (dziewczęta) – " + c["co"],
                                  "price": re.sub(r"[^0-9]", "", c["cena"].split("/")[0]), "priceCurrency": "PLN",
-                                 "url": A.get("formularz_google") or baza + "akademia.html#zapisy",
+                                 "url": baza + "akademia.html#zapisy" if A.get("zapis_email") else (A.get("formularz_google") or baza + "akademia.html#zapisy"),
                                  "priceSpecification": {"@type": "UnitPriceSpecification",
                                                         "price": re.sub(r"[^0-9]", "", c["cena"].split("/")[0]),
                                                         "priceCurrency": "PLN", "unitText": "miesiąc"}}
@@ -1157,7 +1157,9 @@ class Budowa:
                          '<p>Godziny treningów dopasowujemy do grup po zapisie. Napisz do nas – odpowiemy z wolnymi miejscami i godzinami.</p></div>')
         temat = quote("Zapis do Akademii Siatkówki Volley")
         mail = (A.get("koordynator") or {}).get("email") or C.KLUB["email"]
-        if A.get("formularz_google"):
+        if A.get("zapis_email"):
+            formularz = self.ak_formularz(A, "Akademia – strona główna")
+        elif A.get("formularz_google"):
             link = A["formularz_google"]
             osadz = link + ("&" if "?" in link else "?") + "embedded=true"
             formularz = f"""
@@ -1207,31 +1209,68 @@ class Budowa:
 </section>""" if na else "")
         mapa = C.HALA_DOMOWA.get("mapa")
         sekcja_grupy = (f'<div class="grupy pojaw">{grupy}</div>' if grupy else "")
+        cta = A.get("cta") or "Zapisz córkę"
+        tr0 = (A.get("trenerzy") or [{}])[0]
+        hero_fakty = "".join(f"<li>{e(x)}</li>" for x in [
+            "Wtorki i czwartki, 16:15–17:45", "Hala przy PSP nr 3, ul. Załuskiego 57",
+            "Prowadzi zawodniczka 2. ligi kobiet" if tr0.get("imie") else None] if x)
+        pytania_ak = self.faq_akademii()
+        sekcja_zapisow = f"""<section class="sekcja ak-sekcja ak-sekcja--zapis" id="zapisy" aria-labelledby="zapisy-tytul">
+  <div class="kontener ak-zapis">
+    <div>
+      <h2 class="ak-h2" id="zapisy-tytul">Zapisy</h2>
+      <ol class="ak-kroki">
+        <li><strong>Wypełnij formularz</strong><span>Imię i klasa córki, Twój telefon i e-mail – to zajmie 30 sekund.</span></li>
+        <li><strong>Oddzwonimy w ciągu 24 godzin</strong><span>Zaproponujemy termin bezpłatnego treningu próbnego.</span></li>
+        <li><strong>Przyjdźcie na trening</strong><span>Umowę podpisujesz dopiero wtedy, gdy córka chce zostać – na miejscu, w hali.</span></li>
+      </ol>
+    </div>
+    <div>
+    {formularz}
+    <div class="formularz__ramka" data-formularz-ramka></div>
+    <details class="ak-rodo" id="rodo">
+      <summary>Kto przetwarza dane ze zgłoszenia? (RODO)</summary>
+      <p>Administratorem danych podanych w zgłoszeniu (dane rodzica i dziecka) jest {e(C.KLUB['nazwa_prawna'])}, {e(C.KLUB['adres'])},
+      e-mail: <a href="mailto:{e(C.KLUB['email'])}">{e(C.KLUB['email'])}</a>. Dane wykorzystujemy, aby odpowiedzieć na zgłoszenie,
+      umówić trening próbny, przydzielić grupę i zawrzeć umowę uczestnictwa (art. 6 ust. 1 lit. b RODO), a także do kontaktu w sprawach zajęć (art. 6 ust. 1 lit. f RODO).
+      {'Zgłoszenie z formularza trafia do nas e-mailem przez serwis FormSubmit (formsubmit.co), który pośredniczy w jego wysłaniu. ' if A.get('zapis_email') else ''}Podanie danych jest dobrowolne, ale bez nich nie umówimy treningu. Jeśli dziecko nie dołączy do zajęć, usuwamy zgłoszenie po zakończeniu sezonu.
+      Masz prawo dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania, sprzeciwu oraz skargi do Prezesa UODO.
+      Więcej: <a href="polityka-prywatnosci.html">Polityka prywatności</a>.</p>
+    </details>
+    </div>
+  </div>
+</section>"""
         tresc = f"""
 <section class="ak-hero" id="o-akademii" aria-labelledby="ak-tytul">
   <div class="kontener ak-hero__uklad">
     <div>
       <p class="ak-nad">Akademia Siatkówki Volley · Kobyłka</p>
       <h1 class="ak-tytul" id="ak-tytul">{e(A['haslo'])}</h1>
-      <p class="ak-opis">{e(A['opis'])}</p>
-      <ul class="ak-fakty">{fakty}</ul>
-      <div class="ak-przyciski"><a class="btn btn--ak" href="#zapisy">Zapisz córkę →</a>
-        <a class="btn btn--obrys btn--jasny" href="#grupa">Darmowy trening próbny</a></div>
+      <p class="ak-opis">Treningi siatkówki dla dziewczynek z klas 3–6. Pierwszy trening jest bezpłatny – córka sprawdzi,
+      czy to sport dla niej, a Ty niczego nie podpisujesz.</p>
+      <ul class="ak-fakty">{hero_fakty}</ul>
+      <div class="ak-przyciski"><a class="btn btn--ak" href="#zapisy">{e(cta)}</a></div>
+      {f'<p class="ak-hero__tel">Wolisz porozmawiać? <a href="tel:{S.tel_link(k["telefon"])}">Zadzwoń: {e(k["telefon"])}</a></p>' if k.get("telefon") else ''}
+      <p class="ak-hero__male">Bez opłat i bez zobowiązań. Wystarczy strój sportowy, buty na halę i woda.</p>
     </div>
     {logo}
   </div>
   {f'<div class="kontener">{sekcja_grupy}</div>' if sekcja_grupy else ''}
 </section>
 
+{self.ak_korzysci()}
+{self.ak_cta(1)}
 {self.ak_dlaczego(A)}
+{sekcja_zapisow}
 {self.ak_wybor_klasy(A)}
 <section class="sekcja ak-sekcja" id="cennik" aria-labelledby="cennik-tytul">
   <div class="kontener">
     <h2 class="ak-h2" id="cennik-tytul">Cennik</h2>
     <ul class="ak-ceny">{cennik}</ul>
-    <p class="ak-przypis">Opłata miesięczna.</p>
+    <p class="ak-przypis">Opłata miesięczna. Pierwszy trening jest bezpłatny.</p>
   </div>
 </section>
+{self.ak_cta(2)}
 
 <section class="sekcja ak-sekcja ak-sekcja--biala" id="plan" aria-labelledby="plan-tytul">
   <div class="kontener">
@@ -1264,30 +1303,9 @@ class Budowa:
   </div>
 </section>
 
-<section class="sekcja ak-sekcja" id="zapisy" aria-labelledby="zapisy-tytul">
-  <div class="kontener">
-    <h2 class="ak-h2" id="zapisy-tytul">Zapisy</h2>
-    <ol class="ak-kroki">
-      <li><strong>{'Wypełnij formularz' if A.get('formularz_google') else 'Wyślij zgłoszenie'}</strong><span>Imię i rok urodzenia córki, kontakt do rodzica.</span></li>
-      <li><strong>Odpowiemy</strong><span>Potwierdzimy miejsce i termin pierwszego treningu.</span></li>
-      <li><strong>Przyjdź na trening</strong><span>Umowę uczestnictwa podpisujemy na miejscu, w hali.</span></li>
-    </ol>
-    {formularz}
-    <div class="formularz__ramka" data-formularz-ramka></div>
-    <details class="ak-rodo">
-      <summary>Kto przetwarza dane ze zgłoszenia? (RODO)</summary>
-      <p>Administratorem danych podanych w zgłoszeniu (dane rodzica i dziecka) jest {e(C.KLUB['nazwa_prawna'])}, {e(C.KLUB['adres'])},
-      e-mail: <a href="mailto:{e(C.KLUB['email'])}">{e(C.KLUB['email'])}</a>. Dane wykorzystujemy, aby odpowiedzieć na zgłoszenie,
-      przydzielić grupę i zawrzeć umowę uczestnictwa (art. 6 ust. 1 lit. b RODO), a także do kontaktu w sprawach zajęć (art. 6 ust. 1 lit. f RODO).
-      Podanie danych jest dobrowolne, ale bez nich nie zapiszemy dziecka. Jeśli dziecko nie dołączy do zajęć, usuwamy zgłoszenie po zakończeniu sezonu.
-      Masz prawo dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania, sprzeciwu oraz skargi do Prezesa UODO.
-      Więcej: <a href="polityka-prywatnosci.html">Polityka prywatności</a>.</p>
-    </details>
-  </div>
-</section>
+{S.faq_html(pytania_ak, "Pytania", "rodziców", "faq--akademia")}
+{self.ak_cta(3)}
 
-{sekcja_aktualnosci}
-{self.ak_poradnik_sekcja()}
 <section class="sekcja ak-sekcja ak-sekcja--biala" id="kontakt" aria-labelledby="kontakt-tytul">
   <div class="kontener ak-kontakt">
     <div>
@@ -1320,14 +1338,15 @@ class Budowa:
       {dla_dzieci}
     </div>
   </div>
-</section>"""
-        pytania_ak = self.faq_akademii()
+</section>
+{sekcja_aktualnosci}
+{self.ak_poradnik_sekcja()}
+{self.ak_finał()}"""
         DODATKI_SEO["akademia.html"] = {"ld": [S.faq_ld(pytania_ak)]}
-        tresc = tresc + S.faq_html(pytania_ak, "Pytania", "rodziców", "faq--akademia")
-        cel_zapisu = (f'href="{e(A["formularz_google"])}" rel="noopener" target="_blank"' if A.get("formularz_google")
-                      else 'href="#zapisy"')
+        cel_zapisu = (f'href="{e(A["formularz_google"])}" rel="noopener" target="_blank"'
+                      if A.get("formularz_google") and not A.get("zapis_email") else 'href="#zapisy"')
         tel = (A.get("koordynator") or {}).get("telefon")
-        tresc += (f'<nav class="ak-pasek" aria-label="Szybkie zapisy"><a class="ak-pasek__zapis" {cel_zapisu}>Zapisz córkę →</a>'
+        tresc += (f'<nav class="ak-pasek" aria-label="Szybkie zapisy"><a class="ak-pasek__zapis" {cel_zapisu}>Darmowy trening próbny</a>'
                   + (f'<a class="ak-pasek__tel" href="tel:{S.tel_link(tel)}" aria-label="Zadzwoń: {e(tel)}">'
                      '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>Zadzwoń</a>'
                      if tel else '<a class="ak-pasek__plan" href="#plan">Plan treningów</a>')
@@ -1338,6 +1357,7 @@ class Budowa:
                                 "Pierwszy trening za darmo, zapisy online.",
                                 tresc, p, self.wersja, aktualnosci=bool(na))
         zapisz("akademia.html", html)
+        self.ak_strony_lokalne()
 
         # Podstrony aktualności Akademii (z postów FB)
         herb_ak = A.get("logo") or "favicon.svg"
@@ -1382,15 +1402,29 @@ class Budowa:
     def ak_dlaczego(self, A):
         k = A.get("koordynator") or {}
         tr = (A.get("trenerzy") or [{}])[0]
+        cennik = A.get("cennik") or []
+        ceny = " albo ".join(f'{e(c["cena"].replace(" / mies.", ""))} {"miesięcznie za " if i == 0 else "za "}{e(c["co"].replace(" w tygodniu", ""))}'
+                             for i, c in enumerate(cennik))
         kafle = [
-            ("dom", "Blisko domu", "Treningi w Kobyłce, w hali przy PSP nr 3 – bez dowożenia córki do innego miasta."),
-            ("serce", "Tylko dla dziewcząt", "Grupa dziewcząt z klas 3–6 SP. Trening dopasowany do ich wieku i poziomu."),
-            ("cena", "Jasny cennik", "Ceny podajemy wprost na stronie – wiesz, ile zapłacisz, zanim zapiszesz córkę."),
-            ("pilka", "Trenerka z 2. ligi",
-             f'Zajęcia prowadzi {e(tr.get("imie", ""))} {e(tr.get("nazwisko", ""))} – zawodniczka drużyny grającej w 2. lidze kobiet.'
-             if tr.get("imie") else "Zajęcia prowadzą osoby związane z drużyną grającą w 2. lidze kobiet."),
-            ("tarcza", "Bezpiecznie", 'Stosujemy <a href="#ochrona">Standardy Ochrony Małoletnich</a> – znasz zasady, które chronią Twoje dziecko.'),
-            ("start", "Darmowy trening próbny", "Pierwszy trening jest bezpłatny – córka sprawdzi, czy siatkówka jej się podoba."),
+            ("tarcza", "Bezpieczeństwo na pierwszym miejscu",
+             'Klub stosuje <a href="#ochrona">Standardy Ochrony Małoletnich</a>. Każda osoba pracująca z dziećmi ma aktualne '
+             "zaświadczenie o niekaralności i jest sprawdzona w Rejestrze Sprawców Przestępstw na Tle Seksualnym."),
+            ("pilka", "Trenuje z zawodniczką 2. ligi",
+             (f'Zajęcia prowadzi {e(tr.get("imie", ""))} {e(tr.get("nazwisko", ""))}, rozgrywająca Easy Wrap Volley Kobyłka. '
+              "Grała m.in. w AZS UMCS Lublin, Nike Węgrów i WTS KDBS Włocławek.")
+             if tr.get("imie") == "Natalia" else
+             (f'Zajęcia prowadzi {e(tr.get("imie", ""))} {e(tr.get("nazwisko", ""))} – zawodniczka drużyny grającej w 2. lidze kobiet.'
+              if tr.get("imie") else "Zajęcia prowadzą osoby związane z drużyną grającą w 2. lidze kobiet.")),
+            ("start", "Najpierw próba, potem decyzja",
+             "Pierwszy trening jest bezpłatny. Umowę podpisujesz dopiero wtedy, gdy córka chce zostać."),
+            ("cena", "Jasne zasady płatności",
+             (f"{ceny} w tygodniu. " if ceny else "") +
+             "Przy chorobie trwającej cały miesiąc (z zaświadczeniem) płacisz 50 zł, a córka zachowuje miejsce w grupie."),
+            ("serce", "Grupa tylko dla dziewcząt",
+             "W grupie trenują dziewczynki z klas 3–6, w podobnym wieku. Łatwiej o przyjaźnie i łatwiej o pewność siebie."),
+            ("dom", "Klub z prawdziwą drużyną",
+             "Klub Sportowy Volley działa w Kobyłce od 2021 roku, a jego pierwsza drużyna gra w 2. lidze kobiet. "
+             "Na mecze w hali przy Załuskiego 57 wstęp jest wolny – córka może kibicować swojej trenerce."),
         ]
         ikony = {
             "dom": '<path d="M3 11.5 12 4l9 7.5M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/>',
@@ -1406,10 +1440,263 @@ class Budowa:
         return f"""
 <section class="sekcja ak-sekcja ak-sekcja--biala" id="dlaczego" aria-labelledby="dlaczego-tytul">
   <div class="kontener">
-    <h2 class="ak-h2" id="dlaczego-tytul">Dlaczego Akademia Volley</h2>
+    <h2 class="ak-h2" id="dlaczego-tytul">Córka w dobrych rękach</h2>
     <ul class="ak-why">{html}</ul>
   </div>
 </section>"""
+
+    def ak_korzysci(self):
+        """Co zyska córka – 6 kafelków pod pierwszym ekranem."""
+        cta = C.AKADEMIA.get("cta") or "Zapisz córkę"
+        kafle = [
+            ("Pewność siebie", "Każde udane odbicie i każdy punkt dla drużyny to dowód, że „potrafię”."),
+            ("Przyjaciółki z drużyny", "W siatkówce nikt nie gra sam – dziewczynki uczą się wspierać i cieszyć razem."),
+            ("Zdrowy ruch zamiast ekranu", "Dwa razy w tygodniu po 90 minut ruchu: bieganie, skoki, koordynacja, mocne kości."),
+            ("Lepsza koncentracja w szkole", "Trening uczy skupienia na zadaniu i dobrze robi na głowę po lekcjach."),
+            ("Umiejętność przegrywania i podnoszenia się", "Każdy mecz uczy, że po błędzie gra się dalej."),
+            ("Prawdziwe wzory do naśladowania", "Trenerka gra w 2. lidze, a dziewczynki mogą oglądać jej mecze z trybun."),
+        ]
+        html = "".join(f'<li class="ak-korzysc"><h3>{e(t)}</h3><p>{e(o)}</p></li>' for t, o in kafle)
+        return f"""
+<section class="sekcja ak-sekcja ak-sekcja--biala" id="korzysci" aria-labelledby="korzysci-tytul">
+  <div class="kontener">
+    <h2 class="ak-h2" id="korzysci-tytul">Co zyska Twoja córka</h2>
+    <p class="ak-wstep">Więcej niż sport – co córka wyniesie z treningu.</p>
+    <ul class="ak-korzysci">{html}</ul>
+    <p class="ak-korzysci__dopisek">Nie musi umieć grać. Uczymy od zera – od pierwszych odbić po grę w minisiatkówkę.</p>
+    <div class="ak-przyciski"><a class="btn btn--ak" href="#zapisy">{e(cta)}</a></div>
+  </div>
+</section>"""
+
+    def ak_cta(self, nr, p=""):
+        """Pas z wezwaniem do zapisu w środku strony (1 – po korzyściach, 2 – po cenniku, 3 – po pytaniach)."""
+        A = C.AKADEMIA
+        cta = A.get("cta") or "Zapisz córkę"
+        tel = (A.get("koordynator") or {}).get("telefon")
+        cel = f"{p}akademia.html#zapisy" if p else "#zapisy"
+        teksty = {
+            1: ("Niech córka sama sprawdzi, czy siatkówka jej się spodoba",
+                "Pierwszy trening jest bezpłatny. Przyjdźcie we wtorek lub czwartek o 16:15 – trenerka pomoże córce "
+                "od pierwszej minuty, nawet jeśli nigdy nie miała piłki w rękach."),
+            2: ("Najpierw darmowy trening, potem decyzja",
+                "Nie płacisz za pierwsze zajęcia i nie podpisujesz umowy przed treningiem. Jeśli córce się spodoba, "
+                "wszystko załatwiamy na miejscu, w hali."),
+            3: ("Masz jeszcze pytanie? Zadzwoń albo zapisz córkę – oddzwonimy", ""),
+        }
+        tytul, tekst = teksty[nr]
+        tel_html = (f'<a class="btn btn--obrys btn--jasny" href="tel:{S.tel_link(tel)}">Zadzwoń: {e(tel)}</a>'
+                    if tel and nr == 3 else "")
+        return (f'<section class="ak-cta" aria-label="Zapis na trening próbny"><div class="kontener">'
+                f'<p class="ak-cta__tytul">{e(tytul)}</p>' + (f'<p class="ak-cta__tekst">{e(tekst)}</p>' if tekst else "") +
+                f'<div class="ak-przyciski"><a class="btn btn--ak" href="{cel}">{e(cta)}</a>{tel_html}</div></div></section>')
+
+    def ak_finał(self, p=""):
+        """Sekcja przed stopką – ostatnie wezwanie do zapisu."""
+        A = C.AKADEMIA
+        cta = A.get("cta") or "Zapisz córkę"
+        k = A.get("koordynator") or {}
+        cel = f"{p}akademia.html#zapisy" if p else "#zapisy"
+        kontakt = " · ".join(x for x in [
+            f'Zadzwoń: <a href="tel:{S.tel_link(k["telefon"])}">{e(k["telefon"])}</a>' if k.get("telefon") else "",
+            f'Napisz: <a href="mailto:{e(k["email"])}">{e(k["email"])}</a>' if k.get("email") else ""] if x)
+        return f"""
+<section class="ak-final" aria-labelledby="final-tytul">
+  <div class="kontener">
+    <h2 class="ak-final__tytul" id="final-tytul">Pierwszy trening jest na nas</h2>
+    <p class="ak-final__tekst">Wtorek albo czwartek, 16:15, hala przy PSP nr 3 w Kobyłce. Córka przychodzi, gra, a potem sama decyduje,
+    czy chce zostać. Ty niczego nie płacisz i niczego nie podpisujesz.</p>
+    <div class="ak-przyciski"><a class="btn btn--ak" href="{cel}">{e(cta)}</a></div>
+    {f'<p class="ak-final__kontakt">Wolisz zapytać? {kontakt}</p>' if kontakt else ''}
+    <p class="ak-final__miasta">Trenujemy dziewczynki z
+      <a href="{p}siatkowka-dla-dzieci-kobylka.html">Kobyłki</a>, <a href="{p}siatkowka-dla-dzieci-wolomin.html">Wołomina</a>,
+      <a href="{p}siatkowka-dla-dzieci-marki.html">Marek</a> i <a href="{p}siatkowka-dla-dzieci-zielonka.html">Zielonki</a>.</p>
+  </div>
+</section>"""
+
+    def ak_formularz(self, A, zrodlo, p=""):
+        """Formularz zapisu na trening próbny (5 pól). Wysyłka przez FormSubmit; zgłoszenie przychodzi e-mailem."""
+        cel = A["zapis_email"]
+        baza = C.KLUB["adres_strony"].rstrip("/") + "/"
+        cta = A.get("cta") or "Zapisz córkę"
+        polityka = f"{p}polityka-prywatnosci.html"
+        return f"""
+<form class="ak-form" action="https://formsubmit.co/{e(cel)}" method="POST" data-zapis
+      data-endpoint="https://formsubmit.co/ajax/{e(cel)}" novalidate>
+  <input type="hidden" name="_subject" value="Trening próbny – nowe zgłoszenie ({e(zrodlo)})">
+  <input type="hidden" name="_template" value="table">
+  <input type="hidden" name="_next" value="{baza}akademia.html?zgloszenie=wyslane#zapisy">
+  <input type="hidden" name="Skąd zgłoszenie" value="{e(zrodlo)}">
+  <input type="text" name="_honey" class="ukryte" tabindex="-1" autocomplete="off" aria-hidden="true">
+  <h3 class="ak-form__tytul">Zapisz córkę na darmowy trening próbny</h3>
+  <p class="ak-form__wstep">Zostaw kontakt – zaproponujemy termin i odpowiemy na Twoje pytania. Wypełnienie zajmie 30 sekund.</p>
+  <div class="ak-form__pola">
+    <label class="ak-form__pole"><span>Imię córki *</span>
+      <input type="text" name="Imię dziecka" required maxlength="40" autocomplete="off" placeholder="np. Zosia" data-blad="Wpisz imię córki."></label>
+    <label class="ak-form__pole"><span>Klasa lub wiek *</span>
+      <input type="text" name="Klasa lub wiek" required maxlength="40" placeholder="np. 4 klasa / 10 lat" data-blad="Wpisz klasę albo wiek – dobierzemy grupę."></label>
+    <label class="ak-form__pole"><span>Twój telefon *</span>
+      <input type="tel" name="Telefon rodzica" required maxlength="20" autocomplete="tel" inputmode="tel" placeholder="np. 600 123 456" data-blad="Sprawdź numer – powinien mieć 9 cyfr."></label>
+    <label class="ak-form__pole"><span>Twój e-mail *</span>
+      <input type="email" name="email" required maxlength="80" autocomplete="email" placeholder="np. anna@poczta.pl" data-blad="Sprawdź adres e-mail."></label>
+    <label class="ak-form__pole ak-form__pole--szer"><span>Co chcesz nam przekazać? (opcjonalnie)</span>
+      <textarea name="Dodatkowe informacje" rows="3" maxlength="800" placeholder="np. preferowany dzień, doświadczenie, zdrowie"></textarea></label>
+  </div>
+  <label class="ak-form__zgoda"><input type="checkbox" name="Zgoda na kontakt" value="tak" required data-blad="Zaznacz zgodę na kontakt.">
+    <span>Zgadzam się na kontakt w sprawie treningu próbnego. Administratorem danych jest {e(C.KLUB['nazwa_prawna'])}, {e(C.KLUB['adres'])}.
+    <a href="{polityka}">Więcej o danych</a></span></label>
+  <button class="btn btn--ak ak-form__wyslij" type="submit">{e(cta)}</button>
+  <p class="ak-form__obietnica">Oddzwonimy lub odpiszemy w ciągu 24 godzin i zaproponujemy termin bezpłatnego treningu próbnego.</p>
+  <p class="ak-form__status" role="status" aria-live="polite"></p>
+</form>
+<div class="ak-form-dziekujemy" hidden tabindex="-1">
+  <h3>Dziękujemy! Zgłoszenie dotarło.</h3>
+  <p>Oddzwonimy lub odpiszemy w ciągu 24 godzin i zaproponujemy termin bezpłatnego treningu próbnego.</p>
+  <p>Na trening weźcie: strój sportowy, buty halowe z jasną podeszwą, butelkę wody i gumkę do włosów.</p>
+</div>"""
+
+    def ak_strony_lokalne(self):
+        """Strony lokalne Akademii (SEO): siatkowka-dla-dzieci-<miasto>.html – każda z formularzem zapisu."""
+        A = C.AKADEMIA
+        if not A.get("strony_lokalne"):
+            return
+        baza = C.KLUB["adres_strony"].rstrip("/") + "/"
+        cta = A.get("cta") or "Zapisz córkę"
+        tel = (A.get("koordynator") or {}).get("telefon")
+        cennik = A.get("cennik") or []
+        ceny = " lub ".join(f'{c["cena"].replace(" / mies.", "/mies.")} za {c["co"]}' for c in cennik)
+        hala = "hali przy PSP nr 3 w Kobyłce, ul. ks. Marcina Załuskiego 57"
+        cel_mapy = quote("ul. ks. Marcina Załuskiego 57, 05-230 Kobyłka")
+        def trasa(skad, dop):
+            return (f'<p><a class="ak-sekcja__link" href="https://www.google.com/maps/dir/?api=1&amp;origin={quote(skad)}'
+                    f'&amp;destination={cel_mapy}" rel="noopener" target="_blank">Wyznacz trasę z {e(dop)} →</a></p>')
+        kroki = ('<ol class="ak-kroki"><li><strong>Wypełnij formularz</strong><span>Albo zadzwoń' +
+                 (f': <a href="tel:{S.tel_link(tel)}">{e(tel)}</a>' if tel else "") + '.</span></li>'
+                 '<li><strong>Oddzwonimy w ciągu 24 godzin</strong><span>Zaproponujemy termin.</span></li>'
+                 '<li><strong>Bezpłatny trening próbny</strong><span>Córka sprawdza, czy siatkówka jej się podoba.</span></li></ol>')
+        bezpiecznie = ("<ul><li>Klub stosuje Standardy Ochrony Małoletnich.</li>"
+                       "<li>Prowadzi zawodniczka 2. ligi kobiet, Natalia Bielińska.</li>"
+                       f"<li>Cennik bez niespodzianek: {e(ceny)}.</li></ul>")
+        strony = {
+            "kobylka": dict(
+                miasto="Kobyłka", miejscownik="Kobyłce",
+                title="Treningi siatkówki dla dziewczynek – Kobyłka | Akademia Volley",
+                opis=f"Zajęcia siatkówki dla dziewczynek z klas 3–6 w Kobyłce: wtorki i czwartki 16:15–17:45, hala przy PSP nr 3. "
+                     "Pierwszy trening za darmo – zapisz córkę.",
+                h1="Treningi siatkówki dla dziewczynek w Kobyłce",
+                wstep="Szukasz zajęć sportowych dla córki w Kobyłce? Akademia Siatkówki Volley prowadzi treningi dla dziewcząt "
+                      f"z klas 3–6 w {hala}. Bez dojazdów do Warszawy – trening jest tuż po szkole, we wtorki i czwartki o 16:15.",
+                sekcje=[("Siatkówka po lekcjach, blisko domu",
+                         "<p>Trening zaczyna się o 16:15, więc córka spokojnie dotrze po lekcjach. Zapraszamy dziewczynki "
+                         "ze wszystkich szkół w Kobyłce, nie tylko z PSP nr 3.</p>"),
+                        ("Trenerka z kobyłkowskiej drużyny",
+                         "<p>Zajęcia prowadzi Natalia Bielińska, rozgrywająca Easy Wrap Volley Kobyłka w 2. lidze kobiet. "
+                         "Na mecze tej drużyny w Kobyłce wstęp jest wolny – córka zobaczy, do czego prowadzi trening.</p>"),
+                        ("Jak zacząć", kroki)],
+                faq=[("Gdzie jest hala?", f"Hala przy PSP nr 3 w Kobyłce, ul. ks. Marcina Załuskiego 57, Kobyłka."),
+                     ("Ile kosztuje?", f"{e(ceny)}. Pierwszy trening jest bezpłatny."),
+                     ("Czy córka musi chodzić do PSP nr 3?", "Nie. Zapraszamy dziewczynki ze wszystkich szkół.")]),
+            "wolomin": dict(
+                miasto="Wołomin", miejscownik="Wołominie",
+                title="Siatkówka dla dzieci Wołomin i okolice – Akademia Volley",
+                opis="Treningi siatkówki dla dziewczynek z klas 3–6 – blisko Wołomina, w Kobyłce. Wtorki i czwartki 16:15–17:45. "
+                     "Pierwszy trening za darmo.",
+                h1="Siatkówka dla dziewczynek z Wołomina",
+                wstep="Mieszkasz w Wołominie i szukasz zajęć, na których córka się wybiega i znajdzie przyjaciółki? "
+                      f"Akademia Siatkówki Volley trenuje dziewczynki z klas 3–6 w sąsiedniej Kobyłce – w {hala}.",
+                sekcje=[("Z Wołomina do hali w Kobyłce",
+                         "<p>Kobyłka sąsiaduje z Wołominem, a trening zaczyna się o 16:15 – zdążycie po lekcjach.</p>"
+                         + trasa("Wołomin", "Wołomina")),
+                        ("Dlaczego warto dojechać do Kobyłki",
+                         "<ul><li>Grupa tylko dla dziewcząt w podobnym wieku.</li>"
+                         "<li>Trenerka gra w 2. lidze kobiet w Easy Wrap Volley Kobyłka.</li>"
+                         f"<li>Jasny cennik: {e(ceny)}.</li>"
+                         "<li>Klub stosuje Standardy Ochrony Małoletnich.</li></ul>"),
+                        ("Jak zacząć", kroki)],
+                faq=[("Czy przyjmujecie dziewczynki z wołomińskich szkół?",
+                      "Tak. W Akademii trenują dziewczynki z różnych szkół i miejscowości."),
+                     ("Czy opłata jest wyższa dla osób spoza Kobyłki?", "Nie. Cennik jest taki sam dla wszystkich."),
+                     ("Ile trwa trening?", "90 minut, dwa razy w tygodniu – we wtorki i czwartki.")]),
+            "marki": dict(
+                miasto="Marki", miejscownik="Markach",
+                title="Siatkówka dla dziewczynek – Marki i okolice | Akademia Volley",
+                opis="Szukasz siatkówki dla córki w Markach? Trenujemy dziewczynki z klas 3–6 w pobliskiej Kobyłce: "
+                     "wt. i czw. 16:15–17:45. Pierwszy trening gratis.",
+                h1="Treningi siatkówki dla dziewczynek z Marek",
+                wstep="Akademia Siatkówki Volley zaprasza dziewczynki z Marek na treningi w Kobyłce. Zajęcia są dla uczennic "
+                      f"klas 3–6, odbywają się we wtorki i czwartki o 16:15 w {hala}.",
+                sekcje=[("Z Marek do hali w Kobyłce",
+                         "<p>Trening zaczyna się o 16:15 i trwa 90 minut.</p>" + trasa("Marki", "Marek")),
+                        ("Dużo gry od pierwszego treningu",
+                         "<p>Córka trenuje z dziewczynkami w podobnym wieku. Uczymy od podstaw: odbicia, ustawienia "
+                         "i minisiatkówki. Doświadczenie nie jest potrzebne.</p>"),
+                        ("Najpierw sprawdźcie, potem decydujcie",
+                         "<p>Pierwszy trening jest bezpłatny i bez zobowiązań. Jeśli córce się spodoba, umowę podpiszecie "
+                         "na miejscu. Jeśli nie – nic nie płacisz.</p>")],
+                faq=[("Czy mogę zapisać córkę tylko na jeden trening w tygodniu?",
+                      next((f'Tak – {e(c["cena"])}' for c in cennik if c["co"].startswith("1 ")), "Tak.")),
+                     ("Czy córka musi umieć grać?", "Nie. Uczymy od zera – wystarczą chęci."),
+                     ("Jak się zapisać?", "Formularz na tej stronie" + (f" lub telefon {e(tel)}" if tel else "") + ".")]),
+            "zielonka": dict(
+                miasto="Zielonka", miejscownik="Zielonce",
+                title="Zajęcia siatkówki dla dzieci – Zielonka i okolice | Akademia Volley",
+                opis="Zajęcia siatkówki dla dziewczynek z Zielonki (klasy 3–6) w pobliskiej Kobyłce. Wtorki i czwartki "
+                     "16:15–17:45. Zapisz córkę na darmowy trening próbny.",
+                h1="Zajęcia siatkówki dla dziewczynek z Zielonki",
+                wstep="Córka lubi ruch i grę w drużynie? Akademia Siatkówki Volley zaprasza dziewczynki z Zielonki z klas 3–6 "
+                      f"na treningi w Kobyłce – we wtorki i czwartki, 16:15–17:45, w {hala}.",
+                sekcje=[("Z Zielonki do hali w Kobyłce",
+                         "<p>Trening zaczyna się o 16:15 i trwa 90 minut.</p>" + trasa("Zielonka", "Zielonki")),
+                        ("Co córka robi na treningu",
+                         "<p>Rozgrzewka, ćwiczenia z piłką, gra w minisiatkówkę. Każdy trening kończy się grą – dziewczynki "
+                         "od początku czują, że są w drużynie.</p>"),
+                        ("Bezpiecznie i przejrzyście", bezpiecznie)],
+                faq=[("Co zabrać na trening?", "Strój sportowy, buty halowe z jasną podeszwą, wodę i gumkę do włosów."),
+                     ("Jak szybko odpowiadacie?", "Oddzwonimy lub odpiszemy w ciągu 24 godzin."),
+                     ("Czy pierwszy trening jest płatny?", "Nie. Pierwszy trening jest bezpłatny i bez zobowiązań.")]),
+        }
+        for klucz in A["strony_lokalne"]:
+            d = strony.get(klucz)
+            if not d:
+                continue
+            sciezka = f"siatkowka-dla-dzieci-{klucz}.html"
+            sekcje = "".join(f'<div class="ak-lokalna__blok"><h2>{e(t)}</h2>{h}</div>' for t, h in d["sekcje"])
+            formularz = self.ak_formularz(A, f"strona lokalna: {d['miasto']}") if A.get("zapis_email") else ""
+            inne = " · ".join(f'<a href="siatkowka-dla-dzieci-{k}.html">{e(strony[k]["miasto"])}</a>'
+                              for k in A["strony_lokalne"] if k != klucz and k in strony)
+            tresc = f"""
+<section class="ak-hero ak-hero--lokalna" aria-labelledby="ak-tytul">
+  <div class="kontener">
+    <p class="ak-nad">Akademia Siatkówki Volley · {e(d['miasto'])}</p>
+    <h1 class="ak-tytul" id="ak-tytul">{e(d['h1'])}</h1>
+    <p class="ak-opis">{e(d['wstep'])}</p>
+    <ul class="ak-fakty"><li>Wtorki i czwartki, 16:15–17:45</li><li>Klasy 3–6 SP</li><li>Pierwszy trening za darmo</li></ul>
+    <div class="ak-przyciski"><a class="btn btn--ak" href="#zapisy">{e(cta)}</a></div>
+  </div>
+</section>
+<section class="sekcja ak-sekcja ak-sekcja--biala"><div class="kontener ak-lokalna">{sekcje}</div></section>
+<section class="sekcja ak-sekcja ak-sekcja--zapis" id="zapisy" aria-labelledby="zapisy-tytul">
+  <div class="kontener ak-zapis">
+    <div><h2 class="ak-h2" id="zapisy-tytul">Zapisy</h2>
+      <p class="ak-wstep">Cennik, plan treningów i trenerka – wszystko o Akademii na <a href="akademia.html">stronie Akademii Siatkówki Volley</a>.</p></div>
+    <div>{formularz}</div>
+  </div>
+</section>
+{S.faq_html(d['faq'], "Pytania", "rodziców", "faq--akademia")}
+{self.ak_finał()}
+<p class="kontener ak-przypis">Siatkówka dla dzieci w okolicy: {inne}</p>"""
+            DODATKI_SEO[sciezka] = {"ld": [
+                {"@context": "https://schema.org", "@type": "SportsActivityLocation",
+                 "name": f"{A['nazwa']} – siatkówka dla dzieci, {d['miasto']}", "url": baza + sciezka,
+                 "description": d["opis"], "sport": "Siatkówka",
+                 "address": {"@type": "PostalAddress", "streetAddress": "ul. ks. Marcina Załuskiego 57",
+                             "postalCode": "05-230", "addressLocality": "Kobyłka", "addressCountry": "PL"},
+                 **({"geo": GEO_HALI} if "GEO_HALI" in globals() else {}),
+                 "areaServed": {"@type": "City", "name": d["miasto"]},
+                 **({"telephone": S.tel_link(tel)} if tel else {}),
+                 "parentOrganization": {"@type": "SportsOrganization", "name": A["nazwa"] + " Kobyłka",
+                                        "url": baza + "akademia.html"}},
+                S.faq_ld(d["faq"])]}
+            zapisz(sciezka, S.uklad_akademii(d["title"], d["opis"], tresc, "", self.wersja, kotwice="akademia.html"))
 
     def ak_wybor_klasy(self, A):
         """„W której klasie jest córka?” – po wyborze klasy pokazuje grupę, dni, godziny, cenę i przyciski."""
@@ -1431,9 +1718,12 @@ class Budowa:
             temat = quote("Trening próbny – Akademia Siatkówki Volley")
             tresc_maila = quote("Dzień dobry,\nchciał(a)bym umówić córkę na darmowy trening próbny.\n\n"
                                 "Imię córki:\nKlasa:\nTelefon do rodzica:\n")
-            przyciski = (f'<a class="btn btn--ak" href="{e(form)}" rel="noopener" target="_blank">Zapisz córkę →</a>' if form else
-                         '<a class="btn btn--ak" href="#zapisy">Zapisz córkę →</a>')
-            przyciski += f'<a class="btn btn--obrys" href="mailto:{e(mail)}?subject={temat}&amp;body={tresc_maila}">Umów trening próbny</a>'
+            if A.get("zapis_email"):
+                przyciski = f'<a class="btn btn--ak" href="#zapisy">{e(A.get("cta") or "Zapisz córkę")}</a>'
+            else:
+                przyciski = (f'<a class="btn btn--ak" href="{e(form)}" rel="noopener" target="_blank">Zapisz córkę →</a>' if form else
+                             '<a class="btn btn--ak" href="#zapisy">Zapisz córkę →</a>')
+                przyciski += f'<a class="btn btn--obrys" href="mailto:{e(mail)}?subject={temat}&amp;body={tresc_maila}">Umów trening próbny</a>'
             if tel:
                 przyciski += f'<a class="btn btn--obrys" href="tel:{S.tel_link(tel)}">Zadzwoń: {e(tel)}</a>'
             panele += (f'<div class="ak-klasa__panel" data-dla="{" ".join(str(x) for x in g["klasy"])}">'
@@ -1469,8 +1759,11 @@ class Budowa:
         cel = quote("ul. ks. Marcina Załuskiego 57, 05-230 Kobyłka")
         miasta = [("Wołomin", "Wołomina"), ("Zielonka", "Zielonki"), ("Marki", "Marek"), ("Radzymin", "Radzymina"),
                   ("Warszawa Targówek", "Warszawy (Targówek)")]
-        linki = "".join(f'<li><a href="https://www.google.com/maps/dir/?api=1&amp;origin={quote(m)}&amp;destination={cel}" '
-                        f'rel="noopener" target="_blank">z {e(d)} →</a></li>' for m, d in miasta)
+        lokalne = {"Wołomin": "wolomin", "Zielonka": "zielonka", "Marki": "marki"}
+        linki = "".join(
+            (f'<li><a href="siatkowka-dla-dzieci-{lokalne[m]}.html">z {e(d)} →</a></li>' if m in lokalne else
+             f'<li><a href="https://www.google.com/maps/dir/?api=1&amp;origin={quote(m)}&amp;destination={cel}" '
+             f'rel="noopener" target="_blank">z {e(d)} →</a></li>') for m, d in miasta)
         return f'<h3 class="ak-dojazd__tytul">Dojazd z okolicy</h3><ul class="ak-dojazd">{linki}</ul>'
 
     def ak_poradnik_sekcja(self, p=""):
@@ -1491,13 +1784,16 @@ class Budowa:
         tel = k.get("telefon")
         form = A.get("formularz_google")
         fakty = " · ".join(e(x) for x in A.get("fakty", [])[:2])
-        przyciski = (f'<a class="btn btn--ak" href="{e(form)}" rel="noopener" target="_blank">Zapisz córkę →</a>' if form
-                     else f'<a class="btn btn--ak" href="{p}akademia.html#zapisy">Zapisz córkę →</a>')
-        przyciski += f'<a class="btn btn--obrys" href="{p}akademia.html#grupa">Darmowy trening próbny</a>'
+        if A.get("zapis_email"):
+            przyciski = f'<a class="btn btn--ak" href="{p}akademia.html#zapisy">{e(A.get("cta") or "Zapisz córkę")}</a>'
+        else:
+            przyciski = (f'<a class="btn btn--ak" href="{e(form)}" rel="noopener" target="_blank">Zapisz córkę →</a>' if form
+                         else f'<a class="btn btn--ak" href="{p}akademia.html#zapisy">Zapisz córkę →</a>')
+            przyciski += f'<a class="btn btn--obrys" href="{p}akademia.html#grupa">Darmowy trening próbny</a>'
         if tel:
             przyciski += f'<a class="btn btn--obrys" href="tel:{S.tel_link(tel)}">Zadzwoń: {e(tel)}</a>'
         return (f'<aside class="ak-ramka"><p class="ak-ramka__nad">Akademia Siatkówki Volley · Kobyłka</p>'
-                f'<h2>Zapisz córkę na siatkówkę</h2><p>{fakty}. Hala przy PSP nr 3 w Kobyłce, ul. Załuskiego 57.</p>'
+                f'<h2>Zapisz córkę na siatkówkę</h2><p>{fakty}. Hala przy PSP nr 3 w Kobyłce, ul. Załuskiego 57. Pierwszy trening jest bezpłatny.</p>'
                 f'<div class="ak-przyciski">{przyciski}</div></aside>')
 
     def ak_artykul_ld(self, sciezka, tytul, opis, data_iso, obraz, autor=None, zrodla=()):
@@ -1777,6 +2073,18 @@ class Budowa:
         H = C.HALA_DOMOWA
         fakty = " ".join(A.get("fakty", []))
         pyt = []
+        tel = (A.get("koordynator") or {}).get("telefon")
+        if A.get("zapis_email"):
+            pyt.append(("Czy pierwszy trening naprawdę jest darmowy?",
+                        "Tak. Za pierwszy trening nie płacisz i niczego nie podpisujesz. Córka sprawdza, czy siatkówka jej się podoba, "
+                        "a Ty poznajesz trenerkę i grupę."))
+            pyt.append(("Jak zapisać córkę na trening próbny?",
+                        'Wypełnij krótki <a href="#zapisy">formularz na tej stronie</a>' +
+                        (f' albo zadzwoń pod <a href="tel:{S.tel_link(tel)}">{e(tel)}</a>' if tel else "") +
+                        ". Oddzwonimy lub odpiszemy w ciągu 24 godzin i zaproponujemy termin."))
+            pyt.append(("Co, jeśli córce się nie spodoba?",
+                        "Nic się nie dzieje. Po treningu próbnym nie masz żadnych zobowiązań. "
+                        "Umowę podpisujemy dopiero wtedy, gdy córka chce zostać."))
         if A.get("cennik"):
             pyt.append(("Ile kosztują treningi siatkówki w Akademii?",
                         "; ".join(f"{e(c['co'])} – {e(c['cena'])}" for c in A["cennik"]) +
@@ -1796,11 +2104,13 @@ class Budowa:
                 opis_dni = ("we " if lista[0].startswith("wt") else "w ") + " i ".join(lista)
                 pyt.append(("Kiedy są treningi?", f"{opis_dni[0].upper() + opis_dni[1:]}, {od}–{do}. Pełny plan w sekcji "
                                                    '<a href="#plan">Plan treningów</a>.'))
-        pyt.append(("Czy można przyjść na trening próbny?",
-                    "Tak. Pierwszy trening jest bezpłatny – córka sprawdzi, czy siatkówka jej się podoba. "
-                    'Umów go w sekcji <a href="#grupa">Sprawdź grupę dla córki</a>.'))
+        if not A.get("zapis_email"):
+            pyt.append(("Czy można przyjść na trening próbny?",
+                        "Tak. Pierwszy trening jest bezpłatny – córka sprawdzi, czy siatkówka jej się podoba. "
+                        'Umów go w sekcji <a href="#grupa">Sprawdź grupę dla córki</a>.'))
         pyt.append(("Czy córka musi umieć grać w siatkówkę?",
-                    "Nie. Zapraszamy też dziewczynki, które dopiero zaczynają – na treningach uczymy podstaw od zera."))
+                    "Nie. Zapraszamy też dziewczynki, które dopiero zaczynają – trenerka uczy podstaw krok po kroku: "
+                    "odbicia, ustawienia i pierwszych gier."))
         pyt.append(("Co zabrać na trening?",
                     "Strój sportowy, buty halowe z jasną, niebrudzącą podeszwą, butelkę wody i gumkę do związania włosów."))
         pyt.append(("Gdzie odbywają się treningi siatkówki dla dziewcząt?",
@@ -1820,7 +2130,9 @@ class Budowa:
                          if len(A["trenerzy"]) == 1 and S.zawodniczka_po_nazwisku(f'{t0["imie"]} {t0["nazwisko"]}') else ".") +
                         ' Więcej w sekcji <a href="#trenerzy">Trenerzy</a>.'))
         mail = (A.get("koordynator") or {}).get("email") or C.KLUB["email"]
-        if A.get("formularz_google"):
+        if A.get("zapis_email"):
+            pass                                  # „Jak zapisać córkę na trening próbny?” jest na górze listy
+        elif A.get("formularz_google"):
             pyt.append(("Jak zapisać dziecko na siatkówkę?",
                         f'Wypełnij <a href="{e(A["formularz_google"])}" rel="noopener" target="_blank">formularz zgłoszeniowy</a> – '
                         'odpowiemy i potwierdzimy termin pierwszego treningu. Umowę podpisujemy na miejscu, w hali. '
@@ -2017,6 +2329,9 @@ na nasz serwer – usunięcie posta na Facebooku usuwa go też ze strony przy na
 i stosuje standardowe klauzule umowne. Zasady: <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener" target="_blank">GitHub Privacy Statement</a>.</li>
 <li><strong>Poczta e-mail – Simply.com</strong> (Simply.com A/S, Dania). Wiadomości wysłane na adresy Klubu w domenie
 volleykobylka.pl są przechowywane na serwerach Simply.com w Unii Europejskiej.</li>
+<li><strong>Formularz zapisu na trening próbny – FormSubmit</strong> (formsubmit.co). Dane wpisane w formularzu zapisu
+do Akademii (imię dziecka, klasa lub wiek, telefon i e-mail rodzica, dodatkowe informacje) są przesyłane przez ten serwis
+e-mailem na adres Akademii. Serwis nie ustawia cookies na naszej stronie.</li>
 <li><strong>Formularze Google</strong> – jeśli zgłoszenie odbywa się przez formularz, wczytuje się on dopiero po kliknięciu przycisku.
 Wtedy Google przetwarza dane wpisane w formularzu i może użyć własnych plików cookies (<a href="https://policies.google.com/privacy?hl=pl" rel="noopener" target="_blank">zasady Google</a>).</li>
 <li><strong>Licznik wyświetleń</strong> – przy wejściu na stronę przeglądarka wysyła jedno zapytanie do serwisu Abacus

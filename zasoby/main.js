@@ -454,6 +454,75 @@ window.vkLicznik = (function () {
   });
 
   /* ---------------------------------------------------------------
+     FORMULARZ ZAPISU NA TRENING PRÓBNY (Akademia) – wysyłka przez FormSubmit
+     Bez JavaScriptu formularz wysyła się zwykłym POST-em i wraca z ?zgloszenie=wyslane.
+     --------------------------------------------------------------- */
+  function pokazDziekujemy(form) {
+    var dz = form.nextElementSibling;
+    if (!dz || !dz.classList.contains('ak-form-dziekujemy')) return;
+    form.hidden = true;
+    dz.hidden = false;
+    try { dz.focus({ preventScroll: false }); } catch (e) { dz.focus(); }
+  }
+  document.querySelectorAll('form[data-zapis]').forEach(function (form) {
+    if (/[?&]zgloszenie=wyslane/.test(location.search)) pokazDziekujemy(form);
+    var status = form.querySelector('.ak-form__status');
+    var przycisk = form.querySelector('button[type="submit"]');
+    function sprawdz(pole) {
+      var ok = true;
+      var v = (pole.value || '').trim();
+      if (pole.type === 'checkbox') ok = pole.checked;
+      else if (pole.required && !v) ok = false;
+      else if (pole.type === 'tel' && v) ok = v.replace(/\D/g, '').replace(/^48(?=\d{9}$)/, '').length === 9;
+      else if (pole.type === 'email' && v) ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+      pole.setAttribute('aria-invalid', ok ? 'false' : 'true');
+      var opis = pole.closest('label');
+      var blad = opis && opis.querySelector('.ak-form__blad');
+      if (!ok && opis && !blad) {
+        blad = document.createElement('span');
+        blad.className = 'ak-form__blad';
+        opis.appendChild(blad);
+      }
+      if (blad) blad.textContent = ok ? '' : (pole.dataset.blad || 'Uzupełnij to pole.');
+      return ok;
+    }
+    var pola = form.querySelectorAll('input[required], textarea[required]');
+    pola.forEach(function (p) {
+      p.addEventListener('blur', function () { if (p.value || p.type === 'checkbox') sprawdz(p); });
+      p.addEventListener('change', function () { if (p.getAttribute('aria-invalid') === 'true') sprawdz(p); });
+    });
+    form.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var pierwszyBlad = null;
+      pola.forEach(function (p) { if (!sprawdz(p) && !pierwszyBlad) pierwszyBlad = p; });
+      if (pierwszyBlad) { pierwszyBlad.focus(); return; }
+      if (form.querySelector('[name="_honey"]').value) return;     // robot
+      var dane = {};
+      new FormData(form).forEach(function (v, k) { if (k !== '_next') dane[k] = v; });
+      przycisk.disabled = true;
+      status.textContent = 'Wysyłam zgłoszenie…';
+      var sterownik = 'AbortController' in window ? new AbortController() : null;
+      var limit = setTimeout(function () { if (sterownik) sterownik.abort(); }, 15000);
+      fetch(form.dataset.endpoint, {
+        method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(dane), signal: sterownik ? sterownik.signal : undefined
+      }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, j: j }; }); })
+        .then(function (w) {
+          clearTimeout(limit);
+          if (w.ok && String(w.j.success) !== 'false') { status.textContent = ''; pokazDziekujemy(form); return; }
+          throw new Error('wysylka');
+        })
+        .catch(function () {
+          clearTimeout(limit);
+          przycisk.disabled = false;
+          var tel = document.querySelector('a[href^="tel:"]');
+          status.textContent = 'Nie udało się wysłać zgłoszenia. Spróbuj jeszcze raz' +
+            (tel ? ' albo zadzwoń: ' + tel.textContent.replace(/^[^0-9+]*/, '') : '') + '.';
+        });
+    });
+  });
+
+  /* ---------------------------------------------------------------
      POJAWIANIE SIĘ SEKCJI PRZY PRZEWIJANIU
      --------------------------------------------------------------- */
   var sekcje = document.querySelectorAll('.pojaw');
