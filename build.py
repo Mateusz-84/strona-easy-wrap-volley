@@ -1220,7 +1220,7 @@ class Budowa:
     <div>
       <h2 class="ak-h2" id="zapisy-tytul">Zapisy</h2>
       <ol class="ak-kroki">
-        <li><strong>Wypełnij formularz</strong><span>Imię i klasa córki, Twój telefon i e-mail – to zajmie 30 sekund.</span></li>
+        <li><strong>Wypełnij formularz</strong><span>Imię i rok urodzenia córki, Twój telefon i e-mail – to zajmie 30 sekund.</span></li>
         <li><strong>Oddzwonimy w ciągu 24 godzin</strong><span>Zaproponujemy termin bezpłatnego treningu próbnego.</span></li>
         <li><strong>Przyjdźcie na trening</strong><span>Umowę podpisujesz dopiero wtedy, gdy córka chce zostać – na miejscu, w hali.</span></li>
       </ol>
@@ -1532,8 +1532,8 @@ class Budowa:
   <div class="ak-form__pola">
     <label class="ak-form__pole"><span>Imię córki *</span>
       <input type="text" name="Imię dziecka" required maxlength="40" autocomplete="off" placeholder="np. Zosia" data-blad="Wpisz imię córki."></label>
-    <label class="ak-form__pole"><span>Klasa lub wiek *</span>
-      <input type="text" name="Klasa lub wiek" required maxlength="40" placeholder="np. 4 klasa / 10 lat" data-blad="Wpisz klasę albo wiek – dobierzemy grupę."></label>
+    <label class="ak-form__pole"><span>Rok urodzenia córki *</span>
+      <input type="text" name="Rok urodzenia" required maxlength="4" inputmode="numeric" autocomplete="off" placeholder="np. 2016" data-rok data-blad="Wpisz rok urodzenia córki, np. 2016."></label>
     <label class="ak-form__pole"><span>Twój telefon *</span>
       <input type="tel" name="Telefon rodzica" required maxlength="20" autocomplete="tel" inputmode="tel" placeholder="np. 600 123 456" data-blad="Sprawdź numer – powinien mieć 9 cyfr."></label>
     <label class="ak-form__pole"><span>Twój e-mail *</span>
@@ -2330,7 +2330,7 @@ i stosuje standardowe klauzule umowne. Zasady: <a href="https://docs.github.com/
 <li><strong>Poczta e-mail – Simply.com</strong> (Simply.com A/S, Dania). Wiadomości wysłane na adresy Klubu w domenie
 volleykobylka.pl są przechowywane na serwerach Simply.com w Unii Europejskiej.</li>
 <li><strong>Formularz zapisu na trening próbny – FormSubmit</strong> (formsubmit.co). Dane wpisane w formularzu zapisu
-do Akademii (imię dziecka, klasa lub wiek, telefon i e-mail rodzica, dodatkowe informacje) są przesyłane przez ten serwis
+do Akademii (imię i rok urodzenia dziecka, telefon i e-mail rodzica, dodatkowe informacje) są przesyłane przez ten serwis
 e-mailem na adres Akademii. Serwis nie ustawia cookies na naszej stronie.</li>
 <li><strong>Formularze Google</strong> – jeśli zgłoszenie odbywa się przez formularz, wczytuje się on dopiero po kliknięciu przycisku.
 Wtedy Google przetwarza dane wpisane w formularzu i może użyć własnych plików cookies (<a href="https://policies.google.com/privacy?hl=pl" rel="noopener" target="_blank">zasady Google</a>).</li>

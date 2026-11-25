@@ -475,6 +475,7 @@ window.vkLicznik = (function () {
       else if (pole.required && !v) ok = false;
       else if (pole.type === 'tel' && v) ok = v.replace(/\D/g, '').replace(/^48(?=\d{9}$)/, '').length === 9;
       else if (pole.type === 'email' && v) ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+      else if (pole.hasAttribute('data-rok') && v) ok = /^(19|20)\d{2}$/.test(v) && +v >= new Date().getFullYear() - 20 && +v <= new Date().getFullYear() - 4;
       pole.setAttribute('aria-invalid', ok ? 'false' : 'true');
       var opis = pole.closest('label');
       var blad = opis && opis.querySelector('.ak-form__blad');
