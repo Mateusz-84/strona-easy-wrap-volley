@@ -1222,7 +1222,7 @@ class Budowa:
       <ol class="ak-kroki">
         <li><strong>Wypełnij formularz</strong><span>Imię i rok urodzenia córki, Twój telefon i e-mail – to zajmie 30 sekund.</span></li>
         <li><strong>Oddzwonimy w ciągu 24 godzin</strong><span>Zaproponujemy termin bezpłatnego treningu próbnego.</span></li>
-        <li><strong>Przyjdźcie na trening</strong><span>Umowę podpisujesz dopiero wtedy, gdy córka chce zostać – na miejscu, w hali.</span></li>
+        <li><strong>Przyjdźcie na trening</strong><span>Umowę podpiszesz na miejscu, w hali – dopiero gdy córka zechce zostać.</span></li>
       </ol>
     </div>
     <div>
@@ -1246,12 +1246,12 @@ class Budowa:
     <div>
       <p class="ak-nad">Akademia Siatkówki Volley · Kobyłka</p>
       <h1 class="ak-tytul" id="ak-tytul">{e(A['haslo'])}</h1>
-      <p class="ak-opis">Treningi siatkówki dla dziewczynek z klas 3–6. Pierwszy trening jest bezpłatny – córka sprawdzi,
-      czy to sport dla niej, a Ty niczego nie podpisujesz.</p>
+      <p class="ak-opis">Treningi siatkówki dla dziewczynek z klas 3–6. Pierwszy trening jest bezpłatny i do niczego
+      nie zobowiązuje – wystarczy wcześniej zapisać córkę przez formularz albo telefonicznie.</p>
       <ul class="ak-fakty">{hero_fakty}</ul>
       <div class="ak-przyciski"><a class="btn btn--ak" href="#zapisy">{e(cta)}</a></div>
       {f'<p class="ak-hero__tel">Wolisz porozmawiać? <a href="tel:{S.tel_link(k["telefon"])}">Zadzwoń: {e(k["telefon"])}</a></p>' if k.get("telefon") else ''}
-      <p class="ak-hero__male">Bez opłat i bez zobowiązań. Wystarczy strój sportowy, buty na halę i woda.</p>
+      <p class="ak-hero__male">Na trening wystarczy strój sportowy, buty halowe i butelka wody.</p>
     </div>
     {logo}
   </div>
@@ -1267,7 +1267,7 @@ class Budowa:
   <div class="kontener">
     <h2 class="ak-h2" id="cennik-tytul">Cennik</h2>
     <ul class="ak-ceny">{cennik}</ul>
-    <p class="ak-przypis">Opłata miesięczna. Pierwszy trening jest bezpłatny.</p>
+    <p class="ak-przypis">Opłata miesięczna. Pierwszy trening jest bezpłatny – po wcześniejszym zapisie.</p>
   </div>
 </section>
 {self.ak_cta(2)}
@@ -1403,25 +1403,24 @@ class Budowa:
         k = A.get("koordynator") or {}
         tr = (A.get("trenerzy") or [{}])[0]
         cennik = A.get("cennik") or []
-        ceny = " albo ".join(f'{e(c["cena"].replace(" / mies.", ""))} {"miesięcznie za " if i == 0 else "za "}{e(c["co"].replace(" w tygodniu", ""))}'
-                             for i, c in enumerate(cennik))
+        ceny = " lub ".join(f'{e(c["cena"].replace(" / mies.", ""))} za {e(c["co"])}' for c in cennik)
         kafle = [
             ("tarcza", "Bezpieczeństwo na pierwszym miejscu",
              'Klub stosuje <a href="#ochrona">Standardy Ochrony Małoletnich</a>. Każda osoba pracująca z dziećmi ma aktualne '
              "zaświadczenie o niekaralności i jest sprawdzona w Rejestrze Sprawców Przestępstw na Tle Seksualnym."),
-            ("pilka", "Trenuje z zawodniczką 2. ligi",
+            ("pilka", "Trening z zawodniczką 2. ligi",
              (f'Zajęcia prowadzi {e(tr.get("imie", ""))} {e(tr.get("nazwisko", ""))}, rozgrywająca Easy Wrap Volley Kobyłka. '
               "Grała m.in. w AZS UMCS Lublin, Nike Węgrów i WTS KDBS Włocławek.")
              if tr.get("imie") == "Natalia" else
              (f'Zajęcia prowadzi {e(tr.get("imie", ""))} {e(tr.get("nazwisko", ""))} – zawodniczka drużyny grającej w 2. lidze kobiet.'
               if tr.get("imie") else "Zajęcia prowadzą osoby związane z drużyną grającą w 2. lidze kobiet.")),
             ("start", "Najpierw próba, potem decyzja",
-             "Pierwszy trening jest bezpłatny. Umowę podpisujesz dopiero wtedy, gdy córka chce zostać."),
+             "Pierwszy trening jest bezpłatny. Umowę podpisujesz dopiero wtedy, gdy córka zechce zostać."),
             ("cena", "Jasne zasady płatności",
-             (f"{ceny} w tygodniu. " if ceny else "") +
+             (f"Opłata miesięczna: {ceny}. " if ceny else "") +
              "Przy chorobie trwającej cały miesiąc (z zaświadczeniem) płacisz 50 zł, a córka zachowuje miejsce w grupie."),
             ("serce", "Grupa tylko dla dziewcząt",
-             "W grupie trenują dziewczynki z klas 3–6, w podobnym wieku. Łatwiej o przyjaźnie i łatwiej o pewność siebie."),
+             "Trenują razem dziewczynki z klas 3–6, w podobnym wieku – łatwiej o przyjaźnie i o pewność siebie."),
             ("dom", "Klub z prawdziwą drużyną",
              "Klub Sportowy Volley działa w Kobyłce od 2021 roku, a jego pierwsza drużyna gra w 2. lidze kobiet. "
              "Na mecze w hali przy Załuskiego 57 wstęp jest wolny – córka może kibicować swojej trenerce."),
@@ -1450,20 +1449,20 @@ class Budowa:
         cta = C.AKADEMIA.get("cta") or "Zapisz córkę"
         kafle = [
             ("Pewność siebie", "Każde udane odbicie i każdy punkt dla drużyny to dowód, że „potrafię”."),
-            ("Przyjaciółki z drużyny", "W siatkówce nikt nie gra sam – dziewczynki uczą się wspierać i cieszyć razem."),
-            ("Zdrowy ruch zamiast ekranu", "Dwa razy w tygodniu po 90 minut ruchu: bieganie, skoki, koordynacja, mocne kości."),
-            ("Lepsza koncentracja w szkole", "Trening uczy skupienia na zadaniu i dobrze robi na głowę po lekcjach."),
-            ("Umiejętność przegrywania i podnoszenia się", "Każdy mecz uczy, że po błędzie gra się dalej."),
-            ("Prawdziwe wzory do naśladowania", "Trenerka gra w 2. lidze, a dziewczynki mogą oglądać jej mecze z trybun."),
+            ("Przyjaciółki z drużyny", "W siatkówce nikt nie gra sam – dziewczynki uczą się wspierać nawzajem i razem cieszyć z sukcesów."),
+            ("Zdrowy ruch zamiast ekranu", "Dwa razy w tygodniu po 90 minut ruchu: biegi, skoki i ćwiczenia koordynacji, które wzmacniają kości."),
+            ("Lepsza koncentracja w szkole", "Trening uczy skupienia na zadaniu i pozwala odreagować po lekcjach."),
+            ("Radzenie sobie z porażką", "Każdy mecz uczy, że po błędzie trzeba się otrząsnąć i grać dalej."),
+            ("Wzór do naśladowania", "Trenerka gra w 2. lidze, a dziewczynki mogą oglądać jej mecze z trybun."),
         ]
         html = "".join(f'<li class="ak-korzysc"><h3>{e(t)}</h3><p>{e(o)}</p></li>' for t, o in kafle)
         return f"""
 <section class="sekcja ak-sekcja ak-sekcja--biala" id="korzysci" aria-labelledby="korzysci-tytul">
   <div class="kontener">
     <h2 class="ak-h2" id="korzysci-tytul">Co zyska Twoja córka</h2>
-    <p class="ak-wstep">Więcej niż sport – co córka wyniesie z treningu.</p>
+    <p class="ak-wstep">Siatkówka to coś więcej niż sport. Oto, co córka wyniesie z treningów.</p>
     <ul class="ak-korzysci">{html}</ul>
-    <p class="ak-korzysci__dopisek">Nie musi umieć grać. Uczymy od zera – od pierwszych odbić po grę w minisiatkówkę.</p>
+    <p class="ak-korzysci__dopisek">Córka nie musi umieć grać. Uczymy od podstaw – od pierwszych odbić po grę w minisiatkówkę.</p>
     <div class="ak-przyciski"><a class="btn btn--ak" href="#zapisy">{e(cta)}</a></div>
   </div>
 </section>"""
@@ -1476,12 +1475,12 @@ class Budowa:
         cel = f"{p}akademia.html#zapisy" if p else "#zapisy"
         teksty = {
             1: ("Niech córka sama sprawdzi, czy siatkówka jej się spodoba",
-                "Pierwszy trening jest bezpłatny. Przyjdźcie we wtorek lub czwartek o 16:15 – trenerka pomoże córce "
-                "od pierwszej minuty, nawet jeśli nigdy nie miała piłki w rękach."),
+                "Zapisz córkę, a zaproponujemy termin bezpłatnego treningu – we wtorek lub czwartek o 16:15. Trenerka zaopiekuje się córką "
+                "od pierwszej minuty – nawet jeśli ta nigdy nie trzymała piłki w rękach."),
             2: ("Najpierw darmowy trening, potem decyzja",
-                "Nie płacisz za pierwsze zajęcia i nie podpisujesz umowy przed treningiem. Jeśli córce się spodoba, "
-                "wszystko załatwiamy na miejscu, w hali."),
-            3: ("Masz jeszcze pytanie? Zadzwoń albo zapisz córkę – oddzwonimy", ""),
+                "Za pierwsze zajęcia nie płacisz i przed treningiem niczego nie podpisujesz. Jeśli córce się spodoba, "
+                "formalności załatwimy na miejscu, w hali."),
+            3: ("Masz jeszcze pytania? Zadzwoń albo zostaw zgłoszenie – oddzwonimy", ""),
         }
         tytul, tekst = teksty[nr]
         tel_html = (f'<a class="btn btn--obrys btn--jasny" href="tel:{S.tel_link(tel)}">Zadzwoń: {e(tel)}</a>'
@@ -1503,8 +1502,8 @@ class Budowa:
 <section class="ak-final" aria-labelledby="final-tytul">
   <div class="kontener">
     <h2 class="ak-final__tytul" id="final-tytul">Trening próbny gratis</h2>
-    <p class="ak-final__tekst">Wtorek albo czwartek, 16:15, hala przy PSP nr 3 w Kobyłce. Córka przychodzi, gra, a potem sama decyduje,
-    czy chce zostać. Ty niczego nie płacisz i niczego nie podpisujesz.</p>
+    <p class="ak-final__tekst">Zapisz córkę przez formularz albo telefonicznie, a zaproponujemy termin: wtorek lub czwartek, 16:15,
+    hala przy PSP nr 3 w Kobyłce. Na treningu córka gra i sama decyduje, czy chce zostać. Za trening próbny nic nie płacisz i niczego nie podpisujesz.</p>
     <div class="ak-przyciski"><a class="btn btn--ak" href="{cel}">{e(cta)}</a></div>
     {f'<p class="ak-final__kontakt">Wolisz zapytać? {kontakt}</p>' if kontakt else ''}
     <p class="ak-final__miasta">Trenujemy dziewczynki z
@@ -1563,18 +1562,18 @@ class Budowa:
         cta = A.get("cta") or "Zapisz córkę"
         tel = (A.get("koordynator") or {}).get("telefon")
         cennik = A.get("cennik") or []
-        ceny = " lub ".join(f'{c["cena"].replace(" / mies.", "/mies.")} za {c["co"]}' for c in cennik)
-        hala = "hali przy PSP nr 3 w Kobyłce, ul. ks. Marcina Załuskiego 57"
+        ceny = "miesięcznie " + " lub ".join(f'{c["cena"].replace(" / mies.", "")} za {c["co"]}' for c in cennik)
+        hala = "hali przy PSP nr 3, ul. ks. Marcina Załuskiego 57"
         cel_mapy = quote("ul. ks. Marcina Załuskiego 57, 05-230 Kobyłka")
         def trasa(skad, dop):
             return (f'<p><a class="ak-sekcja__link" href="https://www.google.com/maps/dir/?api=1&amp;origin={quote(skad)}'
                     f'&amp;destination={cel_mapy}" rel="noopener" target="_blank">Wyznacz trasę z {e(dop)} →</a></p>')
-        kroki = ('<ol class="ak-kroki"><li><strong>Wypełnij formularz</strong><span>Albo zadzwoń' +
-                 (f': <a href="tel:{S.tel_link(tel)}">{e(tel)}</a>' if tel else "") + '.</span></li>'
-                 '<li><strong>Oddzwonimy w ciągu 24 godzin</strong><span>Zaproponujemy termin.</span></li>'
-                 '<li><strong>Bezpłatny trening próbny</strong><span>Córka sprawdza, czy siatkówka jej się podoba.</span></li></ol>')
+        kroki = ('<ol class="ak-kroki"><li><strong>Wypełnij formularz</strong><span>' +
+                 (f'Możesz też zadzwonić: <a href="tel:{S.tel_link(tel)}">{e(tel)}</a>' if tel else "To zajmie 30 sekund.") + '</span></li>'
+                 '<li><strong>Oddzwonimy w ciągu 24 godzin</strong><span>Zaproponujemy termin treningu.</span></li>'
+                 '<li><strong>Bezpłatny trening próbny</strong><span>Córka sprawdzi, czy siatkówka jej się podoba.</span></li></ol>')
         bezpiecznie = ("<ul><li>Klub stosuje Standardy Ochrony Małoletnich.</li>"
-                       "<li>Prowadzi zawodniczka 2. ligi kobiet, Natalia Bielińska.</li>"
+                       "<li>Zajęcia prowadzi Natalia Bielińska, zawodniczka 2. ligi kobiet.</li>"
                        f"<li>Cennik bez niespodzianek: {e(ceny)}.</li></ul>")
         strony = {
             "kobylka": dict(
@@ -1584,16 +1583,16 @@ class Budowa:
                      "Pierwszy trening za darmo – zapisz córkę.",
                 h1="Treningi siatkówki dla dziewczynek w Kobyłce",
                 wstep="Szukasz zajęć sportowych dla córki w Kobyłce? Akademia Siatkówki Volley prowadzi treningi dla dziewcząt "
-                      f"z klas 3–6 w {hala}. Bez dojazdów do Warszawy – trening jest tuż po szkole, we wtorki i czwartki o 16:15.",
+                      f"z klas 3–6 w {hala}. Nie trzeba jeździć do Warszawy – treningi są tuż po lekcjach, we wtorki i czwartki o 16:15.",
                 sekcje=[("Siatkówka po lekcjach, blisko domu",
-                         "<p>Trening zaczyna się o 16:15, więc córka spokojnie dotrze po lekcjach. Zapraszamy dziewczynki "
-                         "ze wszystkich szkół w Kobyłce, nie tylko z PSP nr 3.</p>"),
+                         "<p>Córka może przyjść na trening prosto ze szkoły. Zapraszamy dziewczynki ze wszystkich "
+                         "kobyłkowskich szkół, nie tylko z PSP nr 3.</p>"),
                         ("Trenerka z kobyłkowskiej drużyny",
                          "<p>Zajęcia prowadzi Natalia Bielińska, rozgrywająca Easy Wrap Volley Kobyłka w 2. lidze kobiet. "
-                         "Na mecze tej drużyny w Kobyłce wstęp jest wolny – córka zobaczy, do czego prowadzi trening.</p>"),
+                         "Na mecze tej drużyny w Kobyłce wstęp jest wolny – córka zobaczy, dokąd może zaprowadzić ją siatkówka.</p>"),
                         ("Jak zacząć", kroki)],
                 faq=[("Gdzie jest hala?", f"Hala przy PSP nr 3 w Kobyłce, ul. ks. Marcina Załuskiego 57, Kobyłka."),
-                     ("Ile kosztuje?", f"{e(ceny)}. Pierwszy trening jest bezpłatny."),
+                     ("Ile kosztuje?", f"{e(ceny[0].upper() + ceny[1:])}. Pierwszy trening jest bezpłatny."),
                      ("Czy córka musi chodzić do PSP nr 3?", "Nie. Zapraszamy dziewczynki ze wszystkich szkół.")]),
             "wolomin": dict(
                 miasto="Wołomin", miejscownik="Wołominie",
@@ -1604,7 +1603,7 @@ class Budowa:
                 wstep="Mieszkasz w Wołominie i szukasz zajęć, na których córka się wybiega i znajdzie przyjaciółki? "
                       f"Akademia Siatkówki Volley trenuje dziewczynki z klas 3–6 w sąsiedniej Kobyłce – w {hala}.",
                 sekcje=[("Z Wołomina do hali w Kobyłce",
-                         "<p>Kobyłka sąsiaduje z Wołominem, a trening zaczyna się o 16:15 – zdążycie po lekcjach.</p>"
+                         "<p>Kobyłka sąsiaduje z Wołominem, a trening zaczyna się o 16:15 – zdążycie dojechać po lekcjach.</p>"
                          + trasa("Wołomin", "Wołomina")),
                         ("Dlaczego warto dojechać do Kobyłki",
                          "<ul><li>Grupa tylko dla dziewcząt w podobnym wieku.</li>"
@@ -1627,13 +1626,14 @@ class Budowa:
                 sekcje=[("Z Marek do hali w Kobyłce",
                          "<p>Trening zaczyna się o 16:15 i trwa 90 minut.</p>" + trasa("Marki", "Marek")),
                         ("Dużo gry od pierwszego treningu",
-                         "<p>Córka trenuje z dziewczynkami w podobnym wieku. Uczymy od podstaw: odbicia, ustawienia "
-                         "i minisiatkówki. Doświadczenie nie jest potrzebne.</p>"),
+                         "<p>Córka trenuje z dziewczynkami w podobnym wieku. Uczymy od podstaw: odbić, ustawiania się "
+                         "na boisku i gry w minisiatkówkę. Doświadczenie nie jest potrzebne.</p>"),
                         ("Najpierw sprawdźcie, potem decydujcie",
-                         "<p>Pierwszy trening jest bezpłatny i bez zobowiązań. Jeśli córce się spodoba, umowę podpiszecie "
-                         "na miejscu. Jeśli nie – nic nie płacisz.</p>")],
+                         "<p>Wystarczy zapisać córkę – pierwszy trening jest bezpłatny i bez zobowiązań. Jeśli córce się spodoba, umowę podpiszesz "
+                         "na miejscu. Jeśli nie – za nic nie płacisz.</p>")],
                 faq=[("Czy mogę zapisać córkę tylko na jeden trening w tygodniu?",
-                      next((f'Tak – {e(c["cena"])}' for c in cennik if c["co"].startswith("1 ")), "Tak.")),
+                      next((f'Tak. Jeden trening w tygodniu kosztuje {e(c["cena"].replace(" / mies.", ""))} miesięcznie.'
+                            for c in cennik if c["co"].startswith("1 ")), "Tak.")),
                      ("Czy córka musi umieć grać?", "Nie. Uczymy od zera – wystarczą chęci."),
                      ("Jak się zapisać?", "Formularz na tej stronie" + (f" lub telefon {e(tel)}" if tel else "") + ".")]),
             "zielonka": dict(
@@ -1642,7 +1642,7 @@ class Budowa:
                 opis="Zajęcia siatkówki dla dziewczynek z Zielonki (klasy 3–6) w pobliskiej Kobyłce. Wtorki i czwartki "
                      "16:15–17:45. Zapisz córkę na darmowy trening próbny.",
                 h1="Zajęcia siatkówki dla dziewczynek z Zielonki",
-                wstep="Córka lubi ruch i grę w drużynie? Akademia Siatkówki Volley zaprasza dziewczynki z Zielonki z klas 3–6 "
+                wstep="Córka lubi ruch i grę w drużynie? Akademia Siatkówki Volley zaprasza dziewczynki z klas 3–6 z Zielonki "
                       f"na treningi w Kobyłce – we wtorki i czwartki, 16:15–17:45, w {hala}.",
                 sekcje=[("Z Zielonki do hali w Kobyłce",
                          "<p>Trening zaczyna się o 16:15 i trwa 90 minut.</p>" + trasa("Zielonka", "Zielonki")),
@@ -1652,7 +1652,7 @@ class Budowa:
                         ("Bezpiecznie i przejrzyście", bezpiecznie)],
                 faq=[("Co zabrać na trening?", "Strój sportowy, buty halowe z jasną podeszwą, wodę i gumkę do włosów."),
                      ("Jak szybko odpowiadacie?", "Oddzwonimy lub odpiszemy w ciągu 24 godzin."),
-                     ("Czy pierwszy trening jest płatny?", "Nie. Pierwszy trening jest bezpłatny i bez zobowiązań.")]),
+                     ("Czy pierwszy trening jest płatny?", "Nie. Pierwszy trening jest bezpłatny i bez zobowiązań – trzeba tylko wcześniej zapisać córkę.")]),
         }
         for klucz in A["strony_lokalne"]:
             d = strony.get(klucz)
@@ -1669,7 +1669,7 @@ class Budowa:
     <p class="ak-nad">Akademia Siatkówki Volley · {e(d['miasto'])}</p>
     <h1 class="ak-tytul" id="ak-tytul">{e(d['h1'])}</h1>
     <p class="ak-opis">{e(d['wstep'])}</p>
-    <ul class="ak-fakty"><li>Wtorki i czwartki, 16:15–17:45</li><li>Klasy 3–6 SP</li><li>Pierwszy trening za darmo</li></ul>
+    <ul class="ak-fakty"><li>Wtorki i czwartki, 16:15–17:45</li><li>Klasy 3–6 SP</li><li>Darmowy trening próbny po zapisie</li></ul>
     <div class="ak-przyciski"><a class="btn btn--ak" href="#zapisy">{e(cta)}</a></div>
   </div>
 </section>
@@ -1677,7 +1677,7 @@ class Budowa:
 <section class="sekcja ak-sekcja ak-sekcja--zapis" id="zapisy" aria-labelledby="zapisy-tytul">
   <div class="kontener ak-zapis">
     <div><h2 class="ak-h2" id="zapisy-tytul">Zapisy</h2>
-      <p class="ak-wstep">Cennik, plan treningów i trenerka – wszystko o Akademii na <a href="akademia.html">stronie Akademii Siatkówki Volley</a>.</p></div>
+      <p class="ak-wstep">Cennik, plan treningów i informacje o trenerce znajdziesz na <a href="akademia.html">stronie Akademii Siatkówki Volley</a>.</p></div>
     <div>{formularz}</div>
   </div>
 </section>
@@ -2076,7 +2076,7 @@ class Budowa:
         tel = (A.get("koordynator") or {}).get("telefon")
         if A.get("zapis_email"):
             pyt.append(("Czy pierwszy trening naprawdę jest darmowy?",
-                        "Tak. Za pierwszy trening nie płacisz i niczego nie podpisujesz. Córka sprawdza, czy siatkówka jej się podoba, "
+                        "Tak, trzeba tylko wcześniej zapisać córkę. Za pierwszy trening nie płacisz i niczego nie podpisujesz. Córka sprawdza, czy siatkówka jej się podoba, "
                         "a Ty poznajesz trenerkę i grupę."))
             pyt.append(("Jak zapisać córkę na trening próbny?",
                         'Wypełnij krótki <a href="#zapisy">formularz na tej stronie</a>' +
@@ -2084,11 +2084,11 @@ class Budowa:
                         ". Oddzwonimy lub odpiszemy w ciągu 24 godzin i zaproponujemy termin."))
             pyt.append(("Co, jeśli córce się nie spodoba?",
                         "Nic się nie dzieje. Po treningu próbnym nie masz żadnych zobowiązań. "
-                        "Umowę podpisujemy dopiero wtedy, gdy córka chce zostać."))
+                        "Umowę podpisujemy dopiero wtedy, gdy córka zechce zostać."))
         if A.get("cennik"):
             pyt.append(("Ile kosztują treningi siatkówki w Akademii?",
-                        "; ".join(f"{e(c['co'])} – {e(c['cena'])}" for c in A["cennik"]) +
-                        (". Bez wpisowego." if "wpisowego" in fakty else ".")))
+                        "; ".join(f"{e(c['co'])} – {e(c['cena'])}" for c in A["cennik"]).rstrip(".") +
+                        (". Bez wpisowego." if "wpisowego" in fakty else ". Pierwszy trening jest bezpłatny.")))
         if any("klas" in x for x in A.get("fakty", [])):
             pyt.append(("Dla kogo są zajęcia?", e(next(x for x in A["fakty"] if "klas" in x)) +
                         " – w jednej grupie trenują dziewczynki w podobnym wieku."))
@@ -2114,7 +2114,8 @@ class Budowa:
         pyt.append(("Co zabrać na trening?",
                     "Strój sportowy, buty halowe z jasną, niebrudzącą podeszwą, butelkę wody i gumkę do związania włosów."))
         pyt.append(("Gdzie odbywają się treningi siatkówki dla dziewcząt?",
-                    f"W hali: {e(H['nazwa'])}, {e(H['adres'])}. To Kobyłka w powiecie wołomińskim – blisko Wołomina, Marek i Zielonki."))
+                    f"W {e(H['nazwa'].replace('Hala', 'hali', 1))}, {e(H['adres'])}. Kobyłka leży w powiecie wołomińskim – "
+                    "blisko Wołomina, Marek i Zielonki."))
         if "90" in fakty:
             pyt.append(("Ile trwa trening?", "Jeden trening trwa 90 minut."))
         if "dziewcząt" in fakty:

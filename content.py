@@ -443,7 +443,7 @@ AKADEMIA = {
         {"co": "1 trening w tygodniu", "cena": "130 zł / mies."},
     ],
     "fakty": ["Dla dziewcząt z klas 3–6 SP", "Wtorki i czwartki 16:15–17:45", "Trening trwa 90 minut",
-              "Pierwszy trening za darmo"],
+              "Darmowy trening próbny po zapisie"],
     # Które klasy trafiają do której grupy (sekcja „Sprawdź grupę dla córki”); "nazwa" = "grupa" z harmonogramu
     "grupy_klasy": [
         {"klasy": [3, 4, 5, 6], "nazwa": "Dziewczęta, klasy 3–6 SP"},
@@ -468,7 +468,7 @@ AKADEMIA = {
         {"imie": "Natalia", "nazwisko": "Bielińska", "rola": "Prowadzi zajęcia Akademii",
          "opis": "Na co dzień rozgrywająca Easy Wrap Volley Kobyłka w 2. lidze kobiet. Wcześniej grała m.in. "
                  "w AZS UMCS Lublin, Nike Węgrów i WTS KDBS Włocławek. Na treningach przekazuje dziewczynkom to, "
-                 "czego sama uczyła się na parkiecie.",
+                 "czego sama nauczyła się na parkiecie.",
          "zdjecie": "zawodniczki/natalia-bielinska.webp"},
     ],
     # Harmonogram treningów – pojawi się też w kalendarium (w okresie sezonu)
