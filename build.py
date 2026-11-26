@@ -1222,7 +1222,7 @@ class Budowa:
       <ol class="ak-kroki">
         <li><strong>Wypełnij formularz</strong><span>Imię i rok urodzenia córki, Twój telefon i e-mail – to zajmie 30 sekund.</span></li>
         <li><strong>Oddzwonimy w ciągu 24 godzin</strong><span>Zaproponujemy termin bezpłatnego treningu próbnego.</span></li>
-        <li><strong>Przyjdźcie na trening</strong><span>Umowę podpiszesz na miejscu, w hali – dopiero gdy córka zechce zostać.</span></li>
+        <li><strong>Przyjdźcie na trening</strong><span>Umowę podpisujemy na miejscu, w hali – dopiero wtedy, gdy córka będzie chciała trenować siatkówkę.</span></li>
       </ol>
     </div>
     <div>
@@ -1415,7 +1415,7 @@ class Budowa:
              (f'Zajęcia prowadzi {e(tr.get("imie", ""))} {e(tr.get("nazwisko", ""))} – zawodniczka drużyny grającej w 2. lidze kobiet.'
               if tr.get("imie") else "Zajęcia prowadzą osoby związane z drużyną grającą w 2. lidze kobiet.")),
             ("start", "Najpierw próba, potem decyzja",
-             "Pierwszy trening jest bezpłatny. Umowę podpisujesz dopiero wtedy, gdy córka zechce zostać."),
+             "Pierwszy trening jest bezpłatny. Umowę podpisujemy dopiero wtedy, gdy córka będzie chciała trenować siatkówkę."),
             ("cena", "Jasne zasady płatności",
              (f"Opłata miesięczna: {ceny}. " if ceny else "") +
              "Przy chorobie trwającej cały miesiąc (z zaświadczeniem) płacisz 50 zł, a córka zachowuje miejsce w grupie."),
@@ -1478,8 +1478,8 @@ class Budowa:
                 "Zapisz córkę, a zaproponujemy termin bezpłatnego treningu – we wtorek lub czwartek o 16:15. Trenerka zaopiekuje się córką "
                 "od pierwszej minuty – nawet jeśli ta nigdy nie trzymała piłki w rękach."),
             2: ("Najpierw darmowy trening, potem decyzja",
-                "Za pierwsze zajęcia nie płacisz i przed treningiem niczego nie podpisujesz. Jeśli córce się spodoba, "
-                "formalności załatwimy na miejscu, w hali."),
+                "Za pierwsze zajęcia nie płacisz i przed treningiem niczego nie podpisujesz. Umowę podpisujemy na miejscu, "
+                "w hali – dopiero wtedy, gdy córka będzie chciała trenować siatkówkę."),
             3: ("Masz jeszcze pytania? Zadzwoń albo zostaw zgłoszenie – oddzwonimy", ""),
         }
         tytul, tekst = teksty[nr]
@@ -1503,7 +1503,7 @@ class Budowa:
   <div class="kontener">
     <h2 class="ak-final__tytul" id="final-tytul">Trening próbny gratis</h2>
     <p class="ak-final__tekst">Zapisz córkę przez formularz albo telefonicznie, a zaproponujemy termin: wtorek lub czwartek, 16:15,
-    hala przy PSP nr 3 w Kobyłce. Na treningu córka gra i sama decyduje, czy chce zostać. Za trening próbny nic nie płacisz i niczego nie podpisujesz.</p>
+    hala przy PSP nr 3 w Kobyłce. Na treningu córka gra i sama decyduje, czy chce trenować siatkówkę. Za trening próbny nic nie płacisz i niczego nie podpisujesz.</p>
     <div class="ak-przyciski"><a class="btn btn--ak" href="{cel}">{e(cta)}</a></div>
     {f'<p class="ak-final__kontakt">Wolisz zapytać? {kontakt}</p>' if kontakt else ''}
     <p class="ak-final__miasta">Trenujemy dziewczynki z
@@ -1629,8 +1629,8 @@ class Budowa:
                          "<p>Córka trenuje z dziewczynkami w podobnym wieku. Uczymy od podstaw: odbić, ustawiania się "
                          "na boisku i gry w minisiatkówkę. Doświadczenie nie jest potrzebne.</p>"),
                         ("Najpierw sprawdźcie, potem decydujcie",
-                         "<p>Wystarczy zapisać córkę – pierwszy trening jest bezpłatny i bez zobowiązań. Jeśli córce się spodoba, umowę podpiszesz "
-                         "na miejscu. Jeśli nie – za nic nie płacisz.</p>")],
+                         "<p>Wystarczy zapisać córkę – pierwszy trening jest bezpłatny i bez zobowiązań. Umowę podpisujemy "
+                         "na miejscu dopiero wtedy, gdy córka będzie chciała trenować siatkówkę.</p>")],
                 faq=[("Czy mogę zapisać córkę tylko na jeden trening w tygodniu?",
                       next((f'Tak. Jeden trening w tygodniu kosztuje {e(c["cena"].replace(" / mies.", ""))} miesięcznie.'
                             for c in cennik if c["co"].startswith("1 ")), "Tak.")),
@@ -2084,7 +2084,7 @@ class Budowa:
                         ". Oddzwonimy lub odpiszemy w ciągu 24 godzin i zaproponujemy termin."))
             pyt.append(("Co, jeśli córce się nie spodoba?",
                         "Nic się nie dzieje. Po treningu próbnym nie masz żadnych zobowiązań. "
-                        "Umowę podpisujemy dopiero wtedy, gdy córka zechce zostać."))
+                        "Umowę podpisujemy dopiero wtedy, gdy córka będzie chciała trenować siatkówkę."))
         if A.get("cennik"):
             pyt.append(("Ile kosztują treningi siatkówki w Akademii?",
                         "; ".join(f"{e(c['co'])} – {e(c['cena'])}" for c in A["cennik"]).rstrip(".") +
