@@ -803,7 +803,7 @@ def karta_meczu(p, m):
   <div class="mecz__data"><span class="dz">{DNI_KROTKO[d.weekday()]}</span><span class="nr">{d.day}</span><span class="ms">{MIES_KROTKO[d.month - 1]}</span>
     <time class="ukryte" datetime="{d.isoformat()}">{e(data_pl(d))}</time></div>
   <div class="mecz__pary">{pary}</div>
-  <div class="mecz__dol">{sety_html(m)}{e(miejsce)}{dodatki}</div>
+  <div class="mecz__dol">{sety_html(m)}<div class="mecz__miejsce">{e(miejsce)}</div>{dodatki}</div>
 </article>"""
 
 
