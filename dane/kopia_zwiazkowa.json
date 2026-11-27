@@ -52,7 +52,7 @@
   }
  },
  "seniorki": {
-  "pobrano": "2026-11-26T20:30",
+  "pobrano": "2026-11-27T03:46",
   "pzps_lista": [
    {
     "data": "2026-09-26",
@@ -920,8 +920,8 @@
    },
    {
     "data": "2026-11-28",
-    "godzina": null,
-    "godzina_pewna": false,
+    "godzina": "16:00",
+    "godzina_pewna": true,
     "gosc": "EASY WRAP Volley Kobyłka",
     "gospodarz": "UKS Orlęta Raszyn"
    },
